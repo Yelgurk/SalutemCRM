@@ -1,0 +1,234 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:conv="using:SalutemCRM.Converter">
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://SalutemCRM/Assets/Color.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+
+		<conv:SizeToUniformGridColumnsConverter x:Key="SizeToColumnsConv"/>
+	</Styles.Resources>
+
+	<Design.PreviewWith>
+		<Grid Height="800"
+			  Width="700">
+			<StackPanel VerticalAlignment="Center">
+				<ListBox Classes="custom marked"
+						 Margin="0 0 0 10">
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="1"/>
+						<TextBlock Text="Первый" Margin="100 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="2"/>
+						<TextBlock Text="Второй" Margin="100 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="3"/>
+						<TextBlock Text="Третий" Margin="100 0 0 0"/>
+					</DockPanel>
+				</ListBox>
+
+				<ListBox Classes="custom"
+						 Margin="0 0 0 10">
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="1"/>
+						<TextBlock Text="Первый" Margin="100 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="2"/>
+						<TextBlock Text="Второй" Margin="100 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="3"/>
+						<TextBlock Text="Третий" Margin="100 0 0 0"/>
+					</DockPanel>
+				</ListBox>
+
+				<ListBox Classes="custom horizontal"
+						 Margin="0 0 0 10">
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="1"/>
+						<TextBlock Text="Первый" Margin="50 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="2"/>
+						<TextBlock Text="Второй" Margin="50 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="3"/>
+						<TextBlock Text="Третий" Margin="50 0 0 0"/>
+					</DockPanel>
+				</ListBox>
+
+				<ListBox Classes="custom horizontal marked"
+						 Margin="0 0 0 10">
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="1"/>
+						<TextBlock Text="Первый" Margin="50 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="2"/>
+						<TextBlock Text="Второй" Margin="50 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="3"/>
+						<TextBlock Text="Третий" Margin="50 0 0 0"/>
+					</DockPanel>
+				</ListBox>
+
+				<ListBox Classes="custom DemoSpacing">
+					<ListBoxItem Classes="green">
+						<Grid>
+							<DockPanel Classes="DemoSpacing">
+								<TextBlock Text="1"/>
+								<TextBlock Text="Первый" Margin="100 0 0 0"/>
+							</DockPanel>
+						</Grid>
+					</ListBoxItem>
+					<ListBoxItem Classes="red">
+						<Grid>
+							<DockPanel Classes="DemoSpacing">
+								<TextBlock Text="2"/>
+								<TextBlock Text="Второй" Margin="100 0 0 0"/>
+							</DockPanel>
+						</Grid>
+					</ListBoxItem>
+					<ListBoxItem Classes="blue">
+						<Grid>
+							<DockPanel Classes="DemoSpacing">
+								<TextBlock Text="3"/>
+								<TextBlock Text="Третий" Margin="100 0 0 0"/>
+							</DockPanel>
+						</Grid>
+					</ListBoxItem>
+					<ListBoxItem>
+						<Grid>
+							<DockPanel Classes="DemoSpacing">
+								<TextBlock Text="4"/>
+								<TextBlock Text="Четвёртый" Margin="100 0 0 0"/>
+							</DockPanel>
+							<Button Classes="pointer orange"/>
+						</Grid>
+					</ListBoxItem>
+					<ListBoxItem>
+						<Grid>
+							<DockPanel Classes="DemoSpacing">
+								<TextBlock Text="5"/>
+								<TextBlock Text="Пятый" Margin="100 0 0 0"/>
+							</DockPanel>
+							<Button Classes="pointer orange"/>
+						</Grid>
+					</ListBoxItem>
+				</ListBox>
+			</StackPanel>
+		</Grid>
+	</Design.PreviewWith>
+
+	<!-- Demo content param -->
+
+	<Style Selector="DockPanel.DemoSpacing, ListBox.DemoSpacing">
+		<Setter Property="Margin" Value="30 10"/>
+	</Style>
+	
+	<!-- ListBox - general -->
+
+	<Style Selector="ListBox.custom">
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="ClipToBounds" Value="False"/>
+	</Style>
+	
+	<Style Selector="ListBox.custom > ListBoxItem">
+		<Setter Property="ClipToBounds" Value="False"/>
+		<Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
+		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+		<Setter Property="MinHeight" Value="40"/>
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom > ListBoxItem:selected:nth-last-child(1), ListBox > ListBoxItem:pointerover:nth-last-child(1)">
+		<Setter Property="ZIndex" Value="-1"/>		
+	</Style>
+
+	<Style Selector="ListBox.custom /template/ ScrollViewer#PART_ScrollViewer">
+		<Setter Property="ClipToBounds" Value="False"/>
+	</Style>
+
+	<Style Selector="ListBox.custom /template/ ScrollViewer#PART_ScrollViewer ScrollContentPresenter#PART_ContentPresenter">
+		<Setter Property="ClipToBounds" Value="False"/>
+	</Style>
+	
+	<!-- ListBox - block style -->
+	
+	<Style Selector="ListBox.custom.horizontal">
+		<Setter Property="ListBox.ItemsPanel">
+			<ItemsPanelTemplate>
+				<UniformGrid Columns="{Binding $self.Bounds.Width, Converter={StaticResource SizeToColumnsConv}}"
+							 ClipToBounds="False"/>
+			</ItemsPanelTemplate>
+		</Setter>
+	</Style>
+
+	<!-- ListBox - custom style -->
+	
+	<Style Selector="ListBox.custom">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem /template/ ContentPresenter">
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_Gray}"/>
+		<Setter Property="BorderThickness" Value="0 0 10 0"/>
+		<Setter Property="Padding" Value="0 0 -10 0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem:selected /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Basic_Orange}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_Yellow}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem:selected:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_Yellow}"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem:selected:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
+	</Style>
+
+	<!-- ListBox - with mark when selected style -->
+
+	<Style Selector="ListBox.custom.marked ListBoxItem:selected /template/ ContentPresenter">
+		<Setter Property="BorderThickness" Value="0 0 10 0"/>
+		<Setter Property="Padding" Value="0 0 -10 0"/>
+	</Style>
+
+	<!-- ListBox - colorized -->
+
+	<Style Selector="ListBox.custom ListBoxItem.green /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Sys_Green}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem.blue /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_SkyBlue}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom ListBoxItem.red /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_Pink}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+</Styles>

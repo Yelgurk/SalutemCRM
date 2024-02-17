@@ -1,0 +1,104 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://SalutemCRM/Assets/Color.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+
+	<Design.PreviewWith>
+		<Grid Width="600" Height="400">
+			<StackPanel HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+				<Grid Height="80">
+					<ListBox Classes="switch" Margin="0 0 0 10">
+						<TextBlock Text="Первый"/>
+						<TextBlock Text="Второй"/>
+						<TextBlock Text="Третий"/>
+					</ListBox>
+					
+				</Grid>
+
+				<ListBox Classes="switch" Margin="0 0 0 10">
+					<TextBlock Text="Первый"/>
+					<TextBlock Text="Второй"/>
+					<TextBlock Text="Третий"/>
+					<TextBlock Text="Четвёртый"/>
+				</ListBox>
+
+				<ListBox Classes="switch">
+					<TextBlock Text="Первый"/>
+					<TextBlock Text="Второй"/>
+					<TextBlock Text="Третий"/>
+					<TextBlock Text="Четвёртый"/>
+					<TextBlock Text="Пятый"/>
+				</ListBox>
+			</StackPanel>
+		</Grid>
+    </Design.PreviewWith>
+
+	<Style Selector="ListBox.switch">
+		<Setter Property="ListBox.ItemsPanel">
+			<ItemsPanelTemplate>
+				<StackPanel Orientation="Horizontal"/>
+			</ItemsPanelTemplate>
+		</Setter>
+		<Setter Property="CornerRadius" Value="5"/>
+		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="Effect">
+			<DropShadowEffect
+				OffsetX="0"
+				OffsetY="0"
+				BlurRadius="15"
+				Opacity="0.10"/>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.switch ListBoxItem">
+		<Setter Property="MinHeight" Value="40"/>
+		<Setter Property="MinWidth" Value="40"/>
+		<Setter Property="Padding" Value="10 5"/>
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_DarkBlue}"/>
+		<Setter Property="CornerRadius" Value="5"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Foreground" Value="{DynamicResource Primary_DarkBlue}"/>
+		<Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
+	</Style>
+
+	<Style Selector="ListBox.switch ListBoxItem:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_Grey}"/>
+	</Style>
+
+	<Style Selector="ListBox.switch ListBoxItem:selected /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_Yellow}"/>
+	</Style>
+
+	<Style Selector="ListBox.switch ListBoxItem:selected:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
+	</Style>
+
+	<!-- Selected item border style -->
+
+	<Style Selector="ListBox.switch ListBoxItem:selected">
+		<Setter Property="BorderThickness" Value="2 0"/>
+		<Setter Property="Margin" Value="-2 0"/>
+	</Style>
+	
+	<Style Selector="ListBox.switch ListBoxItem:nth-child(1):selected">
+		<Setter Property="BorderThickness" Value="0 0 2 0"/>
+		<Setter Property="Margin" Value="0 0 -2 0"/>
+	</Style>
+
+	<Style Selector="ListBox.switch ListBoxItem:nth-last-child(1):selected">
+		<Setter Property="BorderThickness" Value="2 0 0 0"/>
+		<Setter Property="Margin" Value="-2 0 0 0"/>
+	</Style>
+</Styles>

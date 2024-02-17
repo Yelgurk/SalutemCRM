@@ -1,0 +1,121 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:SalutemCRM.CustomControl">
+	<Design.PreviewWith>
+		<Grid Width="600" Height="400">
+			<ListBox Classes="custom">
+				<ListBoxItem>
+					<controls:ManufactureOrderControl />
+				</ListBoxItem>
+
+				<ListBoxItem>
+					<controls:ManufactureOrderControl />
+				</ListBoxItem>
+
+				<ListBoxItem>
+					<controls:ManufactureOrderControl />
+				</ListBoxItem>
+			</ListBox>
+		</Grid>
+	</Design.PreviewWith>
+
+	<Style Selector="controls|ManufactureOrderControl">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="1*, 1*"
+					  ColumnDefinitions="1*, auto">
+					<Panel Background="Transparent"
+						   Height="50">
+						<ProgressBar Classes="custom green transparent hide"
+									 x:Name="PART_ProgressBarGeneral"
+									 Opacity="0.75"
+									 Value="50"/>
+						<DockPanel HorizontalAlignment="Left"
+								   VerticalAlignment="Top"
+								   Margin="8 3">
+							<TextBlock Text="Счёт #"/>
+							<TextBlock Text="123"/>
+						</DockPanel>
+
+						<DockPanel HorizontalAlignment="Left"
+								   VerticalAlignment="Bottom"
+								   Margin="8 3">
+							<TextBlock Text="Менеджер "/>
+							<TextBlock Text="Оксана"/>
+						</DockPanel>
+
+						<DockPanel HorizontalAlignment="Center"
+								   VerticalAlignment="Top"
+								   Margin="8 3">
+							<TextBlock Text="Изделий: "/>
+							<TextBlock Text="2"/>
+						</DockPanel>
+
+						<DockPanel HorizontalAlignment="Center"
+								   VerticalAlignment="Bottom"
+								   Margin="8 3">
+							<TextBlock Text="Готово: "/>
+							<TextBlock Text="50%"/>
+						</DockPanel>
+					</Panel>
+
+					<ListBox Classes="custom"
+							 x:Name="PART_ProgressBarList"
+							 Grid.Row="1"
+							 Margin="10 10 20 10">
+						<ListBoxItem>
+							<Grid ColumnDefinitions="auto, auto, 1*">
+								<ProgressBar Classes="custom blue right"
+											 Grid.ColumnSpan="3" Value="35"/>
+								<Image Grid.Column="0"
+									   Height="24"
+									   Margin="5 0"
+									   Source="/Assets/Icon/Manufacture.png"/>
+								<TextBlock Grid.Column="1"
+										   VerticalAlignment="Center"
+										   Text="ТМПЭ 200"/>
+							</Grid>
+						</ListBoxItem>
+						<ListBoxItem>
+							<Grid ColumnDefinitions="auto, auto, 1*">
+								<ProgressBar Classes="custom blue right"
+											 Grid.ColumnSpan="3" Value="75"/>
+								<Image Grid.Column="0"
+									   Height="24"
+									   Margin="5 0"
+									   Source="/Assets/Icon/Manufacture.png"/>
+								<TextBlock Grid.Column="1"
+										   VerticalAlignment="Center"
+										   Text="ТМПЭ 200"/>
+							</Grid>
+						</ListBoxItem>
+					</ListBox>
+
+					<Button Classes="iconed orange ok"
+							Grid.Column="1" Grid.RowSpan="2"
+							x:Name="PART_ButtonAccept"/>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox ListBoxItem controls|ManufactureOrderControl /template/ ListBox#PART_ProgressBarList">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+
+	<Style Selector="ListBox ListBoxItem controls|ManufactureOrderControl /template/ Button#PART_ButtonAccept">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+
+	<Style Selector="ListBox ListBoxItem:selected controls|ManufactureOrderControl /template/ ProgressBar#PART_ProgressBarGeneral">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+
+	<Style Selector="ListBox ListBoxItem:selected controls|ManufactureOrderControl /template/ ListBox#PART_ProgressBarList">
+		<Setter Property="IsVisible" Value="True"/>
+	</Style>
+	
+	<Style Selector="ListBox ListBoxItem:selected controls|ManufactureOrderControl /template/ Button#PART_ButtonAccept">
+		<Setter Property="IsVisible" Value="True"/>
+	</Style>
+</Styles>

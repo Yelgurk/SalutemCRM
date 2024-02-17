@@ -1,0 +1,248 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://SalutemCRM/Assets/Color.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+
+	<Design.PreviewWith>
+		<Grid Height="800"
+			  Width="300">
+			<StackPanel VerticalAlignment="Center">
+				<Button Classes="custom whiteText orange demo" Margin="0 0 0 5"/>
+				<Button Classes="custom orange stretch demo" Margin="0 0 0 5"/>
+				<Button Classes="custom demo" Margin="0 0 0 5"/>
+				<Button Classes="custom pink demo" Margin="0 0 0 5"/>
+				<Button Classes="custom bold green demo" Margin="0 0 0 5"/>
+
+				<Label Height="80" Margin="0" Padding="0">
+					<Button Classes="iconed close pink" Margin="0 0 0 5"/>
+				</Label>
+
+				<Button Classes="iconed plus orange" Margin="0 0 0 5"/>
+				<Button Classes="iconed edit orange" Margin="0 0 0 5"/>
+
+				<Label Height="80" Margin="0" Padding="0">
+					<Button Classes="iconed ok green" Margin="0 0 0 5"/>
+				</Label>
+
+				<Button Classes="iconed eye blue" Margin="0 0 0 5" Command=""/>
+				<Button Classes="iconed close red sys" Margin="0 0 0 5"/>
+				<Button Classes="iconed resize darkBlue sys" Margin="0 0 0 5"/>
+				<Button Classes="iconed hide grey sys" Margin="0 0 0 5"/>
+				<Button Classes="iconed account green sys" Margin="0 0 0 5"/>
+
+				<StackPanel HorizontalAlignment="Center">
+					<Label Width="100" Height="40" Background="Gray"/>
+					<Button Classes="pointer orange plus"/>
+					<Label Width="100" Height="40" Background="LightGray"/>
+				</StackPanel>
+			</StackPanel>
+		</Grid>
+	</Design.PreviewWith>
+
+	<!-- Button - custom (big) -->
+
+	<Style Selector="Button.demo">
+		<Setter Property="Content" Value="Проверка"/>
+	</Style>
+	
+	<Style Selector="Button.custom">
+		<Setter Property="Background" Value="{DynamicResource Primary_Gray}"/>
+		<Setter Property="MinWidth" Value="40"/>
+		<Setter Property="MinHeight" Value="40"/>
+		<Setter Property="Padding" Value="20 0"/>
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="FontWeight" Value="Regular"/>
+		<Setter Property="Foreground" Value="{DynamicResource Primary_DarkBlue}"/>
+		<Setter Property="CornerRadius" Value="5"/>
+		<Setter Property="Effect">
+			<DropShadowEffect
+				BlurRadius="5"
+				OffsetX="0"
+				OffsetY="0"
+				Opacity="0.15"/>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button.custom.whiteText">
+		<Setter Property="Foreground" Value="White"/>
+	</Style>
+
+	<Style Selector="Button.custom.bold">
+		<Setter Property="FontWeight" Value="SemiBold"/>
+	</Style>
+
+	<Style Selector="Button.custom.stretch">
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+	</Style>
+
+	<!-- Button - iconed (small/only icons) + colors -->
+	
+	<Style Selector="Button.iconed">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border>
+					<Image Width="24"
+						   Height="24"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button">
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+	</Style>
+
+	<Style Selector="Button /template/ Border">
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="5"/>
+	</Style>
+
+	<Style Selector="Button /template/ Border">
+		<Setter Property="Background" Value="{Binding $parent[Button].Background}"/>
+	</Style>
+
+	<Style Selector="Button.close /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Close.png"/>
+	</Style>
+
+	<Style Selector="Button.plus /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Plus.png"/>
+	</Style>
+
+	<Style Selector="Button.ok /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Ok.png"/>
+	</Style>
+
+	<Style Selector="Button.edit /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Edit.png"/>
+	</Style>
+
+	<Style Selector="Button.eye /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Eye.png"/>
+	</Style>
+
+	<Style Selector="Button.resize /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Resize.png"/>
+	</Style>
+
+	<Style Selector="Button.hide /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Minimize.png"/>
+	</Style>
+
+	<Style Selector="Button.account /template/ Border > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Account.png"/>
+	</Style>
+
+	<Style Selector="Button.orange">
+		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
+	</Style>
+
+	<Style Selector="Button.green">
+		<Setter Property="Background" Value="{DynamicResource Sys_Green}"/>
+	</Style>
+
+	<Style Selector="Button.blue">
+		<Setter Property="Background" Value="{DynamicResource Alt_SkyBlue}"/>
+	</Style>
+
+	<Style Selector="Button.darkBlue">
+		<Setter Property="Background" Value="{DynamicResource Sys_Blue}"/>
+	</Style>
+
+	<Style Selector="Button.pink">
+		<Setter Property="Background" Value="{DynamicResource Alt_Pink}"/>
+	</Style>
+
+	<Style Selector="Button.red">
+		<Setter Property="Background" Value="{DynamicResource Sys_Red}"/>
+	</Style>
+
+	<Style Selector="Button.grey">
+		<Setter Property="Background" Value="{DynamicResource Alt_Grey}"/>
+	</Style>
+
+	<Style Selector="Button:pointerover /template/ Border">
+		<Setter Property="Background" Value="{DynamicResource Alt_Grey}"/>
+	</Style>
+
+	<Style Selector="Button:pressed /template/ Border">
+		<Setter Property="Background" Value="{DynamicResource Primary_Gray}"/>
+	</Style>
+	
+	<!-- Button - system -->
+
+	<Style Selector="Button.sys /template/ Border">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="Button.sys:pointerover /template/ Border">
+		<Setter Property="Background" Value="{Binding $parent[Button].Background}"/>
+	</Style>
+
+	<Style Selector="Button.sys:pressed /template/ Border">
+		<Setter Property="Background" Value="{DynamicResource Primary_Gray}"/>
+	</Style>
+	
+	<!-- Button - pointer -->
+
+	<Style Selector="Button.pointer">
+		<Setter Property="Width" Value="45"/>
+		<Setter Property="Height" Value="30"/>
+		<Setter Property="HorizontalAlignment" Value="Left"/>
+		<Setter Property="VerticalAlignment" Value="Bottom"/>
+		<Setter Property="Margin" Value="-30 -15 0 -15"/>
+		<Setter Property="ZIndex" Value="1"/>
+	</Style>
+
+	<Style Selector="Button.pointer">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid>
+					<Path Fill="{TemplateBinding Background}">
+						<Path.Data>
+							<PathGeometry>
+								<PathFigure StartPoint="15, 0" IsClosed="True">
+									<LineSegment Point="45, 15"/>
+									<LineSegment Point="15, 30"/>
+									<ArcSegment Point="15, 0"
+												IsLargeArc="False"
+												SweepDirection="Clockwise"
+												Size="1, 1"/>
+								</PathFigure>
+							</PathGeometry>
+						</Path.Data>
+					</Path>
+					<ContentPresenter x:Name="PART_ContentPresenter"
+									  Content="{TemplateBinding Content}"
+									  HorizontalAlignment="Left"
+									  Margin="10 0 0 0"/>
+					<Image Width="24"
+						   Height="24"
+						   HorizontalAlignment="Left"
+						   Margin="3 0 0 0"
+						   Source="avares://SalutemCRM/Assets/Icon/Plus.png"/>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button.pointer:pointerover /template/ Path">
+		<Setter Property="Fill" Value="{DynamicResource Alt_Grey}"/>
+	</Style>
+
+	<Style Selector="Button.pointer:pressed /template/ Path">
+		<Setter Property="Fill" Value="{DynamicResource Primary_Gray}"/>
+	</Style>
+</Styles>

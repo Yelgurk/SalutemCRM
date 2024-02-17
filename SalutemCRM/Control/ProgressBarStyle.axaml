@@ -1,0 +1,80 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+		<Grid Width="400"
+			  Height="400">
+			<StackPanel HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+				<ProgressBar 
+					Margin="0 10" Height="20"
+					Minimum="0" Maximum="100" Value="14"
+					ShowProgressText="True"/>
+
+				<ProgressBar Classes="custom pink"
+							 Margin="0 0 0 10"/>
+
+				<ProgressBar Classes="custom blue"
+							 Margin="0 0 0 10" Value="95"/>
+
+				<ProgressBar Classes="custom green right"
+							 Margin="0 0 0 10" Value="75"/>
+			</StackPanel>
+		</Grid>
+    </Design.PreviewWith>
+
+	<Style Selector="ProgressBar.custom">
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="MinHeight" Value="40"/> 
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
+		<Setter Property="BorderThickness" Value="0 0 1 0"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_Gray}"/>
+		<Setter Property="Foreground" Value="{DynamicResource Primary_Yellow}"/>
+		<Setter Property="ShowProgressText" Value="True"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+	</Style>
+
+	<Style Selector="ProgressBar.custom:pointerover">
+		<Setter Property="Background" Value="{DynamicResource Alt_Grey}"/>
+	</Style>
+
+	<Style Selector="ProgressBar.green">
+		<Setter Property="Foreground" Value="{DynamicResource Sys_Green}"/>
+	</Style>
+
+	<Style Selector="ProgressBar.peach">
+		<Setter Property="Foreground" Value="{DynamicResource Alt_Yellow}"/>
+	</Style>
+
+	<Style Selector="ProgressBar.blue">
+		<Setter Property="Foreground" Value="{DynamicResource Alt_SkyBlue}"/>
+	</Style>
+
+	<Style Selector="ProgressBar.pink">
+		<Setter Property="Foreground" Value="{DynamicResource Alt_Pink}"/>
+	</Style>
+
+	<Style Selector="ProgressBar.transparent">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ProgressBar.custom /template/ Border#PART_Indicator">
+		<Setter Property="BorderBrush" Value="{Binding $self.Background}"/>
+		<Setter Property="BorderThickness" Value="-2"/>
+	</Style>
+
+	<Style Selector="ProgressBar.custom.hide">
+		<Setter Property="ShowProgressText" Value="False"/>
+	</Style>
+
+	<Style Selector="ProgressBar.custom.right /template/ LayoutTransformControl#PART_LayoutTransformControl">
+		<Setter Property="HorizontalAlignment" Value="Right"/>
+		<Setter Property="Margin" Value="0 0 10 0"/>
+	</Style>
+
+	<Style Selector="ProgressBar.custom.right /template/ LayoutTransformControl#PART_LayoutTransformControl > TextBlock">
+		<Setter Property="FontWeight" Value="DemiBold"/>
+	</Style>
+</Styles>
+
