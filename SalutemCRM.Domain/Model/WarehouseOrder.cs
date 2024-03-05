@@ -23,6 +23,9 @@ public class WarehouseOrder
     [Required]
     public Payment_Status? PaymentStatus { get; set; }
 
+    [MaxLength(200)]
+    public string? AdditionalInfo { get; set; }
+
     [Required]
     public double? PriceRequired { get; set; }
 
@@ -42,4 +45,5 @@ public class WarehouseOrder
 
     public List<Payment>? Payments { get; set; } = new();
     public List<WarehouseSupply>? WarehouseSupplies { get; set; } = new();
+    public List<FileAttach>? FileAttachs { get; set; } = new();
 }

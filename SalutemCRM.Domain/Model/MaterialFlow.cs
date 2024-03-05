@@ -17,7 +17,6 @@ public class MaterialFlow
     [ForeignKey("ManufactureForeignKey")]
     public Manufacture? Manufacture { get; set; }
 
-    [Required]
     public int? OfficeOrderForeignKey { get; set; }
     [ForeignKey("OfficeOrderForeignKey")]
     public OfficeOrder? OfficeOrder { get; set; }

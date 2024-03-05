@@ -49,4 +49,5 @@ public class OfficeOrder
     public List<Manufacture>? Manufactures { get; set; } = new();
     public List<Payment>? Payments { get; set; } = new();
     public List<MaterialFlow>? MaterialFlows { get; set; } = new();
+    public List<FileAttach>? FileAttachs { get; set; } = new();
 }

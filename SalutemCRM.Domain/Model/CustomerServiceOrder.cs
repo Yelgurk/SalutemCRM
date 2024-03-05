@@ -53,4 +53,5 @@ public class CustomerServiceOrder
     public List<Payment>? Payments { get; set; } = new();
     public List<MaterialFlow>? MaterialFlows { get; set; } = new();
     public List<CustomerService>? CustomerServices { get; set; } = new();
+    public List<FileAttach>? FileAttachs { get; set; } = new();
 }

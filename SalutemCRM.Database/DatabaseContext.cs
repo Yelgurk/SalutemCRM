@@ -33,6 +33,9 @@ public partial class DatabaseContext : DbContext
     public DbSet<CustomerService> CustomerServices { get; set; }
     public DbSet<CustomerServiceOrder> CustomerServiceOrders { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<FileAttach> FileAttachs { get; set; }
+    public DbSet<WarehouseCategory> WarehouseCategories { get; set; }
+    public DbSet<ManufactureCategory> ManufactureCategories { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
@@ -60,6 +63,9 @@ public partial class DatabaseContext : DbContext
         modelBuilder.Entity<CustomerService>(CustomerService_Config);
         modelBuilder.Entity<CustomerServiceOrder>(CustomerServiceOrder_Config);
         modelBuilder.Entity<Payment>(Payment_Config);
+        modelBuilder.Entity<FileAttach>(FileAttach_Config);
+        modelBuilder.Entity<WarehouseCategory>(WarehouseCategory_Config);
+        modelBuilder.Entity<ManufactureCategory>(ManufactureCategory_Config);
     }
 
     public void CurrencyUnit_Config(EntityTypeBuilder<CurrencyUnit> builder)
@@ -91,6 +97,10 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(wi => wi.CountRequired)
             .HasDefaultValue(0.0);
+        builder
+            .HasOne(wi => wi.Category)
+            .WithMany(wc => wc.WarehouseItems)
+            .HasForeignKey(wi => wi.WarehouseCategoryForeignKey);
     }
 
     public void WarehouseSupply_Config(EntityTypeBuilder<WarehouseSupply> builder)
@@ -114,6 +124,10 @@ public partial class DatabaseContext : DbContext
     {
         builder.HasKey(pt => pt.Id);
         builder.HasAlternateKey(pt => pt.Name);
+        builder
+            .HasOne(pt => pt.Category)
+            .WithMany(pc => pc.ProductTemplates)
+            .HasForeignKey(pt => pt.ManufactureCategoryForeignKey);
     }
 
     public void ProductSchema_Config(EntityTypeBuilder<ProductSchema> builder)
@@ -304,4 +318,40 @@ public partial class DatabaseContext : DbContext
             .HasDefaultValue(1);
     }
 
+    public void FileAttach_Config(EntityTypeBuilder<FileAttach> builder)
+    {
+        builder.HasKey(fa => fa.Id);
+        builder
+            .HasOne(fa => fa.OfficeOrder)
+            .WithMany(oo => oo.FileAttachs)
+            .HasForeignKey(fs => fs.OfficeOrderForeignKey);
+        builder
+            .HasOne(fa => fa.WarehouseOrder)
+            .WithMany(wo => wo.FileAttachs)
+            .HasForeignKey(fs => fs.WarehouseOrderForeignKey);
+        builder
+            .HasOne(fa => fa.CustomerServiceOrder)
+            .WithMany(cso => cso.FileAttachs)
+            .HasForeignKey(fs => fs.CustomerServiceOrderForeignKey);
+        builder
+            .HasAlternateKey(fs => fs.FileName);
+    }
+
+    public void WarehouseCategory_Config(EntityTypeBuilder<WarehouseCategory> builder)
+    {
+        builder.HasKey(wc => wc.Id);
+        builder
+            .HasOne(wc => wc.ParentCategory)
+            .WithMany(wc => wc.SubCategories)
+            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
+    }
+
+    public void ManufactureCategory_Config(EntityTypeBuilder<ManufactureCategory> builder)
+    {
+        builder.HasKey(wc => wc.Id);
+        builder
+            .HasOne(wc => wc.ParentCategory)
+            .WithMany(wc => wc.SubCategories)
+            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
+    }
 }

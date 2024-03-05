@@ -9,6 +9,10 @@ public class ProductTemplate
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
+    public int? ManufactureCategoryForeignKey { get; set; }
+    [ForeignKey("ManufactureCategoryForeignKey")]
+    public ManufactureCategory? Category { get; set; }
+
     [Required]
     [MaxLength(200)]
     public string? Name { get; set; }
