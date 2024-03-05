@@ -25,6 +25,9 @@ public class ManufactureProcess
     public ManufacturerDuty? ManufacturerDuty { get; set; }
 
     [Required]
+    public Task_Status TaskStatus { get; set; }
+
+    [Required]
     public int Queue { get; set; }
 
     [Required]
@@ -36,11 +39,8 @@ public class ManufactureProcess
     public DateTime DeadlineDT { get; set; }
 
     [Column(TypeName = "datetime2")]
-    public DateTime? Started { get; set; }
+    public DateTime? StartedDT { get; set; }
 
     [Column(TypeName = "datetime2")]
-    public DateTime? Finished { get; set; }
-
-    [Required]
-    public Task_Status Status { get; set; }
+    public DateTime? CompletedDT { get; set; }
 }

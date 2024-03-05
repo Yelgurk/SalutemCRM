@@ -1,30 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace SalutemCRM.Domain.Model;
 
-public class OfficeOrder
+public class CustomerServiceOrder
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public int? ManagerForeignKey { get; set; }
-    [ForeignKey("ManagerForeignKey")]
-    public User? Manager { get; set; }
-
-    public int? ClientForeignKey { get; set; }
-    [ForeignKey("ClientForeignKey")]
-    public Client? Client { get; set; }
+    public int? StockManagerForeignKey { get; set; }
+    [ForeignKey("StockManagerForeignKey")]
+    public User? StockManager { get; set; }
 
     [Required]
-    public Order_Type? OrderType { get; set; }
+    public int? ManufactureForeignKey { get; set; }
+    [ForeignKey("ManufactureForeignKey")]
+    public Manufacture? Manufacture { get; set; }
 
     [Required]
     public Payment_Status? PaymentAgreement { get; set; }
 
     [Required]
     public Payment_Status? PaymentStatus { get; set; }
+
+    [Required]
+    public Task_Status? TaskStatus { get; set; }
 
     [MaxLength(200)]
     public string? AdditionalInfo { get; set; }
@@ -41,12 +42,15 @@ public class OfficeOrder
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? ShipmentDeadlineDT { get; set; }
+    public DateTime? DeadlineDT { get; set; }
 
     [Column(TypeName = "datetime2")]
-    public DateTime? ShipmentDT { get; set; }
+    public DateTime? StartedDT { get; set; }
 
-    public List<Manufacture>? Manufactures { get; set; } = new();
+    [Column(TypeName = "datetime2")]
+    public DateTime? CompletedDT { get; set; }
+
     public List<Payment>? Payments { get; set; } = new();
     public List<MaterialFlow>? MaterialFlows { get; set; } = new();
+    public List<CustomerService>? CustomerServices { get; set; } = new();
 }

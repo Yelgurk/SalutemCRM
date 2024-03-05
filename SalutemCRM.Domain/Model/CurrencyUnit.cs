@@ -11,7 +11,4 @@ public class CurrencyUnit
 
     [Required]
     public string? Name { get; set; }
-
-    public List<WarehousePayment>? WarehousePayments { get; set; } = new();
-    public List<OfficeOrderPayment>? OfficeOrderPayments { get; set; } = new();
 }

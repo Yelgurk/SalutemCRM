@@ -3,22 +3,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SalutemCRM.Domain.Model;
 
-public class ProductTemplate
+public class Vendor
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    
-    [Required]
-    [MaxLength(200)]
-    public string? Name { get; set; }
-    
-    [Required]
-    [MaxLength(200)]
-    public string? Model { get; set; }
 
-    [MaxLength(200)]
+    [Required]
+    [StringLength(200)]
+    public string? Name { get; set; }
+
+    [Required]
+    [StringLength(200)]
+    public string? Address { get; set; }
+
+    [StringLength(200)]
     public string? AdditionalInfo { get; set; }
 
-    public List<ProductSchema> ProductSchemas { get; set; } = new();
+    public List<WarehouseOrder>? WarehouseOrders { get; set; } = new();
 }

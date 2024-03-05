@@ -15,11 +15,14 @@ public class WarehouseItem
     public string? Name { get; set; }
 
     [MaxLength(200)]
-    public string? Description { get; set; }
+    public string? AdditionalInfo { get; set; }
     
     [Required]
     [MaxLength(200)]
     public string? Code { get; set; }
+
+    [Required]
+    public double? CountRequired { get; set; }
 
     public List<WarehouseSupply> WarehouseSupplying { get; set; } = new();
     public List<ProductSchema> ProductSchemas { get; set; } = new();

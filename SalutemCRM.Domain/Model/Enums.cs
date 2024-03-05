@@ -28,5 +28,12 @@ public enum Task_Status {
     NotStarted,
     Execution,
     Finished,
-    Reassigned
+    Reassigned,
+    Cancelled
 };
+
+public enum Order_Type {
+    Manufacture,
+    StockItem,
+    Manufacture_StockItem
+}; 

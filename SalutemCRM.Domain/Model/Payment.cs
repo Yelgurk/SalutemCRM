@@ -1,14 +1,17 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class OfficeOrderPayment
+public class Payment
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+
+    public int? WarehouseOrderForeignKey { get; set; }
+    [ForeignKey("WarehouseOrderForeignKey")]
+    public WarehouseOrder? WarehouseOrder { get; set; }
 
     [Required]
     public int OfficeOrderForeignKey { get; set; }
@@ -16,9 +19,13 @@ public class OfficeOrderPayment
     public OfficeOrder? OfficeOrder { get; set; }
 
     [Required]
-    public int CurrencyUnitForeignKey { get; set; }
-    [ForeignKey("CurrencyUnitForeignKey")]
-    public CurrencyUnit? CurrencyUnit { get; set; }
+    public int CustomerServiceOrderForeignKey { get; set; }
+    [ForeignKey("CustomerServiceOrderForeignKey")]
+    public CustomerServiceOrder? CustomerServiceOrder { get; set; }
+
+    [Required]
+    [StringLength(200)]
+    public string? Currency { get; set; }
 
     [Required]
     public double UnitToBYNConversion { get; set; }

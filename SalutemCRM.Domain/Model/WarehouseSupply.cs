@@ -14,7 +14,17 @@ public class WarehouseSupply
     public int? WarehouseItemForeignKey { get; set; }
     [ForeignKey("WarehouseItemForeignKey")]
     public WarehouseItem? WarehouseItem { get; set; }
-    
+
+    public int? WarehouseOrderForeignKey { get; set; }
+    [ForeignKey("WarehouseOrderForeignKey")]
+    public WarehouseOrder? WarehouseOrder { get; set; }
+
+    [Required]
+    public Payment_Status? PaymentStatus { get; set; }
+
+    [Required]
+    public Delivery_Status? DeliveryStatus { get; set; }
+
     [Required]
     [MaxLength(200)]
     public string? Code { get; set; }
@@ -23,18 +33,10 @@ public class WarehouseSupply
     public double? PriceTotal { get; set; }
     
     [Required]
-    public int? Count { get; set; }
-    
-    [Required]
-    public Payment_Status? PaymentStatus { get; set; }
-    
-    [Required]
-    public Delivery_Status? DeliveryStatus { get; set; }
+    public double? Count { get; set; }
 
     [Column(TypeName = "datetime2")]
     public DateTime RecordDT { get; set; }
 
-    public List<ManufactureSupply>? ManufactureSupplies { get; set; } = new();
-    public List<WarehousePayment>? WarehousePayments { get; set; } = new();
-    public List<WarehouseSale>? WarehouseSales { get; set; } = new();
+    public List<MaterialFlow>? MaterialFlows { get; set; } = new();
 }

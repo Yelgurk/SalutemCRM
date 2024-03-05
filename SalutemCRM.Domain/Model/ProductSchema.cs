@@ -18,5 +18,5 @@ public class ProductSchema
     public WarehouseItem? WarehouseItem { get; set; }
     
     [Required]
-    public int Count { get; set; }
+    public double Count { get; set; }
 }

@@ -15,22 +15,18 @@ public class CustomerService
     public User? Employee { get; set; }
 
     [Required]
-    public int ManufactureForeignKey { get; set; }
-    [ForeignKey("ManufactureForeignKey")]
-    public Manufacture? Manufacture { get; set; }
+    public int CustomerServiceOrderForeignKey { get; set; }
+    [ForeignKey("CustomerServiceOrderForeignKey")]
+    public CustomerServiceOrder? CustomerServiceOrder { get; set; }
 
     [Required]
-    [MaxLength(200)]
-    public string? AdditionalInfo { get; set; }
-
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime? RecordDT { get; set; }
+    public Task_Status? TaskStatus { get; set; }
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? FinishedDT { get; set; }
+    public DateTime? StartedDT { get; set; }
 
     [Required]
-    public Task_Status? Status { get; set; }
+    [Column(TypeName = "datetime2")]
+    public DateTime? CompletedDT { get; set; }
 }
