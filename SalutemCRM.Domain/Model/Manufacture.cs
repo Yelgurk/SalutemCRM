@@ -12,8 +12,13 @@ public class Manufacture
     public int? ProductTemplateForeignKey { get; set; }
     [ForeignKey("ProductTemplateForeignKey")]
     public ProductTemplate? ProductTemplate { get; set; }
+
+    public int? OfficeOrderForeignKey { get; set; }
+    [ForeignKey("OfficeOrderForeignKey")]
+    public OfficeOrder? OfficeOrder { get; set; }
     
     [Required]
+    [MaxLength(200)]
     public string? Code { get; set; }
     
     [Required]
@@ -22,5 +27,6 @@ public class Manufacture
     [Required]
     public Task_Status? TaskStatus { get; set; }
 
-    public List<ManufactureSupply>? ManufactureSupplies { get; set; }
+    public List<ManufactureSupply>? ManufactureSupplies { get; set; } = new();
+    public List<ManufactureProcess>? ManufactureProcesses { get; set; } = new();
 }

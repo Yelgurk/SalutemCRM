@@ -24,6 +24,7 @@ public enum Delivery_Status {
 };
 
 public enum Task_Status {
+    NotAvailable,
     NotStarted,
     Execution,
     Finished,

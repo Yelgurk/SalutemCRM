@@ -16,10 +16,11 @@ public class WarehouseSupply
     public WarehouseItem? WarehouseItem { get; set; }
     
     [Required]
+    [MaxLength(200)]
     public string? Code { get; set; }
     
     [Required]
-    public double? PriceSingle { get; set; }
+    public double? PriceTotal { get; set; }
     
     [Required]
     public int? Count { get; set; }
@@ -30,5 +31,9 @@ public class WarehouseSupply
     [Required]
     public Delivery_Status? DeliveryStatus { get; set; }
 
-    public List<ManufactureSupply>? ManufactureSupplies { get; set; }
+    [Column(TypeName = "datetime2")]
+    public DateTime RecordDT { get; set; }
+
+    public List<ManufactureSupply>? ManufactureSupplies { get; set; } = new();
+    public List<WarehousePayment>? WarehousePayments { get; set; } = new();
 }
