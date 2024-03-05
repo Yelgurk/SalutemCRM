@@ -8,6 +8,7 @@ namespace SalutemCRM.Domain.Model;
 
 public enum Payment_Status {
     Unpaid,
+    Reserved,
     PartiallyPaid,
     HalfPaid,
     AlmostPaid,
