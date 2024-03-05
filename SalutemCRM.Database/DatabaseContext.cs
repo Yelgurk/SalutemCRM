@@ -21,6 +21,7 @@ public partial class DatabaseContext : DbContext
     public DbSet<WarehouseItem> WarehouseItems { get; set; }
     public DbSet<WarehouseSupply> WarehouseSupplying { get; set; }
     public DbSet<WarehousePayment> WarehousePayments { get; set; }
+    public DbSet<WarehouseSale> WarehouseSales { get; set; }
     public DbSet<ProductTemplate> ProductTemplates { get; set; }
     public DbSet<ProductSchema> ProductSchemas { get; set; }
     public DbSet<Manufacture> Manufacture { get; set; }
@@ -30,6 +31,7 @@ public partial class DatabaseContext : DbContext
     public DbSet<Client> Clients { get; set; }
     public DbSet<OfficeOrder> OfficeOrders { get; set; }
     public DbSet<OfficeOrderPayment> OfficeOrderPayments { get; set; }
+    public DbSet<CustomerService> CustomerServices { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
@@ -45,6 +47,7 @@ public partial class DatabaseContext : DbContext
         modelBuilder.Entity<WarehouseItem>(WarehouseItem_Config);
         modelBuilder.Entity<WarehouseSupply>(WarehouseSupply_Config);
         modelBuilder.Entity<WarehousePayment>(WarehousePayment_Config);
+        modelBuilder.Entity<WarehouseSale>(WarehouseSale_Config);
         modelBuilder.Entity<ProductTemplate>(ProductTemplate_Config);
         modelBuilder.Entity<ProductSchema>(ProductSchema_Config);
         modelBuilder.Entity<Manufacture>(Manufacture_Config);
@@ -54,6 +57,7 @@ public partial class DatabaseContext : DbContext
         modelBuilder.Entity<Client>(Client_Config);
         modelBuilder.Entity<OfficeOrder>(OfficeOrder_Config);
         modelBuilder.Entity<OfficeOrderPayment>(OfficeOrderPayment_Config);
+        modelBuilder.Entity<CustomerService>(CustomerService_Config);
     }
 
     public void CurrencyUnit_Config(EntityTypeBuilder<CurrencyUnit> builder)
@@ -117,6 +121,19 @@ public partial class DatabaseContext : DbContext
             .HasDefaultValue(1);
     }
 
+    public void WarehouseSale_Config(EntityTypeBuilder<WarehouseSale> builder)
+    {
+        builder.HasKey(ws => ws.Id);
+        builder
+            .HasOne(ws => ws.OfficeOrder)
+            .WithMany(oo => oo.WarehouseSales)
+            .HasForeignKey(ws => ws.OfficeOrderForeignKey);
+        builder
+            .HasOne(wss => wss.WarehouseSupply)
+            .WithMany(ws => ws.WarehouseSales)
+            .HasForeignKey(wss => wss.WarehouseSupplyForeignKey);
+    }
+
     public void ProductTemplate_Config(EntityTypeBuilder<ProductTemplate> builder)
     {
         builder.HasKey(pt => pt.Id);
@@ -157,6 +174,7 @@ public partial class DatabaseContext : DbContext
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.NotAvailable);
     }
+    
     public void ManufacturerDuty_Config(EntityTypeBuilder<ManufacturerDuty> builder)
     {
         builder.HasKey(ms => ms.Id);
@@ -237,5 +255,22 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(oop => oop.UnitToBYNConversion)
             .HasDefaultValue(1);
+    }
+
+    public void CustomerService_Config(EntityTypeBuilder<CustomerService> builder)
+    {
+        builder.HasKey(oop => oop.Id);
+        builder
+            .HasOne(cs => cs.Employee)
+            .WithMany(u => u.CustomerServices)
+            .HasForeignKey(cs => cs.EmployeeForeignKey);
+        builder
+            .HasOne(cs => cs.Manufacture)
+            .WithMany(mf => mf.CustomerServices)
+            .HasForeignKey(cs => cs.ManufactureForeignKey);
+        builder
+            .Property(cs => cs.Status)
+            .HasConversion<int>()
+            .HasDefaultValue(Task_Status.NotStarted);
     }
 }

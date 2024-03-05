@@ -42,4 +42,5 @@ public class User
 
     public List<ManufactureProcess>? ManufactureProcesses { get; set; } = new();
     public List<OfficeOrder>? OfficeOrders { get; set; } = new();
+    public List<CustomerService>? CustomerServices { get; set; } = new();
 }

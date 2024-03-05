@@ -29,4 +29,5 @@ public class Manufacture
 
     public List<ManufactureSupply>? ManufactureSupplies { get; set; } = new();
     public List<ManufactureProcess>? ManufactureProcesses { get; set; } = new();
+    public List<CustomerService>? CustomerServices { get; set; } = new();
 }

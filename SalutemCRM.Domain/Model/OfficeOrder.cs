@@ -42,4 +42,5 @@ public class OfficeOrder
 
     public List<Manufacture>? Manufactures { get; set; } = new();
     public List<OfficeOrderPayment>? OfficeOrderPayments { get; set; } = new();
+    public List<WarehouseSale>? WarehouseSales { get; set; } = new();
 }

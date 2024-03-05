@@ -36,4 +36,5 @@ public class WarehouseSupply
 
     public List<ManufactureSupply>? ManufactureSupplies { get; set; } = new();
     public List<WarehousePayment>? WarehousePayments { get; set; } = new();
+    public List<WarehouseSale>? WarehouseSales { get; set; } = new();
 }
