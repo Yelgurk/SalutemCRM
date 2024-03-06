@@ -9,6 +9,7 @@ public class OfficeOrder
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
+    [Required]
     public int? ManagerForeignKey { get; set; }
     [ForeignKey("ManagerForeignKey")]
     public User? Manager { get; set; }

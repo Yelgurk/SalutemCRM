@@ -15,27 +15,27 @@ namespace SalutemCRM.Database;
 
 public partial class DatabaseContext : DbContext
 {
-    public DbSet<CurrencyUnit> CurrencyUnits { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<WarehouseItem> WarehouseItems { get; set; }
-    public DbSet<WarehouseSupply> WarehouseSupplying { get; set; }
-    public DbSet<ProductTemplate> ProductTemplates { get; set; }
-    public DbSet<ProductSchema> ProductSchemas { get; set; }
-    public DbSet<Manufacture> Manufacture { get; set; }
-    public DbSet<ManufacturerDuty> ManufacturerDuties { get; set; }
-    public DbSet<MaterialFlow> MaterialFlow { get; set; }
-    public DbSet<ManufactureProcess> ManufactureProcesses { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
-    public DbSet<OfficeOrder> OfficeOrders { get; set; }
-    public DbSet<WarehouseOrder> WarehouseOrders { get; set; }
-    public DbSet<CustomerService> CustomerServices { get; set; }
-    public DbSet<CustomerServiceOrder> CustomerServiceOrders { get; set; }
-    public DbSet<Payment> Payments { get; set; }
     public DbSet<FileAttach> FileAttachs { get; set; }
     public DbSet<WarehouseCategory> WarehouseCategories { get; set; }
-    public DbSet<ManufactureCategory> ManufactureCategories { get; set; }
+    public DbSet<WarehouseItem> WarehouseItems { get; set; }
+    public DbSet<WarehouseSupply> WarehouseSupplying { get; set; }
+    public DbSet<WarehouseOrder> WarehouseOrders { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<ProductTemplate> ProductTemplates { get; set; }
+    public DbSet<ProductSchema> ProductSchemas { get; set; }
+    public DbSet<ManufacturerDuty> ManufacturerDuties { get; set; }
+    public DbSet<ManufactureProcess> ManufactureProcesses { get; set; }
+    public DbSet<Manufacture> Manufacture { get; set; }
+    public DbSet<MaterialFlow> MaterialFlow { get; set; }
+    public DbSet<OfficeOrder> OfficeOrders { get; set; }
+    public DbSet<CustomerService> CustomerServices { get; set; }
+    public DbSet<CustomerServiceOrder> CustomerServiceOrders { get; set; }
+    public DbSet<CurrencyUnit> CurrencyUnits { get; set; }
+    public DbSet<Payment> Payments { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
@@ -45,33 +45,28 @@ public partial class DatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CurrencyUnit>(CurrencyUnit_Config);
+        
         modelBuilder.Entity<UserRole>(UserRole_Config);
         modelBuilder.Entity<User>(User_Config);
-        modelBuilder.Entity<WarehouseItem>(WarehouseItem_Config);
-        modelBuilder.Entity<WarehouseSupply>(WarehouseSupply_Config);
-        modelBuilder.Entity<ProductTemplate>(ProductTemplate_Config);
-        modelBuilder.Entity<ProductSchema>(ProductSchema_Config);
-        modelBuilder.Entity<Manufacture>(Manufacture_Config);
-        modelBuilder.Entity<ManufacturerDuty>(ManufacturerDuty_Config);
-        modelBuilder.Entity<MaterialFlow>(MaterialFlow_Config);
-        modelBuilder.Entity<ManufactureProcess>(ManufactureProcess_Config);
         modelBuilder.Entity<Client>(Client_Config);
         modelBuilder.Entity<Vendor>(Vendor_Config);
-        modelBuilder.Entity<OfficeOrder>(OfficeOrder_Config);
-        modelBuilder.Entity<WarehouseOrder>(WarehouseOrder_Config);
-        modelBuilder.Entity<CustomerService>(CustomerService_Config);
-        modelBuilder.Entity<CustomerServiceOrder>(CustomerServiceOrder_Config);
-        modelBuilder.Entity<Payment>(Payment_Config);
         modelBuilder.Entity<FileAttach>(FileAttach_Config);
         modelBuilder.Entity<WarehouseCategory>(WarehouseCategory_Config);
-        modelBuilder.Entity<ManufactureCategory>(ManufactureCategory_Config);
-    }
-
-    public void CurrencyUnit_Config(EntityTypeBuilder<CurrencyUnit> builder)
-    {
-        builder.HasKey(ur => ur.Id);
-        builder.HasAlternateKey(ur => ur.Name);
+        modelBuilder.Entity<WarehouseItem>(WarehouseItem_Config);
+        modelBuilder.Entity<WarehouseSupply>(WarehouseSupply_Config);
+        modelBuilder.Entity<WarehouseOrder>(WarehouseOrder_Config);
+        modelBuilder.Entity<ProductCategory>(ProductCategory_Config);
+        modelBuilder.Entity<ProductTemplate>(ProductTemplate_Config);
+        modelBuilder.Entity<ProductSchema>(ProductSchema_Config);
+        modelBuilder.Entity<ManufacturerDuty>(ManufacturerDuty_Config);
+        modelBuilder.Entity<ManufactureProcess>(ManufactureProcess_Config);
+        modelBuilder.Entity<Manufacture>(Manufacture_Config);
+        modelBuilder.Entity<MaterialFlow>(MaterialFlow_Config);
+        modelBuilder.Entity<OfficeOrder>(OfficeOrder_Config);
+        modelBuilder.Entity<CustomerService>(CustomerService_Config);
+        modelBuilder.Entity<CustomerServiceOrder>(CustomerServiceOrder_Config);
+        modelBuilder.Entity<CurrencyUnit>(CurrencyUnit_Config);
+        modelBuilder.Entity<Payment>(Payment_Config);
     }
 
     public void UserRole_Config(EntityTypeBuilder<UserRole> builder)
@@ -88,6 +83,44 @@ public partial class DatabaseContext : DbContext
             .HasOne(u => u.UserRole)
             .WithMany(ur => ur.Users)
             .HasForeignKey(u => u.UserRoleForeignKey);
+    }
+
+    public void Client_Config(EntityTypeBuilder<Client> builder)
+    {
+        builder.HasKey(c => c.Id);
+    }
+
+    public void Vendor_Config(EntityTypeBuilder<Vendor> builder)
+    {
+        builder.HasKey(v => v.Id);
+    }
+
+    public void FileAttach_Config(EntityTypeBuilder<FileAttach> builder)
+    {
+        builder.HasKey(fa => fa.Id);
+        builder
+            .HasOne(fa => fa.OfficeOrder)
+            .WithMany(oo => oo.FileAttachs)
+            .HasForeignKey(fs => fs.OfficeOrderForeignKey);
+        builder
+            .HasOne(fa => fa.WarehouseOrder)
+            .WithMany(wo => wo.FileAttachs)
+            .HasForeignKey(fs => fs.WarehouseOrderForeignKey);
+        builder
+            .HasOne(fa => fa.CustomerServiceOrder)
+            .WithMany(cso => cso.FileAttachs)
+            .HasForeignKey(fs => fs.CustomerServiceOrderForeignKey);
+        builder
+            .HasAlternateKey(fs => fs.FileName);
+    }
+
+    public void WarehouseCategory_Config(EntityTypeBuilder<WarehouseCategory> builder)
+    {
+        builder.HasKey(wc => wc.Id);
+        builder
+            .HasOne(wc => wc.ParentCategory)
+            .WithMany(wc => wc.SubCategories)
+            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
     }
 
     public void WarehouseItem_Config(EntityTypeBuilder<WarehouseItem> builder)
@@ -120,6 +153,36 @@ public partial class DatabaseContext : DbContext
             .HasDefaultValue(Delivery_Status.NotShipped);
     }
 
+    public void WarehouseOrder_Config(EntityTypeBuilder<WarehouseOrder> builder)
+    {
+        builder.HasKey(wo => wo.Id);
+        builder
+            .HasOne(wo => wo.Storekeeper)
+            .WithMany(u => u.WarehouseOrders)
+            .HasForeignKey(wo => wo.StorekeeperForeignKey);
+        builder
+            .HasOne(wo => wo.Vendor)
+            .WithMany(v => v.WarehouseOrders)
+            .HasForeignKey(wo => wo.VendorForeignKey);
+        builder
+            .Property(wo => wo.PaymentAgreement)
+            .HasConversion<int>()
+            .HasDefaultValue(Payment_Status.FullyPaid);
+        builder
+            .Property(wo => wo.PaymentStatus)
+            .HasConversion<int>()
+            .HasDefaultValue(Payment_Status.Unpaid);
+    }
+
+    public void ProductCategory_Config(EntityTypeBuilder<ProductCategory> builder)
+    {
+        builder.HasKey(wc => wc.Id);
+        builder
+            .HasOne(wc => wc.ParentCategory)
+            .WithMany(wc => wc.SubCategories)
+            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
+    }
+
     public void ProductTemplate_Config(EntityTypeBuilder<ProductTemplate> builder)
     {
         builder.HasKey(pt => pt.Id);
@@ -143,51 +206,12 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(ps => ps.WarehouseItemForeignKey);
     }
 
-    public void Manufacture_Config(EntityTypeBuilder<Manufacture> builder)
-    {
-        builder.HasKey(ms => ms.Id);
-        builder.HasAlternateKey(ms => ms.Code);
-        builder
-            .HasOne(ms => ms.OfficeOrder)
-            .WithMany(oo => oo.Manufactures)
-            .HasForeignKey(ms => ms.OfficeOrderForeignKey);
-        builder
-            .Property(ws => ws.DeliveryStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Delivery_Status.NotShipped);
-        builder
-            .Property(ws => ws.TaskStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Task_Status.NotAvailable);
-    }
-    
     public void ManufacturerDuty_Config(EntityTypeBuilder<ManufacturerDuty> builder)
     {
         builder.HasKey(ms => ms.Id);
         builder.HasAlternateKey(ms => ms.Name);
     }
 
-    public void MaterialFlow_Config(EntityTypeBuilder<MaterialFlow> builder)
-    {
-        builder.HasKey(mf => mf.Id);
-        builder
-            .HasOne(ms => ms.WarehouseSupply)
-            .WithMany(ws => ws.MaterialFlows)
-            .HasForeignKey(ms => ms.WarehouseSupplyForeignKey);
-        builder
-            .HasOne(mf => mf.Manufacture)
-            .WithMany(m => m.MaterialFlows)
-            .HasForeignKey(ms => ms.ManufactureForeignKey);
-        builder
-            .HasOne(mf => mf.OfficeOrder)
-            .WithMany(oo => oo.MaterialFlows)
-            .HasForeignKey(ms => ms.OfficeOrderForeignKey);
-        builder
-            .HasOne(mf => mf.CustomerServiceOrder)
-            .WithMany(cso => cso.MaterialFlows)
-            .HasForeignKey(ms => ms.CustomerServiceForeignKey);
-    }
-    
     public void ManufactureProcess_Config(EntityTypeBuilder<ManufactureProcess> builder)
     {
         builder.HasKey(ms => ms.Id);
@@ -208,16 +232,45 @@ public partial class DatabaseContext : DbContext
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.NotStarted);
     }
-    
-    public void Client_Config(EntityTypeBuilder<Client> builder)
+
+    public void Manufacture_Config(EntityTypeBuilder<Manufacture> builder)
     {
-        builder.HasKey(c => c.Id);
+        builder.HasKey(ms => ms.Id);
+        builder.HasAlternateKey(ms => ms.Code);
+        builder
+            .HasOne(ms => ms.OfficeOrder)
+            .WithMany(oo => oo.Manufactures)
+            .HasForeignKey(ms => ms.OfficeOrderForeignKey);
+        builder
+            .Property(ws => ws.DeliveryStatus)
+            .HasConversion<int>()
+            .HasDefaultValue(Delivery_Status.NotShipped);
+        builder
+            .Property(ws => ws.TaskStatus)
+            .HasConversion<int>()
+            .HasDefaultValue(Task_Status.NotAvailable);
     }
     
-    public void Vendor_Config(EntityTypeBuilder<Vendor> builder)
+    public void MaterialFlow_Config(EntityTypeBuilder<MaterialFlow> builder)
     {
-        builder.HasKey(v => v.Id);
-    }
+        builder.HasKey(mf => mf.Id);
+        builder
+            .HasOne(ms => ms.WarehouseSupply)
+            .WithMany(ws => ws.MaterialFlows)
+            .HasForeignKey(ms => ms.WarehouseSupplyForeignKey);
+        builder
+            .HasOne(mf => mf.Manufacture)
+            .WithMany(m => m.MaterialFlows)
+            .HasForeignKey(ms => ms.ManufactureForeignKey);
+        builder
+            .HasOne(mf => mf.OfficeOrder)
+            .WithMany(oo => oo.MaterialFlows)
+            .HasForeignKey(ms => ms.OfficeOrderForeignKey);
+        builder
+            .HasOne(mf => mf.CustomerServiceOrder)
+            .WithMany(cso => cso.MaterialFlows)
+            .HasForeignKey(ms => ms.CustomerServiceForeignKey);
+    } 
     
     public void OfficeOrder_Config(EntityTypeBuilder<OfficeOrder> builder)
     {
@@ -243,27 +296,6 @@ public partial class DatabaseContext : DbContext
             .HasDefaultValue(Payment_Status.Unpaid);
     }
     
-    public void WarehouseOrder_Config(EntityTypeBuilder<WarehouseOrder> builder)
-    {
-        builder.HasKey(wo => wo.Id);
-        builder
-            .HasOne(wo => wo.Storekeeper)
-            .WithMany(u => u.WarehouseOrders)
-            .HasForeignKey(wo => wo.StorekeeperForeignKey);
-        builder
-            .HasOne(wo => wo.Vendor)
-            .WithMany(v => v.WarehouseOrders)
-            .HasForeignKey(wo => wo.VendorForeignKey);
-        builder
-            .Property(wo => wo.PaymentAgreement)
-            .HasConversion<int>()
-            .HasDefaultValue(Payment_Status.FullyPaid);
-        builder
-            .Property(wo => wo.PaymentStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Payment_Status.Unpaid);
-    }
-
     public void CustomerService_Config(EntityTypeBuilder<CustomerService> builder)
     {
         builder.HasKey(oop => oop.Id);
@@ -302,6 +334,12 @@ public partial class DatabaseContext : DbContext
             .HasDefaultValue(Task_Status.NotStarted);
     }
 
+    public void CurrencyUnit_Config(EntityTypeBuilder<CurrencyUnit> builder)
+    {
+        builder.HasKey(ur => ur.Id);
+        builder.HasAlternateKey(ur => ur.Name);
+    }
+
     public void Payment_Config(EntityTypeBuilder<Payment> builder)
     {
         builder.HasKey(moneyzzz => moneyzzz.Id);
@@ -316,42 +354,5 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(oop => oop.UnitToBYNConversion)
             .HasDefaultValue(1);
-    }
-
-    public void FileAttach_Config(EntityTypeBuilder<FileAttach> builder)
-    {
-        builder.HasKey(fa => fa.Id);
-        builder
-            .HasOne(fa => fa.OfficeOrder)
-            .WithMany(oo => oo.FileAttachs)
-            .HasForeignKey(fs => fs.OfficeOrderForeignKey);
-        builder
-            .HasOne(fa => fa.WarehouseOrder)
-            .WithMany(wo => wo.FileAttachs)
-            .HasForeignKey(fs => fs.WarehouseOrderForeignKey);
-        builder
-            .HasOne(fa => fa.CustomerServiceOrder)
-            .WithMany(cso => cso.FileAttachs)
-            .HasForeignKey(fs => fs.CustomerServiceOrderForeignKey);
-        builder
-            .HasAlternateKey(fs => fs.FileName);
-    }
-
-    public void WarehouseCategory_Config(EntityTypeBuilder<WarehouseCategory> builder)
-    {
-        builder.HasKey(wc => wc.Id);
-        builder
-            .HasOne(wc => wc.ParentCategory)
-            .WithMany(wc => wc.SubCategories)
-            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
-    }
-
-    public void ManufactureCategory_Config(EntityTypeBuilder<ManufactureCategory> builder)
-    {
-        builder.HasKey(wc => wc.Id);
-        builder
-            .HasOne(wc => wc.ParentCategory)
-            .WithMany(wc => wc.SubCategories)
-            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SalutemCRM.Domain.Model;
 
-public class ManufactureCategory
+public class ProductCategory
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,8 +15,8 @@ public class ManufactureCategory
 
     public int? ParentCategoryForeignKey { get; set; }
     [ForeignKey("ParentCategoryForeignKey")]
-    public ManufactureCategory? ParentCategory { get; set; }
+    public ProductCategory? ParentCategory { get; set; }
 
-    public List<ManufactureCategory>? SubCategories { get; set; }
+    public List<ProductCategory>? SubCategories { get; set; }
     public List<ProductTemplate>? ProductTemplates { get; set; }
 }

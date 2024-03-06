@@ -9,7 +9,8 @@ public class MaterialFlow
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public int WarehouseSupplyForeignKey { get; set; }
+    [Required]
+    public int? WarehouseSupplyForeignKey { get; set; }
     [ForeignKey("WarehouseSupplyForeignKey")]
     public WarehouseSupply? WarehouseSupply { get; set; }
 

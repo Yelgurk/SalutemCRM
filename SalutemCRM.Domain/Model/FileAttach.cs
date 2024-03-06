@@ -14,17 +14,14 @@ public class FileAttach
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
     public int? OfficeOrderForeignKey { get; set; }
     [ForeignKey("OfficeOrderForeignKey")]
     public OfficeOrder? OfficeOrder { get; set; }
 
-    [Required]
     public int? WarehouseOrderForeignKey { get; set; }
     [ForeignKey("WarehouseOrderForeignKey")]
     public WarehouseOrder? WarehouseOrder { get; set; }
 
-    [Required]
     public int? CustomerServiceOrderForeignKey { get; set; }
     [ForeignKey("CustomerServiceOrderForeignKey")]
     public CustomerServiceOrder? CustomerServiceOrder { get; set; }

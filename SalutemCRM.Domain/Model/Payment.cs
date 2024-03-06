@@ -13,13 +13,11 @@ public class Payment
     [ForeignKey("WarehouseOrderForeignKey")]
     public WarehouseOrder? WarehouseOrder { get; set; }
 
-    [Required]
-    public int OfficeOrderForeignKey { get; set; }
+    public int? OfficeOrderForeignKey { get; set; }
     [ForeignKey("OfficeOrderForeignKey")]
     public OfficeOrder? OfficeOrder { get; set; }
 
-    [Required]
-    public int CustomerServiceOrderForeignKey { get; set; }
+    public int? CustomerServiceOrderForeignKey { get; set; }
     [ForeignKey("CustomerServiceOrderForeignKey")]
     public CustomerServiceOrder? CustomerServiceOrder { get; set; }
 
@@ -28,7 +26,7 @@ public class Payment
     public string? Currency { get; set; }
 
     [Required]
-    public double UnitToBYNConversion { get; set; }
+    public double? UnitToBYNConversion { get; set; }
 
     [Required]
     public double? PaymentValue { get; set; }

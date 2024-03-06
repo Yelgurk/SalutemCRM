@@ -10,17 +10,16 @@ public class WarehouseSupply
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    
+
+    [Required]
     public int? WarehouseItemForeignKey { get; set; }
     [ForeignKey("WarehouseItemForeignKey")]
     public WarehouseItem? WarehouseItem { get; set; }
 
+    [Required]
     public int? WarehouseOrderForeignKey { get; set; }
     [ForeignKey("WarehouseOrderForeignKey")]
     public WarehouseOrder? WarehouseOrder { get; set; }
-
-    [Required]
-    public Payment_Status? PaymentStatus { get; set; }
 
     [Required]
     public Delivery_Status? DeliveryStatus { get; set; }

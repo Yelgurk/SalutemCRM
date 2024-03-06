@@ -11,7 +11,7 @@ public class ProductTemplate
     
     public int? ManufactureCategoryForeignKey { get; set; }
     [ForeignKey("ManufactureCategoryForeignKey")]
-    public ManufactureCategory? Category { get; set; }
+    public ProductCategory? Category { get; set; }
 
     [Required]
     [MaxLength(200)]

@@ -10,6 +10,7 @@ public class ManufactureProcess
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int? Id { get; set; }
 
+    [Required]
     public int? UserForeignKey { get; set; }
     [ForeignKey("UserForeignKey")]
     public User? User { get; set; }

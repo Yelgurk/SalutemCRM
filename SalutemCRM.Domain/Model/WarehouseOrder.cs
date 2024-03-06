@@ -9,10 +9,12 @@ public class WarehouseOrder
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
+    [Required]
     public int? StorekeeperForeignKey { get; set; }
     [ForeignKey("StorekeeperForeignKey")]
     public User? Storekeeper { get; set; }
 
+    [Required]
     public int? VendorForeignKey { get; set; }
     [ForeignKey("VendorForeignKey")]
     public Vendor? Vendor { get; set; }

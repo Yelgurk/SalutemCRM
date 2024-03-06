@@ -9,11 +9,11 @@ public class CustomerServiceOrder
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
+    [Required]
     public int? StockManagerForeignKey { get; set; }
     [ForeignKey("StockManagerForeignKey")]
     public User? StockManager { get; set; }
 
-    [Required]
     public int? ManufactureForeignKey { get; set; }
     [ForeignKey("ManufactureForeignKey")]
     public Manufacture? Manufacture { get; set; }
@@ -27,6 +27,7 @@ public class CustomerServiceOrder
     [Required]
     public Task_Status? TaskStatus { get; set; }
 
+    [Required]
     [MaxLength(200)]
     public string? AdditionalInfo { get; set; }
 
