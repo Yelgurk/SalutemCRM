@@ -17,28 +17,30 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public int? UserRoleForeignKey { get; set; }
+    [Required]
+    [MaxLength(200)]
+    public int UserRoleForeignKey { get; set; }
     [ForeignKey("UserRoleForeignKey")]
-    public UserRole? UserRole { get; set; }
+    public UserRole UserRole { get; set; } = null!;
 
     [DefaultValue(true)]
     public bool IsActive { get; set; }
 
     [Required]
     [MaxLength(200)]
-    public string? Login { get; set; }
-    
-    [Required]
-    [MaxLength(200)]
-    public string? PasswordMD5 { get; set; }
+    public string Login { get; set; } = null!;
 
     [Required]
     [MaxLength(200)]
-    public string? FirstName { get; set; }
+    public string PasswordMD5 { get; set; } = null!;
 
     [Required]
     [MaxLength(200)]
-    public string? LastName { get; set; }
+    public string FirstName { get; set; } = null!;
+
+    [Required]
+    [MaxLength(200)]
+    public string LastName { get; set; } = null!;
 
     public List<ManufactureProcess> ManufactureProcesses { get; set; } = new();
     public List<OfficeOrder> OfficeOrders { get; set; } = new();

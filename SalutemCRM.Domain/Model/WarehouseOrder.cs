@@ -9,38 +9,37 @@ public class WarehouseOrder
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
-    public int? StorekeeperForeignKey { get; set; }
+    public int StorekeeperForeignKey { get; set; }
     [ForeignKey("StorekeeperForeignKey")]
-    public User? Storekeeper { get; set; }
+    public User Storekeeper { get; set; } = null!;
 
-    [Required]
     public int? VendorForeignKey { get; set; }
     [ForeignKey("VendorForeignKey")]
     public Vendor? Vendor { get; set; }
 
-    [Required]
-    public Payment_Status? PaymentAgreement { get; set; }
-
-    [Required]
+    public Payment_Status PaymentAgreement { get; set; }
     public Payment_Status? PaymentStatus { get; set; }
 
     [MaxLength(200)]
     public string? AdditionalInfo { get; set; }
 
-    [Required]
-    public double? PriceRequired { get; set; }
+    [StringLength(200)]
+    public string Currency { get; set; } = null!;
 
-    [Required]
-    public double? PriceTotal { get; set; }
+    public double UnitToBYNConversion { get; set; }
+    public double PriceRequired { get; set; }
+    public double PriceTotal { get; set; }
+
+    [NotMapped]
+    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? RecordDT { get; set; }
+    public DateTime RecordDT { get; set; }
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? ShipmentDeadlineDT { get; set; }
+    public DateTime ShipmentDeadlineDT { get; set; }
 
     [Column(TypeName = "datetime2")]
     public DateTime? ReceivedDT { get; set; }

@@ -9,13 +9,11 @@ public class Vendor
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
     [StringLength(200)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    [Required]
     [StringLength(200)]
-    public string? Address { get; set; }
+    public string Address { get; set; } = null!;
 
     [StringLength(200)]
     public string? AdditionalInfo { get; set; }

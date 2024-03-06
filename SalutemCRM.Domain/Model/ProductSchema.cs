@@ -9,16 +9,13 @@ public class ProductSchema
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
-    public int? ProductTemplateForeignKey { get; set; }
+    public int ProductTemplateForeignKey { get; set; }
     [ForeignKey("ProductTemplateForeignKey")]
-    public ProductTemplate? ProductTemplate { get; set; }
+    public ProductTemplate ProductTemplate { get; set; } = null!;
 
-    [Required]
-    public int? WarehouseItemForeignKey { get; set; }
+    public int WarehouseItemForeignKey { get; set; }
     [ForeignKey("WarehouseItemForeignKey")]
-    public WarehouseItem? WarehouseItem { get; set; }
+    public WarehouseItem WarehouseItem { get; set; } = null!;
     
-    [Required]
     public double Count { get; set; }
 }

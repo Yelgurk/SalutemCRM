@@ -11,29 +11,35 @@ public class WarehouseSupply
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
-    public int? WarehouseItemForeignKey { get; set; }
+    public int WarehouseItemForeignKey { get; set; }
     [ForeignKey("WarehouseItemForeignKey")]
-    public WarehouseItem? WarehouseItem { get; set; }
+    public WarehouseItem WarehouseItem { get; set; } = null!;
 
-    [Required]
-    public int? WarehouseOrderForeignKey { get; set; }
+    public int WarehouseOrderForeignKey { get; set; }
     [ForeignKey("WarehouseOrderForeignKey")]
-    public WarehouseOrder? WarehouseOrder { get; set; }
+    public WarehouseOrder WarehouseOrder { get; set; } = null!;
 
-    [Required]
-    public Delivery_Status? DeliveryStatus { get; set; }
+    public Delivery_Status DeliveryStatus { get; set; }
 
-    [Required]
     [MaxLength(200)]
-    public string? Code { get; set; }
-    
-    [Required]
-    public double? PriceTotal { get; set; }
-    
-    [Required]
-    public double? Count { get; set; }
+    public string Code { get; set; } = null!;
 
+    [StringLength(200)]
+    public string Currency { get; set; } = null!;
+
+    public double UnitToBYNConversion { get; set; }
+    public double PriceRequired { get; set; }
+    public double PriceTotal { get; set; }
+
+    [NotMapped]
+    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
+
+    [NotMapped]
+    public double PriceSingleBYN { get => PriceTotalBYN / Count!; }
+
+    public double Count { get; set; }
+
+    [Required]
     [Column(TypeName = "datetime2")]
     public DateTime RecordDT { get; set; }
 

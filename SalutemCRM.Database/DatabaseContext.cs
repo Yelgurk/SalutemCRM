@@ -66,6 +66,221 @@ public partial class DatabaseContext : DbContext
         modelBuilder.Entity<CustomerServiceOrder>(CustomerServiceOrder_Config);
         modelBuilder.Entity<CurrencyUnit>(CurrencyUnit_Config);
         modelBuilder.Entity<Payment>(Payment_Config);
+
+        DemoModelCreating(modelBuilder);
+    }
+
+    private void DemoModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CurrencyUnit>().HasData(
+            new CurrencyUnit { Id = 1, Name = "BYN" },    
+            new CurrencyUnit { Id = 2, Name = "USD" },
+            new CurrencyUnit { Id = 3, Name = "RUB" },
+            new CurrencyUnit { Id = 4, Name = "CNY" }
+        );
+
+        modelBuilder.Entity<UserRole>().HasData(
+            new UserRole { Id = 1, Name = "Руководитель" },
+            new UserRole { Id = 2, Name = "Бухгалтер" },
+            new UserRole { Id = 3, Name = "Гл. менеджер" },
+            new UserRole { Id = 4, Name = "Менеджер" },
+            new UserRole { Id = 5, Name = "Гл. производства" },
+            new UserRole { Id = 6, Name = "Конструктор" },
+            new UserRole { Id = 7, Name = "Производство" },
+            new UserRole { Id = 8, Name = "Кладовщик" }
+        );
+
+        modelBuilder.Entity<User>().HasData(
+            new User { Id = 1, UserRoleForeignKey = 1, IsActive = true, Login = "log11", PasswordMD5 = "pass11", FirstName = "Руководитель", LastName = "Xxx" },
+            new User { Id = 2, UserRoleForeignKey = 2, IsActive = true, Login = "log21", PasswordMD5 = "pass21", FirstName = "Бухгалтер", LastName = "111" },
+            new User { Id = 3, UserRoleForeignKey = 2, IsActive = true, Login = "log22", PasswordMD5 = "pass22", FirstName = "Бухгалтер", LastName = "222" },
+            new User { Id = 4, UserRoleForeignKey = 3, IsActive = true, Login = "log31", PasswordMD5 = "pass31", FirstName = "Гл. менеджер", LastName = "111" },
+            new User { Id = 5, UserRoleForeignKey = 4, IsActive = true, Login = "log41", PasswordMD5 = "pass41", FirstName = "Менеджер", LastName = "111" },
+            new User { Id = 6, UserRoleForeignKey = 4, IsActive = true, Login = "log42", PasswordMD5 = "pass42", FirstName = "Менеджер", LastName = "222" },
+            new User { Id = 7, UserRoleForeignKey = 4, IsActive = true, Login = "log43", PasswordMD5 = "pass43", FirstName = "Менеджер", LastName = "333" },
+            new User { Id = 8, UserRoleForeignKey = 4, IsActive = true, Login = "log44", PasswordMD5 = "pass44", FirstName = "Менеджер", LastName = "444" },
+            new User { Id = 9, UserRoleForeignKey = 5, IsActive = true, Login = "log51", PasswordMD5 = "pass51", FirstName = "Гл. производства", LastName = "111" },
+            new User { Id = 10, UserRoleForeignKey = 6, IsActive = true, Login = "log61", PasswordMD5 = "pass61", FirstName = "Конструктор", LastName = "111" },
+            new User { Id = 11, UserRoleForeignKey = 7, IsActive = true, Login = "log71", PasswordMD5 = "pass71", FirstName = "Производство", LastName = "Сварщик" },
+            new User { Id = 12, UserRoleForeignKey = 7, IsActive = true, Login = "log72", PasswordMD5 = "pass72", FirstName = "Производство", LastName = "Электрик" },
+            new User { Id = 13, UserRoleForeignKey = 7, IsActive = true, Login = "log73", PasswordMD5 = "pass73", FirstName = "Производство", LastName = "Полимер" },
+            new User { Id = 14, UserRoleForeignKey = 7, IsActive = true, Login = "log74", PasswordMD5 = "pass74", FirstName = "Производство", LastName = "Токарь" },
+            new User { Id = 15, UserRoleForeignKey = 8, IsActive = true, Login = "log81", PasswordMD5 = "pass81", FirstName = "Кладовщик", LastName = "111" }
+        );
+
+        modelBuilder.Entity<Client>().HasData(
+            new Client { Id = 1, Name = "ЗАО \"МИНСКОЕ\"", Address = "Беларусь, Минск, ул. ***, **" },
+            new Client { Id = 2, Name = "ЗАО \"БРЕСТСКОЕ\"", Address = "Беларусь, Брест, ул. ***, **" },
+            new Client { Id = 3, Name = "ЗАО \"ВИТЕБСКОЕ\"", Address = "Беларусь, Витебск, ул. ***, **" },
+            new Client { Id = 4, Name = "ЗАО \"ГРОДНЕНСКОЕ\"", Address = "Беларусь, Гродно, ул. ***, **" },
+            new Client { Id = 5, Name = "ЗАО \"ГОМЕЛЬСКОЕ\"", Address = "Беларусь, Гомель, ул. ***, **" },
+            new Client { Id = 6, Name = "ЗАО \"МОГИЛЕВСКОЕ\"", Address = "Беларусь, Могилев, ул. ***, **" }
+        );
+
+        modelBuilder.Entity<Vendor>().HasData(
+            new Client { Id = 1, Name = "АО \"СЕЛЬМАШ_МИН\"", Address = "Беларусь, Минск, ул. ***, **" },
+            new Client { Id = 2, Name = "АО \"СЕЛЬМАШ_БРЕ\"", Address = "Беларусь, Брест, ул. ***, **" },
+            new Client { Id = 3, Name = "АО \"СЕЛЬМАШ_ВИТ\"", Address = "Беларусь, Витебск, ул. ***, **" },
+            new Client { Id = 4, Name = "АО \"СЕЛЬМАШ_ГРО\"", Address = "Беларусь, Гродно, ул. ***, **" },
+            new Client { Id = 5, Name = "АО \"СЕЛЬМАШ_ГОМ\"", Address = "Беларусь, Гомель, ул. ***, **" },
+            new Client { Id = 6, Name = "АО \"СЕЛЬМАШ_МОГ\"", Address = "Беларусь, Могилев, ул. ***, **" }
+        );
+
+        //modelBuilder.Entity<FileAttach>();
+
+        modelBuilder.Entity<WarehouseCategory>().HasData(
+            new WarehouseCategory { Id = 1, Name = "Электрика" },
+            new WarehouseCategory { Id = 2, Name = "Мелочевка" },
+            new WarehouseCategory { Id = 3, Name = "Металл" },
+            new WarehouseCategory { Id = 4, Name = "ПЛК", ParentCategoryForeignKey = 1 },
+            new WarehouseCategory { Id = 5, Name = "Привода", ParentCategoryForeignKey = 1 },
+            new WarehouseCategory { Id = 6, Name = "Насосы", ParentCategoryForeignKey = 1 },
+            new WarehouseCategory { Id = 7, Name = "Клеммы", ParentCategoryForeignKey = 2 },
+            new WarehouseCategory { Id = 8, Name = "Кнопки", ParentCategoryForeignKey = 2 },
+            new WarehouseCategory { Id = 9, Name = "Реле", ParentCategoryForeignKey = 2 },
+            new WarehouseCategory { Id = 10, Name = "Для ПС", ParentCategoryForeignKey = 3 },
+            new WarehouseCategory { Id = 11, Name = "Для РМ", ParentCategoryForeignKey = 3 },
+            new WarehouseCategory { Id = 12, Name = "Для ТМ", ParentCategoryForeignKey = 3 }
+        );
+
+        modelBuilder.Entity<WarehouseItem>().HasData(
+            new WarehouseItem { Id = 1, Name = "Кнопка поворотная", Code = "a0001", CountRequired = 0, WarehouseCategoryForeignKey = null },
+            new WarehouseItem { Id = 2, Name = "Кнопка рычажная", Code = "a0002", CountRequired = 0, WarehouseCategoryForeignKey = 8 },
+            new WarehouseItem { Id = 3, Name = "Кнопка тактовая", Code = "a0003", CountRequired = 0, WarehouseCategoryForeignKey = 8 },
+            new WarehouseItem { Id = 4, Name = "Насос 35лм", Code = "a0004", CountRequired = 0, WarehouseCategoryForeignKey = 6 },
+            new WarehouseItem { Id = 5, Name = "Насос мембранный 45лм", Code = "a0005", CountRequired = 0, WarehouseCategoryForeignKey = 6 },
+            new WarehouseItem { Id = 6, Name = "Привод одноколесный", Code = "a0006", CountRequired = 0, WarehouseCategoryForeignKey = 5 },
+            new WarehouseItem { Id = 7, Name = "Привод двухколесный", Code = "a0007", CountRequired = 0, WarehouseCategoryForeignKey = 5 },
+            new WarehouseItem { Id = 8, Name = "Клемма обжимная 1.5мм", Code = "a0008", CountRequired = 0, WarehouseCategoryForeignKey = null },
+            new WarehouseItem { Id = 9, Name = "Клемма обжимная 2.0мм", Code = "a0009", CountRequired = 0, WarehouseCategoryForeignKey = 7 },
+            new WarehouseItem { Id = 10, Name = "Клемма 5.08 EDG", Code = "a0010", CountRequired = 0, WarehouseCategoryForeignKey = 2 },
+            new WarehouseItem { Id = 11, Name = "Реле рейловое 220В", Code = "a0011", CountRequired = 0, WarehouseCategoryForeignKey = 9 },
+            new WarehouseItem { Id = 12, Name = "Реле пусковое 48в dc", Code = "a0012", CountRequired = 0, WarehouseCategoryForeignKey = 1 },
+            new WarehouseItem { Id = 13, Name = "FX3U", Code = "a0013", CountRequired = 0, WarehouseCategoryForeignKey = 4 },
+            new WarehouseItem { Id = 14, Name = "OP280", Code = "a0014", CountRequired = 0, WarehouseCategoryForeignKey = 4 },
+            new WarehouseItem { Id = 15, Name = "SSPS3R3", Code = "a0015", CountRequired = 0, WarehouseCategoryForeignKey = 4 },
+            new WarehouseItem { Id = 16, Name = "Обичевка пс100", Code = "a0016", CountRequired = 0, WarehouseCategoryForeignKey = 10 },
+            new WarehouseItem { Id = 17, Name = "Обичевка пс200", Code = "a0017", CountRequired = 0, WarehouseCategoryForeignKey = 10 },
+            new WarehouseItem { Id = 18, Name = "Обичевка пс300", Code = "a0018", CountRequired = 0, WarehouseCategoryForeignKey = 3 },
+            new WarehouseItem { Id = 19, Name = "Обичевка рм25", Code = "a0019", CountRequired = 0, WarehouseCategoryForeignKey = null },
+            new WarehouseItem { Id = 20, Name = "Обичевка рм45", Code = "a0020", CountRequired = 0, WarehouseCategoryForeignKey = 11 },
+            new WarehouseItem { Id = 21, Name = "Обичевка рм-lite", Code = "a0021", CountRequired = 0, WarehouseCategoryForeignKey = 3 },
+            new WarehouseItem { Id = 22, Name = "Обичевка тм100", Code = "a0022", CountRequired = 0, WarehouseCategoryForeignKey = 12 },
+            new WarehouseItem { Id = 23, Name = "Обичевка тм100", Code = "a0023", CountRequired = 0, WarehouseCategoryForeignKey = 12 },
+            new WarehouseItem { Id = 24, Name = "Обичевка тм100", Code = "a0024", CountRequired = 0, WarehouseCategoryForeignKey = 12 }
+        );
+
+        modelBuilder.Entity<WarehouseSupply>().HasData(
+            new WarehouseSupply { Id = 1, WarehouseItemForeignKey = 1, Code = "x0001", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 2, WarehouseItemForeignKey = 2, Code = "x0002", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 3, WarehouseItemForeignKey = 3, Code = "x0003", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 4, WarehouseItemForeignKey = 4, Code = "x0004", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 5, WarehouseItemForeignKey = 5, Code = "x0005", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 6, WarehouseItemForeignKey = 6, Code = "x0006", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 7, WarehouseItemForeignKey = 7, Code = "x0007", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 8, WarehouseItemForeignKey = 8, Code = "x0008", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 9, WarehouseItemForeignKey = 9, Code = "x0009", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 10, WarehouseItemForeignKey = 10, Code = "x0010", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 11, WarehouseItemForeignKey = 11, Code = "x0011", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 12, WarehouseItemForeignKey = 12, Code = "x0012", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 13, WarehouseItemForeignKey = 13, Code = "x0013", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 14, WarehouseItemForeignKey = 14, Code = "x0014", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 15, WarehouseItemForeignKey = 15, Code = "x0015", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 16, WarehouseItemForeignKey = 16, Code = "x0016", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 17, WarehouseItemForeignKey = 17, Code = "x0017", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 18, WarehouseItemForeignKey = 18, Code = "x0018", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 19, WarehouseItemForeignKey = 19, Code = "x0019", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 20, WarehouseItemForeignKey = 20, Code = "x0020", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 21, WarehouseItemForeignKey = 21, Code = "x0021", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 22, WarehouseItemForeignKey = 22, Code = "x0022", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 23, WarehouseItemForeignKey = 23, Code = "x0023", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 24, WarehouseItemForeignKey = 24, Code = "x0024", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 25, WarehouseItemForeignKey = 1, Code = "z0001", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 26, WarehouseItemForeignKey = 2, Code = "z0002", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 27, WarehouseItemForeignKey = 3, Code = "z0003", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 28, WarehouseItemForeignKey = 4, Code = "z0004", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 29, WarehouseItemForeignKey = 5, Code = "z0005", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 30, WarehouseItemForeignKey = 6, Code = "z0006", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 31, WarehouseItemForeignKey = 7, Code = "z0007", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 32, WarehouseItemForeignKey = 8, Code = "z0008", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 33, WarehouseItemForeignKey = 9, Code = "z0009", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 34, WarehouseItemForeignKey = 10, Code = "z0010", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 35, WarehouseItemForeignKey = 11, Code = "z0011", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 36, WarehouseItemForeignKey = 12, Code = "z0012", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 37, WarehouseItemForeignKey = 13, Code = "z0013", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 38, WarehouseItemForeignKey = 14, Code = "z0014", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 39, WarehouseItemForeignKey = 15, Code = "z0015", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 40, WarehouseItemForeignKey = 16, Code = "z0016", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 41, WarehouseItemForeignKey = 17, Code = "z0017", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 42, WarehouseItemForeignKey = 18, Code = "z0018", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 43, WarehouseItemForeignKey = 19, Code = "z0019", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 44, WarehouseItemForeignKey = 20, Code = "z0020", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 45, WarehouseItemForeignKey = 21, Code = "z0021", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 46, WarehouseItemForeignKey = 22, Code = "z0022", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 47, WarehouseItemForeignKey = 23, Code = "z0023", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 48, WarehouseItemForeignKey = 24, Code = "z0024", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered }
+        );
+
+        //modelBuilder.Entity<WarehouseOrder>();
+
+        modelBuilder.Entity<ProductCategory>().HasData(
+            new ProductCategory { Id = 1, Name = "Пастеризатор" },
+            new ProductCategory { Id = 2, Name = "Такси" },
+            new ProductCategory { Id = 3, Name = "Размораживатель" },
+            new ProductCategory { Id = 4, Name = "СМОМ" },
+            new ProductCategory { Id = 5, Name = "Боксы" }
+        );
+
+        modelBuilder.Entity<ProductTemplate>().HasData(
+            new ProductTemplate { Id = 1, Name = "ПС", Model = "100", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 2, Name = "ПС", Model = "200", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 3, Name = "ПС", Model = "300", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 4, Name = "ПС", Model = "400", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 5, Name = "ПС", Model = "500", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 6, Name = "ТМ", Model = "100", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 7, Name = "ТМ", Model = "200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 8, Name = "ТМ", Model = "300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 9, Name = "ТМ", Model = "400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 10, Name = "ТМП", Model = "200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 11, Name = "ТМП", Model = "300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 12, Name = "ТМП", Model = "400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 13, Name = "ТМПЭ", Model = "200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 14, Name = "ТМПЭ", Model = "300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 15, Name = "ТМПЭ", Model = "400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 16, Name = "РМ", Model = "25", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 17, Name = "РМ", Model = "45", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 18, Name = "РМ-lite", Model = "lite", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 19, Name = "СМОМ", Model = "1000", ManufactureCategoryForeignKey = 4, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 20, Name = "СМОМ", Model = "2000", ManufactureCategoryForeignKey = 4, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 21, Name = "Бокс", Model = "2м*3м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 22, Name = "Бокс", Model = "2м*3.5м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 23, Name = "Бокс", Model = "3м*3.5м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 24, Name = "Бокс", Model = "3.5м*4м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" }    
+        );
+
+        modelBuilder.Entity<ProductSchema>().HasData(
+            new ProductSchema { Id = 1, ProductTemplateForeignKey = 1, WarehouseItemForeignKey = 1, Count = 4 },    
+            new ProductSchema { Id = 2, ProductTemplateForeignKey = 1, WarehouseItemForeignKey = 8, Count = 10 },    
+            new ProductSchema { Id = 3, ProductTemplateForeignKey = 1, WarehouseItemForeignKey = 13, Count = 1 },    
+            new ProductSchema { Id = 4, ProductTemplateForeignKey = 1, WarehouseItemForeignKey = 16, Count = 1 },    
+            new ProductSchema { Id = 5, ProductTemplateForeignKey = 6, WarehouseItemForeignKey = 1, Count = 4 },    
+            new ProductSchema { Id = 6, ProductTemplateForeignKey = 6, WarehouseItemForeignKey = 8, Count = 10 },    
+            new ProductSchema { Id = 7, ProductTemplateForeignKey = 6, WarehouseItemForeignKey = 13, Count = 1 },    
+            new ProductSchema { Id = 8, ProductTemplateForeignKey = 6, WarehouseItemForeignKey = 22, Count = 1 },    
+            new ProductSchema { Id = 9, ProductTemplateForeignKey = 16, WarehouseItemForeignKey = 1, Count = 2 },    
+            new ProductSchema { Id = 10, ProductTemplateForeignKey = 16, WarehouseItemForeignKey = 8, Count = 8 },    
+            new ProductSchema { Id = 11, ProductTemplateForeignKey = 16, WarehouseItemForeignKey = 13, Count = 1 },    
+            new ProductSchema { Id = 12, ProductTemplateForeignKey = 16, WarehouseItemForeignKey = 19, Count = 1 }    
+        );
+
+        modelBuilder.Entity<ManufacturerDuty>();
+        modelBuilder.Entity<ManufactureProcess>();
+        modelBuilder.Entity<Manufacture>();
+        modelBuilder.Entity<MaterialFlow>();
+        modelBuilder.Entity<OfficeOrder>();
+        modelBuilder.Entity<CustomerService>();
+        modelBuilder.Entity<CustomerServiceOrder>();
+        modelBuilder.Entity<Payment>();
     }
 
     public void UserRole_Config(EntityTypeBuilder<UserRole> builder)
@@ -145,7 +360,13 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(ws => ws.DeliveryStatus)
             .HasConversion<int>()
-            .HasDefaultValue(Delivery_Status.NotShipped);
+            .HasDefaultValue(Delivery_Status.NotDelivered);
+        builder
+            .Property(ws => ws.Currency)
+            .HasDefaultValue("BYN");
+        builder
+            .Property(ws => ws.UnitToBYNConversion)
+            .HasDefaultValue(1.0);
     }
 
     public void WarehouseOrder_Config(EntityTypeBuilder<WarehouseOrder> builder)
@@ -181,7 +402,6 @@ public partial class DatabaseContext : DbContext
     public void ProductTemplate_Config(EntityTypeBuilder<ProductTemplate> builder)
     {
         builder.HasKey(pt => pt.Id);
-        builder.HasAlternateKey(pt => pt.Name);
         builder
             .HasOne(pt => pt.Category)
             .WithMany(pc => pc.ProductTemplates)
@@ -211,9 +431,9 @@ public partial class DatabaseContext : DbContext
     {
         builder.HasKey(ms => ms.Id);
         builder
-            .HasOne(mp => mp.User)
+            .HasOne(mp => mp.Employee)
             .WithMany(u => u.ManufactureProcesses)
-            .HasForeignKey(mp => mp.UserForeignKey);
+            .HasForeignKey(mp => mp.EmployeeForeignKey);
         builder
             .HasOne(mp => mp.Manufacture)
             .WithMany(mf => mf.ManufactureProcesses)
@@ -239,7 +459,7 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(ws => ws.DeliveryStatus)
             .HasConversion<int>()
-            .HasDefaultValue(Delivery_Status.NotShipped);
+            .HasDefaultValue(Delivery_Status.NotDelivered);
         builder
             .Property(ws => ws.TaskStatus)
             .HasConversion<int>()
@@ -348,6 +568,6 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(moneyzzz => moneyzzz.OfficeOrderForeignKey);
         builder
             .Property(oop => oop.UnitToBYNConversion)
-            .HasDefaultValue(1);
+            .HasDefaultValue(1.0);
     }
 }

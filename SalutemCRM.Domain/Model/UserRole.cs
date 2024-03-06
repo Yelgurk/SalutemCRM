@@ -17,7 +17,7 @@ public class UserRole
 
     [Required]
     [MaxLength(200)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public List<User> Users { get; set; } = new();
 }

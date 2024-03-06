@@ -28,8 +28,8 @@ public class FileAttach
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? RecordDT { get; set; }
+    public DateTime RecordDT { get; set; }
 
     [Required]
-    public string? FileName { get; set; }
+    public string FileName { get; set; } = null!;
 }

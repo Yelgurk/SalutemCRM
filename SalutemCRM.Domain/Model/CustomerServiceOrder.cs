@@ -9,7 +9,8 @@ public class CustomerServiceOrder
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required]
+    public int? OfficeManagerID { get; set; }
+
     public int? StockManagerForeignKey { get; set; }
     [ForeignKey("StockManagerForeignKey")]
     public User? StockManager { get; set; }
@@ -18,32 +19,30 @@ public class CustomerServiceOrder
     [ForeignKey("ManufactureForeignKey")]
     public Manufacture? Manufacture { get; set; }
 
-    [Required]
-    public Payment_Status? PaymentAgreement { get; set; }
+    public Payment_Status PaymentAgreement { get; set; }
+    public Payment_Status PaymentStatus { get; set; }
+    public Task_Status TaskStatus { get; set; }
 
-    [Required]
-    public Payment_Status? PaymentStatus { get; set; }
-
-    [Required]
-    public Task_Status? TaskStatus { get; set; }
-
-    [Required]
     [MaxLength(200)]
-    public string? AdditionalInfo { get; set; }
+    public string AdditionalInfo { get; set; } = null!;
 
-    [Required]
-    public double? PriceRequired { get; set; }
+    [StringLength(200)]
+    public string Currency { get; set; } = null;
 
-    [Required]
-    public double? PriceTotal { get; set; }
+    public double UnitToBYNConversion { get; set; }
+    public double PriceRequired { get; set; }
+    public double PriceTotal { get; set; }
+
+    [NotMapped]
+    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? RecordDT { get; set; }
+    public DateTime RecordDT { get; set; }
 
     [Required]
     [Column(TypeName = "datetime2")]
-    public DateTime? DeadlineDT { get; set; }
+    public DateTime DeadlineDT { get; set; }
 
     [Column(TypeName = "datetime2")]
     public DateTime? StartedDT { get; set; }

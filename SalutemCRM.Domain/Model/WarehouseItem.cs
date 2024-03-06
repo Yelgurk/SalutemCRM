@@ -14,19 +14,16 @@ public class WarehouseItem
     [ForeignKey("WarehouseCategoryForeignKey")]
     public WarehouseCategory? Category { get; set; }
 
-    [Required]
     [MaxLength(200)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [MaxLength(200)]
     public string? AdditionalInfo { get; set; }
     
-    [Required]
     [MaxLength(200)]
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
-    [Required]
-    public double? CountRequired { get; set; }
+    public double CountRequired { get; set; }
 
     public List<WarehouseSupply> WarehouseSupplying { get; set; } = new();
     public List<ProductSchema> ProductSchemas { get; set; } = new();

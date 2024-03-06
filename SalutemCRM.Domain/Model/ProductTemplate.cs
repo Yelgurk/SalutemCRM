@@ -13,13 +13,11 @@ public class ProductTemplate
     [ForeignKey("ManufactureCategoryForeignKey")]
     public ProductCategory? Category { get; set; }
 
-    [Required]
     [MaxLength(200)]
-    public string? Name { get; set; }
-    
-    [Required]
+    public string Name { get; set; } = null!;
+
     [MaxLength(200)]
-    public string? Model { get; set; }
+    public string Model { get; set; } = null!;
 
     [MaxLength(200)]
     public string? AdditionalInfo { get; set; }

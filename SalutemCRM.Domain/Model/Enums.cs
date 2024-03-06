@@ -17,10 +17,8 @@ public enum Payment_Status {
 
 public enum Delivery_Status {
     InStock,
-    NotShipped,
-    PartiallyShippped,
+    NotDelivered,
     PartiallyDelivered,
-    FullyShipped,
     FullyDelivered
 };
 

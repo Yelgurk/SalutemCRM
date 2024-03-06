@@ -13,27 +13,20 @@ public class Manufacture
     [ForeignKey("OfficeOrderForeignKey")]
     public OfficeOrder? OfficeOrder { get; set; }
 
-    [Required]
-    public Delivery_Status? DeliveryStatus { get; set; }
+    public Delivery_Status DeliveryStatus { get; set; }
+    public Task_Status TaskStatus { get; set; }
 
-    [Required]
-    public Task_Status? TaskStatus { get; set; }
-
-    [Required]
     [MaxLength(200)]
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
-    [Required]
     [MaxLength(200)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    [Required]
     [MaxLength(200)]
-    public string? Model { get; set; }
+    public string Model { get; set; } = null!;
 
-    [Required]
     [MaxLength(200)]
-    public string? Description { get; set; }
+    public string AdditionalInfo { get; set; } = null!;
 
     [Column(TypeName = "datetime2")]
     public DateTime? ShipmentDT { get; set; }
