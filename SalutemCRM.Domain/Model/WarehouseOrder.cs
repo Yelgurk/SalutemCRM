@@ -45,7 +45,7 @@ public class WarehouseOrder
     [Column(TypeName = "datetime2")]
     public DateTime? ReceivedDT { get; set; }
 
-    public List<Payment>? Payments { get; set; } = new();
-    public List<WarehouseSupply>? WarehouseSupplies { get; set; } = new();
-    public List<FileAttach>? FileAttachs { get; set; } = new();
+    public List<Payment> Payments { get; set; } = new();
+    public List<WarehouseSupply> WarehouseSupplies { get; set; } = new();
+    public List<FileAttach> FileAttachs { get; set; } = new();
 }

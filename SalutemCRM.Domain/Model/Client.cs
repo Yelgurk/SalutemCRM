@@ -21,5 +21,5 @@ public class Client
     [StringLength(200)]
     public string? AdditionalInfo { get; set; }
 
-    public List<OfficeOrder>? OfficeOrders { get; set; } = new();
+    public List<OfficeOrder> OfficeOrders { get; set; } = new();
 }

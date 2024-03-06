@@ -38,7 +38,7 @@ public class Manufacture
     [Column(TypeName = "datetime2")]
     public DateTime? ShipmentDT { get; set; }
 
-    public List<MaterialFlow>? MaterialFlows { get; set; } = new();
-    public List<ManufactureProcess>? ManufactureProcesses { get; set; } = new();
-    public List<CustomerServiceOrder>? CustomerServiceOrders { get; set; } = new();
+    public List<MaterialFlow> MaterialFlows { get; set; } = new();
+    public List<ManufactureProcess> ManufactureProcesses { get; set; } = new();
+    public List<CustomerServiceOrder> CustomerServiceOrders { get; set; } = new();
 }

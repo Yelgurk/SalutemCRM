@@ -47,8 +47,8 @@ public class OfficeOrder
     [Column(TypeName = "datetime2")]
     public DateTime? ShipmentDT { get; set; }
 
-    public List<Manufacture>? Manufactures { get; set; } = new();
-    public List<Payment>? Payments { get; set; } = new();
-    public List<MaterialFlow>? MaterialFlows { get; set; } = new();
-    public List<FileAttach>? FileAttachs { get; set; } = new();
+    public List<Manufacture> Manufactures { get; set; } = new();
+    public List<Payment> Payments { get; set; } = new();
+    public List<MaterialFlow> MaterialFlows { get; set; } = new();
+    public List<FileAttach> FileAttachs { get; set; } = new();
 }

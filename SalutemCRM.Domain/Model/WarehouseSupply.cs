@@ -37,5 +37,5 @@ public class WarehouseSupply
     [Column(TypeName = "datetime2")]
     public DateTime RecordDT { get; set; }
 
-    public List<MaterialFlow>? MaterialFlows { get; set; } = new();
+    public List<MaterialFlow> MaterialFlows { get; set; } = new();
 }

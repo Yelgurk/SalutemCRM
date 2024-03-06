@@ -45,7 +45,6 @@ public partial class DatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
         modelBuilder.Entity<UserRole>(UserRole_Config);
         modelBuilder.Entity<User>(User_Config);
         modelBuilder.Entity<Client>(Client_Config);
@@ -143,10 +142,6 @@ public partial class DatabaseContext : DbContext
             .HasOne(ws => ws.WarehouseItem)
             .WithMany(wi => wi.WarehouseSupplying)
             .HasForeignKey(ws => ws.WarehouseItemForeignKey);
-        builder
-            .Property(ws => ws.PaymentStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Payment_Status.Unpaid);
         builder
             .Property(ws => ws.DeliveryStatus)
             .HasConversion<int>()

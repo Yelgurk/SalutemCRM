@@ -16,7 +16,7 @@ public class WarehouseCategory
     public int? ParentCategoryForeignKey { get; set; }
     [ForeignKey("ParentCategoryForeignKey")]
     public WarehouseCategory? ParentCategory { get; set; }
-    
-    public List<WarehouseCategory>? SubCategories { get; set; }
-    public List<WarehouseItem>? WarehouseItems{ get; set; }
+
+    public List<WarehouseCategory> SubCategories { get; set; } = new();
+    public List<WarehouseItem> WarehouseItems { get; set; } = new();
 }

@@ -20,5 +20,5 @@ public class Vendor
     [StringLength(200)]
     public string? AdditionalInfo { get; set; }
 
-    public List<WarehouseOrder>? WarehouseOrders { get; set; } = new();
+    public List<WarehouseOrder> WarehouseOrders { get; set; } = new();
 }

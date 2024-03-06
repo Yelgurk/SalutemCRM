@@ -51,8 +51,8 @@ public class CustomerServiceOrder
     [Column(TypeName = "datetime2")]
     public DateTime? CompletedDT { get; set; }
 
-    public List<Payment>? Payments { get; set; } = new();
-    public List<MaterialFlow>? MaterialFlows { get; set; } = new();
-    public List<CustomerService>? CustomerServices { get; set; } = new();
-    public List<FileAttach>? FileAttachs { get; set; } = new();
+    public List<Payment> Payments { get; set; } = new();
+    public List<MaterialFlow> MaterialFlows { get; set; } = new();
+    public List<CustomerService> CustomerServices { get; set; } = new();
+    public List<FileAttach> FileAttachs { get; set; } = new();
 }

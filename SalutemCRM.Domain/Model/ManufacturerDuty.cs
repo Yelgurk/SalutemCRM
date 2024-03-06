@@ -13,5 +13,5 @@ public class ManufacturerDuty
     [MaxLength(200)]
     public string? Name { get; set; }
 
-    public List<ManufactureProcess>? ManufactureProcesses { get; set; } = new();
+    public List<ManufactureProcess> ManufactureProcesses { get; set; } = new();
 }

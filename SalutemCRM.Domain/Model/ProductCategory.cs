@@ -17,6 +17,6 @@ public class ProductCategory
     [ForeignKey("ParentCategoryForeignKey")]
     public ProductCategory? ParentCategory { get; set; }
 
-    public List<ProductCategory>? SubCategories { get; set; }
-    public List<ProductTemplate>? ProductTemplates { get; set; }
+    public List<ProductCategory> SubCategories { get; set; } = new();
+    public List<ProductTemplate> ProductTemplates { get; set; } = new();
 }
