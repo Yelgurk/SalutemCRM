@@ -33,9 +33,6 @@ public class CustomerServiceOrder
     public double PriceRequired { get; set; }
     public double PriceTotal { get; set; }
 
-    [NotMapped]
-    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
-
     [Required]
     [Column(TypeName = "datetime2")]
     public DateTime RecordDT { get; set; }
@@ -54,4 +51,7 @@ public class CustomerServiceOrder
     public List<MaterialFlow> MaterialFlows { get; set; } = new();
     public List<CustomerService> CustomerServices { get; set; } = new();
     public List<FileAttach> FileAttachs { get; set; } = new();
+
+    [NotMapped]
+    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
 }

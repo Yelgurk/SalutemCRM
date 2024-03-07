@@ -31,12 +31,6 @@ public class WarehouseSupply
     public double PriceRequired { get; set; }
     public double PriceTotal { get; set; }
 
-    [NotMapped]
-    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
-
-    [NotMapped]
-    public double PriceSingleBYN { get => PriceTotalBYN / Count!; }
-
     public double Count { get; set; }
 
     [Required]
@@ -44,4 +38,10 @@ public class WarehouseSupply
     public DateTime RecordDT { get; set; }
 
     public List<MaterialFlow> MaterialFlows { get; set; } = new();
+
+    [NotMapped]
+    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
+
+    [NotMapped]
+    public double PriceSingleBYN { get => PriceTotalBYN / Count!; }
 }

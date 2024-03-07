@@ -25,6 +25,9 @@ public class MaterialFlow
     [ForeignKey("CustomerServiceForeignKey")]
     public CustomerServiceOrder? CustomerServiceOrder { get; set; }
 
+    [MaxLength(200)]
+    public string? AdditionalInfo { get; set; }
+
     [Required]
     public double? Count { get; set; }
 }

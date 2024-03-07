@@ -21,14 +21,13 @@ public class Payment
     [ForeignKey("CustomerServiceOrderForeignKey")]
     public CustomerServiceOrder? CustomerServiceOrder { get; set; }
 
-    [Required]
+    [MaxLength(200)]
+    public string? AdditionalInfo { get; set; }
+
     [StringLength(200)]
     public string Currency { get; set; } = null!;
 
-    [Required]
     public double UnitToBYNConversion { get; set; }
-
-    [Required]
     public double PaymentValue { get; set; }
 
     [Required]

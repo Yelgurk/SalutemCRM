@@ -46,4 +46,5 @@ public class User
     public List<OfficeOrder> OfficeOrders { get; set; } = new();
     public List<WarehouseOrder> WarehouseOrders { get; set; } = new();
     public List<CustomerServiceOrder> CustomerServiceOrders { get; set; } = new();
+    public List<CustomerService> CustomerServices { get; set; } = new();
 }

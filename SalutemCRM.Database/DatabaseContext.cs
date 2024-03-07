@@ -15,6 +15,17 @@ namespace SalutemCRM.Database;
 
 public partial class DatabaseContext : DbContext
 {
+    public static User Session { get; set; } = new User
+    {
+        Id = 1,
+        Login = "user123",
+        PasswordMD5 = "pass123",
+        FirstName = "sessionName",
+        LastName = "sessionSurname",
+        IsActive = true,
+        UserRoleForeignKey = 1
+    };
+
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Client> Clients { get; set; }
@@ -36,12 +47,15 @@ public partial class DatabaseContext : DbContext
     public DbSet<CustomerServiceOrder> CustomerServiceOrders { get; set; }
     public DbSet<CurrencyUnit> CurrencyUnits { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<Logging> Logging { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
         Database.EnsureDeleted();
         Database.EnsureCreated();
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => base.OnConfiguring(optionsBuilder);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +80,7 @@ public partial class DatabaseContext : DbContext
         modelBuilder.Entity<CustomerServiceOrder>(CustomerServiceOrder_Config);
         modelBuilder.Entity<CurrencyUnit>(CurrencyUnit_Config);
         modelBuilder.Entity<Payment>(Payment_Config);
+        modelBuilder.Entity<Logging>(Logging_Config);
 
         DemoModelCreating(modelBuilder);
     }
@@ -170,58 +185,74 @@ public partial class DatabaseContext : DbContext
             new WarehouseItem { Id = 24, Name = "Обичевка тм100", Code = "a0024", CountRequired = 0, WarehouseCategoryForeignKey = 12 }
         );
 
-        modelBuilder.Entity<WarehouseSupply>().HasData(
-            new WarehouseSupply { Id = 1, WarehouseItemForeignKey = 1, Code = "x0001", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 2, WarehouseItemForeignKey = 2, Code = "x0002", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 3, WarehouseItemForeignKey = 3, Code = "x0003", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 4, WarehouseItemForeignKey = 4, Code = "x0004", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 5, WarehouseItemForeignKey = 5, Code = "x0005", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 6, WarehouseItemForeignKey = 6, Code = "x0006", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 7, WarehouseItemForeignKey = 7, Code = "x0007", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 8, WarehouseItemForeignKey = 8, Code = "x0008", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 9, WarehouseItemForeignKey = 9, Code = "x0009", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 10, WarehouseItemForeignKey = 10, Code = "x0010", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 11, WarehouseItemForeignKey = 11, Code = "x0011", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 12, WarehouseItemForeignKey = 12, Code = "x0012", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 13, WarehouseItemForeignKey = 13, Code = "x0013", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 14, WarehouseItemForeignKey = 14, Code = "x0014", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 15, WarehouseItemForeignKey = 15, Code = "x0015", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 16, WarehouseItemForeignKey = 16, Code = "x0016", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 17, WarehouseItemForeignKey = 17, Code = "x0017", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 18, WarehouseItemForeignKey = 18, Code = "x0018", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 19, WarehouseItemForeignKey = 19, Code = "x0019", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 20, WarehouseItemForeignKey = 20, Code = "x0020", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 21, WarehouseItemForeignKey = 21, Code = "x0021", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 22, WarehouseItemForeignKey = 22, Code = "x0022", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 23, WarehouseItemForeignKey = 23, Code = "x0023", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 24, WarehouseItemForeignKey = 24, Code = "x0024", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 25, WarehouseItemForeignKey = 1, Code = "z0001", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 26, WarehouseItemForeignKey = 2, Code = "z0002", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 27, WarehouseItemForeignKey = 3, Code = "z0003", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 28, WarehouseItemForeignKey = 4, Code = "z0004", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 29, WarehouseItemForeignKey = 5, Code = "z0005", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 30, WarehouseItemForeignKey = 6, Code = "z0006", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 31, WarehouseItemForeignKey = 7, Code = "z0007", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 32, WarehouseItemForeignKey = 8, Code = "z0008", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 33, WarehouseItemForeignKey = 9, Code = "z0009", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 34, WarehouseItemForeignKey = 10, Code = "z0010", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 35, WarehouseItemForeignKey = 11, Code = "z0011", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 36, WarehouseItemForeignKey = 12, Code = "z0012", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 37, WarehouseItemForeignKey = 13, Code = "z0013", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 38, WarehouseItemForeignKey = 14, Code = "z0014", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 39, WarehouseItemForeignKey = 15, Code = "z0015", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 40, WarehouseItemForeignKey = 16, Code = "z0016", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 41, WarehouseItemForeignKey = 17, Code = "z0017", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 42, WarehouseItemForeignKey = 18, Code = "z0018", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 43, WarehouseItemForeignKey = 19, Code = "z0019", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 44, WarehouseItemForeignKey = 20, Code = "z0020", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 45, WarehouseItemForeignKey = 21, Code = "z0021", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 46, WarehouseItemForeignKey = 22, Code = "z0022", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 47, WarehouseItemForeignKey = 23, Code = "z0023", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
-            new WarehouseSupply { Id = 48, WarehouseItemForeignKey = 24, Code = "z0024", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered }
+        modelBuilder.Entity<WarehouseOrder>().HasData(
+            new WarehouseOrder {
+                Id = 1,
+                StorekeeperForeignKey = 9,
+                VendorForeignKey = 1,
+                AdditionalInfo = "Загрузка склада при интеграции приложения",
+                Currency = "BYN",
+                UnitToBYNConversion = 1.0,
+                PaymentAgreement = Payment_Status.FullyPaid,
+                PaymentStatus = Payment_Status.FullyPaid,
+                PriceRequired = 0,
+                PriceTotal = 0,
+                RecordDT = DateTime.Now,
+                ShipmentDeadlineDT = DateTime.Now.AddDays(2),
+                ReceivedDT = DateTime.Now
+            }    
         );
 
-        //modelBuilder.Entity<WarehouseOrder>();
+        modelBuilder.Entity<WarehouseSupply>().HasData(
+            new WarehouseSupply { Id = 1, WarehouseItemForeignKey = 1, WarehouseOrderForeignKey = 1, Code = "x0001", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 2, WarehouseItemForeignKey = 2, WarehouseOrderForeignKey = 1, Code = "x0002", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 3, WarehouseItemForeignKey = 3, WarehouseOrderForeignKey = 1, Code = "x0003", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 4, WarehouseItemForeignKey = 4, WarehouseOrderForeignKey = 1, Code = "x0004", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 5, WarehouseItemForeignKey = 5, WarehouseOrderForeignKey = 1, Code = "x0005", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 6, WarehouseItemForeignKey = 6, WarehouseOrderForeignKey = 1, Code = "x0006", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 7, WarehouseItemForeignKey = 7, WarehouseOrderForeignKey = 1, Code = "x0007", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 8, WarehouseItemForeignKey = 8, WarehouseOrderForeignKey = 1, Code = "x0008", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 9, WarehouseItemForeignKey = 9, WarehouseOrderForeignKey = 1, Code = "x0009", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 10, WarehouseItemForeignKey = 10, WarehouseOrderForeignKey = 1, Code = "x0010", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 11, WarehouseItemForeignKey = 11, WarehouseOrderForeignKey = 1, Code = "x0011", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 12, WarehouseItemForeignKey = 12, WarehouseOrderForeignKey = 1, Code = "x0012", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 13, WarehouseItemForeignKey = 13, WarehouseOrderForeignKey = 1, Code = "x0013", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 14, WarehouseItemForeignKey = 14, WarehouseOrderForeignKey = 1, Code = "x0014", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 15, WarehouseItemForeignKey = 15, WarehouseOrderForeignKey = 1, Code = "x0015", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 16, WarehouseItemForeignKey = 16, WarehouseOrderForeignKey = 1, Code = "x0016", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 17, WarehouseItemForeignKey = 17, WarehouseOrderForeignKey = 1, Code = "x0017", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 18, WarehouseItemForeignKey = 18, WarehouseOrderForeignKey = 1, Code = "x0018", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 19, WarehouseItemForeignKey = 19, WarehouseOrderForeignKey = 1, Code = "x0019", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 20, WarehouseItemForeignKey = 20, WarehouseOrderForeignKey = 1, Code = "x0020", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 21, WarehouseItemForeignKey = 21, WarehouseOrderForeignKey = 1, Code = "x0021", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 22, WarehouseItemForeignKey = 22, WarehouseOrderForeignKey = 1, Code = "x0022", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 23, WarehouseItemForeignKey = 23, WarehouseOrderForeignKey = 1, Code = "x0023", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 24, WarehouseItemForeignKey = 24, WarehouseOrderForeignKey = 1, Code = "x0024", PriceRequired = 100.0, PriceTotal = 100.0, Count = 45.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 25, WarehouseItemForeignKey = 1, WarehouseOrderForeignKey = 1, Code = "z0001", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 26, WarehouseItemForeignKey = 2, WarehouseOrderForeignKey = 1, Code = "z0002", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 27, WarehouseItemForeignKey = 3, WarehouseOrderForeignKey = 1, Code = "z0003", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 28, WarehouseItemForeignKey = 4, WarehouseOrderForeignKey = 1, Code = "z0004", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 29, WarehouseItemForeignKey = 5, WarehouseOrderForeignKey = 1, Code = "z0005", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 30, WarehouseItemForeignKey = 6, WarehouseOrderForeignKey = 1, Code = "z0006", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 31, WarehouseItemForeignKey = 7, WarehouseOrderForeignKey = 1, Code = "z0007", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 32, WarehouseItemForeignKey = 8, WarehouseOrderForeignKey = 1, Code = "z0008", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 33, WarehouseItemForeignKey = 9, WarehouseOrderForeignKey = 1, Code = "z0009", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 34, WarehouseItemForeignKey = 10, WarehouseOrderForeignKey = 1, Code = "z0010", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 35, WarehouseItemForeignKey = 11, WarehouseOrderForeignKey = 1, Code = "z0011", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 36, WarehouseItemForeignKey = 12, WarehouseOrderForeignKey = 1, Code = "z0012", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 37, WarehouseItemForeignKey = 13, WarehouseOrderForeignKey = 1, Code = "z0013", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 38, WarehouseItemForeignKey = 14, WarehouseOrderForeignKey = 1, Code = "z0014", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 39, WarehouseItemForeignKey = 15, WarehouseOrderForeignKey = 1, Code = "z0015", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 40, WarehouseItemForeignKey = 16, WarehouseOrderForeignKey = 1, Code = "z0016", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 41, WarehouseItemForeignKey = 17, WarehouseOrderForeignKey = 1, Code = "z0017", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 42, WarehouseItemForeignKey = 18, WarehouseOrderForeignKey = 1, Code = "z0018", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 43, WarehouseItemForeignKey = 19, WarehouseOrderForeignKey = 1, Code = "z0019", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 44, WarehouseItemForeignKey = 20, WarehouseOrderForeignKey = 1, Code = "z0020", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 45, WarehouseItemForeignKey = 21, WarehouseOrderForeignKey = 1, Code = "z0021", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 46, WarehouseItemForeignKey = 22, WarehouseOrderForeignKey = 1, Code = "z0022", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 47, WarehouseItemForeignKey = 23, WarehouseOrderForeignKey = 1, Code = "z0023", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered },
+            new WarehouseSupply { Id = 48, WarehouseItemForeignKey = 24, WarehouseOrderForeignKey = 1, Code = "z0024", PriceRequired = 100.0, PriceTotal = 100.0, Count = 33.0, Currency = "BYN", RecordDT = DateTime.Now, DeliveryStatus = Delivery_Status.FullyDelivered }
+        );
 
         modelBuilder.Entity<ProductCategory>().HasData(
             new ProductCategory { Id = 1, Name = "Пастеризатор" },
@@ -296,7 +327,8 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(u => u.UserRole)
             .WithMany(ur => ur.Users)
-            .HasForeignKey(u => u.UserRoleForeignKey);
+            .HasForeignKey(u => u.UserRoleForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void Client_Config(EntityTypeBuilder<Client> builder)
@@ -315,15 +347,18 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(fa => fa.OfficeOrder)
             .WithMany(oo => oo.FileAttachs)
-            .HasForeignKey(fs => fs.OfficeOrderForeignKey);
+            .HasForeignKey(fs => fs.OfficeOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(fa => fa.WarehouseOrder)
             .WithMany(wo => wo.FileAttachs)
-            .HasForeignKey(fs => fs.WarehouseOrderForeignKey);
+            .HasForeignKey(fs => fs.WarehouseOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(fa => fa.CustomerServiceOrder)
             .WithMany(cso => cso.FileAttachs)
-            .HasForeignKey(fs => fs.CustomerServiceOrderForeignKey);
+            .HasForeignKey(fs => fs.CustomerServiceOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasAlternateKey(fs => fs.FileName);
     }
@@ -334,7 +369,8 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(wc => wc.ParentCategory)
             .WithMany(wc => wc.SubCategories)
-            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
+            .HasForeignKey(wc => wc.ParentCategoryForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void WarehouseItem_Config(EntityTypeBuilder<WarehouseItem> builder)
@@ -347,7 +383,8 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(wi => wi.Category)
             .WithMany(wc => wc.WarehouseItems)
-            .HasForeignKey(wi => wi.WarehouseCategoryForeignKey);
+            .HasForeignKey(wi => wi.WarehouseCategoryForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void WarehouseSupply_Config(EntityTypeBuilder<WarehouseSupply> builder)
@@ -356,7 +393,13 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(ws => ws.WarehouseItem)
             .WithMany(wi => wi.WarehouseSupplying)
-            .HasForeignKey(ws => ws.WarehouseItemForeignKey);
+            .HasForeignKey(ws => ws.WarehouseItemForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder
+            .HasOne(ws => ws.WarehouseOrder)
+            .WithMany(wo => wo.WarehouseSupplies)
+            .HasForeignKey(ws => ws.WarehouseOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(ws => ws.DeliveryStatus)
             .HasConversion<int>()
@@ -375,11 +418,13 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(wo => wo.Storekeeper)
             .WithMany(u => u.WarehouseOrders)
-            .HasForeignKey(wo => wo.StorekeeperForeignKey);
+            .HasForeignKey(wo => wo.StorekeeperForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(wo => wo.Vendor)
             .WithMany(v => v.WarehouseOrders)
-            .HasForeignKey(wo => wo.VendorForeignKey);
+            .HasForeignKey(wo => wo.VendorForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(wo => wo.PaymentAgreement)
             .HasConversion<int>()
@@ -396,7 +441,8 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(wc => wc.ParentCategory)
             .WithMany(wc => wc.SubCategories)
-            .HasForeignKey(wc => wc.ParentCategoryForeignKey);
+            .HasForeignKey(wc => wc.ParentCategoryForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void ProductTemplate_Config(EntityTypeBuilder<ProductTemplate> builder)
@@ -405,7 +451,8 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(pt => pt.Category)
             .WithMany(pc => pc.ProductTemplates)
-            .HasForeignKey(pt => pt.ManufactureCategoryForeignKey);
+            .HasForeignKey(pt => pt.ManufactureCategoryForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void ProductSchema_Config(EntityTypeBuilder<ProductSchema> builder)
@@ -414,11 +461,13 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(ps => ps.ProductTemplate)
             .WithMany(pt => pt.ProductSchemas)
-            .HasForeignKey(ps => ps.ProductTemplateForeignKey);
+            .HasForeignKey(ps => ps.ProductTemplateForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(ps => ps.WarehouseItem)
             .WithMany(ws => ws.ProductSchemas)
-            .HasForeignKey(ps => ps.WarehouseItemForeignKey);
+            .HasForeignKey(ps => ps.WarehouseItemForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void ManufacturerDuty_Config(EntityTypeBuilder<ManufacturerDuty> builder)
@@ -433,15 +482,18 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(mp => mp.Employee)
             .WithMany(u => u.ManufactureProcesses)
-            .HasForeignKey(mp => mp.EmployeeForeignKey);
+            .HasForeignKey(mp => mp.EmployeeForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(mp => mp.Manufacture)
             .WithMany(mf => mf.ManufactureProcesses)
-            .HasForeignKey(mp => mp.ManufactureForeignKey);
+            .HasForeignKey(mp => mp.ManufactureForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(mp => mp.ManufacturerDuty)
             .WithMany(md => md.ManufactureProcesses)
-            .HasForeignKey(mp => mp.ManufactureDutyForeignKey);
+            .HasForeignKey(mp => mp.ManufactureDutyForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(mp => mp.TaskStatus)
             .HasConversion<int>()
@@ -455,7 +507,8 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(ms => ms.OfficeOrder)
             .WithMany(oo => oo.Manufactures)
-            .HasForeignKey(ms => ms.OfficeOrderForeignKey);
+            .HasForeignKey(ms => ms.OfficeOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(ws => ws.DeliveryStatus)
             .HasConversion<int>()
@@ -472,19 +525,23 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(ms => ms.WarehouseSupply)
             .WithMany(ws => ws.MaterialFlows)
-            .HasForeignKey(ms => ms.WarehouseSupplyForeignKey);
+            .HasForeignKey(ms => ms.WarehouseSupplyForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(mf => mf.Manufacture)
             .WithMany(m => m.MaterialFlows)
-            .HasForeignKey(ms => ms.ManufactureForeignKey);
+            .HasForeignKey(ms => ms.ManufactureForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(mf => mf.OfficeOrder)
             .WithMany(oo => oo.MaterialFlows)
-            .HasForeignKey(ms => ms.OfficeOrderForeignKey);
+            .HasForeignKey(ms => ms.OfficeOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(mf => mf.CustomerServiceOrder)
             .WithMany(cso => cso.MaterialFlows)
-            .HasForeignKey(ms => ms.CustomerServiceForeignKey);
+            .HasForeignKey(ms => ms.CustomerServiceForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
     } 
     
     public void OfficeOrder_Config(EntityTypeBuilder<OfficeOrder> builder)
@@ -493,11 +550,13 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(oo => oo.Manager)
             .WithMany(u => u.OfficeOrders)
-            .HasForeignKey(oo => oo.ManagerForeignKey);
+            .HasForeignKey(oo => oo.ManagerForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(oo => oo.Client)
             .WithMany(c => c.OfficeOrders)
-            .HasForeignKey(oo => oo.ClientForeignKey);
+            .HasForeignKey(oo => oo.ClientForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(oo => oo.OrderType)
             .HasConversion<int>();
@@ -513,11 +572,17 @@ public partial class DatabaseContext : DbContext
     
     public void CustomerService_Config(EntityTypeBuilder<CustomerService> builder)
     {
-        builder.HasKey(oop => oop.Id);
+        builder.HasKey(cs => cs.Id);
+        builder
+            .HasOne(cs => cs.Employee)
+            .WithMany(u => u.CustomerServices)
+            .HasForeignKey(cs => cs.EmployeeForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(cs => cs.CustomerServiceOrder)
             .WithMany(cso => cso.CustomerServices)
-            .HasForeignKey(cs => cs.CustomerServiceOrderForeignKey);
+            .HasForeignKey(cs => cs.CustomerServiceOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(cs => cs.TaskStatus)
             .HasConversion<int>()
@@ -530,11 +595,13 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(cso => cso.StockManager)
             .WithMany(u => u.CustomerServiceOrders)
-            .HasForeignKey(cso => cso.StockManagerForeignKey);
+            .HasForeignKey(cso => cso.StockManagerForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(cso => cso.Manufacture)
             .WithMany(mf => mf.CustomerServiceOrders)
-            .HasForeignKey(cso => cso.ManufactureForeignKey);
+            .HasForeignKey(cso => cso.ManufactureForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(cso => cso.PaymentAgreement)
             .HasConversion<int>()
@@ -561,13 +628,25 @@ public partial class DatabaseContext : DbContext
         builder
             .HasOne(moneyzzz => moneyzzz.WarehouseOrder)
             .WithMany(ws => ws.Payments)
-            .HasForeignKey(moneyzzz => moneyzzz.WarehouseOrderForeignKey);
+            .HasForeignKey(moneyzzz => moneyzzz.WarehouseOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(moneyzzz => moneyzzz.OfficeOrder)
             .WithMany(oo => oo.Payments)
-            .HasForeignKey(moneyzzz => moneyzzz.OfficeOrderForeignKey);
+            .HasForeignKey(moneyzzz => moneyzzz.OfficeOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder
+            .HasOne(moneyzzz => moneyzzz.CustomerServiceOrder)
+            .WithMany(cso => cso.Payments)
+            .HasForeignKey(moneyzzz => moneyzzz.CustomerServiceOrderForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(oop => oop.UnitToBYNConversion)
             .HasDefaultValue(1.0);
+    }
+
+    public void Logging_Config(EntityTypeBuilder<Logging> builder)
+    {
+        builder.HasKey(log => log.Id);
     }
 }
