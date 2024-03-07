@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
@@ -11,6 +12,8 @@ public class ProductCategory
 
     [MaxLength(200)]
     public string Name { get; set; } = null!;
+
+    public int Deep { get; set; }
 
     public int? ParentCategoryForeignKey { get; set; }
     [ForeignKey("ParentCategoryForeignKey")]

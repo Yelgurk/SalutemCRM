@@ -8,6 +8,7 @@
              x:DataType="vm:MainViewModel"
 			 xmlns:controls="using:SalutemCRM.CustomControl">
 	<UserControl.DataContext>
+		<vm:MainViewModel/>
 	</UserControl.DataContext>
 
 	<StackPanel VerticalAlignment="Center" Background="White">
@@ -24,5 +25,7 @@
 				<controls:ManufactureOrderControl />
 			</ListBoxItem>
 		</ListBox>
+		
+		<TreeDataGrid ShowColumnHeaders="False" Source="{Binding CategoriesTree}" />
 	</StackPanel>
 </UserControl>

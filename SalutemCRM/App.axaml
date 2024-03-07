@@ -8,6 +8,7 @@
 	
     <Application.Styles>
         <FluentTheme />
+		<StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
 		<StyleInclude Source="/Control/ButtonStyle.axaml"/>
 		<StyleInclude Source="/Control/ListStyle.axaml"/>
 		<StyleInclude Source="/Control/TextBoxStyle.axaml"/>

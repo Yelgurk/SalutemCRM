@@ -15,17 +15,6 @@ namespace SalutemCRM.Database;
 
 public partial class DatabaseContext : DbContext
 {
-    public static User Session { get; set; } = new User
-    {
-        Id = 1,
-        Login = "user123",
-        PasswordMD5 = "pass123",
-        FirstName = "sessionName",
-        LastName = "sessionSurname",
-        IsActive = true,
-        UserRoleForeignKey = 1
-    };
-
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Client> Clients { get; set; }
@@ -144,18 +133,21 @@ public partial class DatabaseContext : DbContext
         //modelBuilder.Entity<FileAttach>();
 
         modelBuilder.Entity<WarehouseCategory>().HasData(
-            new WarehouseCategory { Id = 1, Name = "Электрика" },
-            new WarehouseCategory { Id = 2, Name = "Мелочевка" },
-            new WarehouseCategory { Id = 3, Name = "Металл" },
-            new WarehouseCategory { Id = 4, Name = "ПЛК", ParentCategoryForeignKey = 1 },
-            new WarehouseCategory { Id = 5, Name = "Привода", ParentCategoryForeignKey = 1 },
-            new WarehouseCategory { Id = 6, Name = "Насосы", ParentCategoryForeignKey = 1 },
-            new WarehouseCategory { Id = 7, Name = "Клеммы", ParentCategoryForeignKey = 2 },
-            new WarehouseCategory { Id = 8, Name = "Кнопки", ParentCategoryForeignKey = 2 },
-            new WarehouseCategory { Id = 9, Name = "Реле", ParentCategoryForeignKey = 2 },
-            new WarehouseCategory { Id = 10, Name = "Для ПС", ParentCategoryForeignKey = 3 },
-            new WarehouseCategory { Id = 11, Name = "Для РМ", ParentCategoryForeignKey = 3 },
-            new WarehouseCategory { Id = 12, Name = "Для ТМ", ParentCategoryForeignKey = 3 }
+            new WarehouseCategory { Id = 1, Deep = 0, Name = "Электрика" },
+            new WarehouseCategory { Id = 2, Deep = 0, Name = "Мелочевка" },
+            new WarehouseCategory { Id = 3, Deep = 0, Name = "Металл" },
+            new WarehouseCategory { Id = 4, Deep = 1, Name = "ПЛК", ParentCategoryForeignKey = 1 },
+            new WarehouseCategory { Id = 5, Deep = 1, Name = "Привода", ParentCategoryForeignKey = 1 },
+            new WarehouseCategory { Id = 6, Deep = 1, Name = "Насосы", ParentCategoryForeignKey = 1 },
+            new WarehouseCategory { Id = 7, Deep = 1, Name = "Клеммы", ParentCategoryForeignKey = 2 },
+            new WarehouseCategory { Id = 8, Deep = 1, Name = "Кнопки", ParentCategoryForeignKey = 2 },
+            new WarehouseCategory { Id = 9, Deep = 1, Name = "Реле", ParentCategoryForeignKey = 2 },
+            new WarehouseCategory { Id = 10, Deep = 1, Name = "Для ПС", ParentCategoryForeignKey = 3 },
+            new WarehouseCategory { Id = 11, Deep = 1, Name = "Для РМ", ParentCategoryForeignKey = 3 },
+            new WarehouseCategory { Id = 12, Deep = 1, Name = "Для ТМ", ParentCategoryForeignKey = 3 },
+            new WarehouseCategory { Id = 13, Deep = 2, Name = "Собственное производство", ParentCategoryForeignKey = 4 },
+            new WarehouseCategory { Id = 14, Deep = 2, Name = "Импортное", ParentCategoryForeignKey = 4 },
+            new WarehouseCategory { Id = 15, Deep = 2, Name = "Экспортное", ParentCategoryForeignKey = 4 }
         );
 
         modelBuilder.Entity<WarehouseItem>().HasData(
@@ -255,11 +247,11 @@ public partial class DatabaseContext : DbContext
         );
 
         modelBuilder.Entity<ProductCategory>().HasData(
-            new ProductCategory { Id = 1, Name = "Пастеризатор" },
-            new ProductCategory { Id = 2, Name = "Такси" },
-            new ProductCategory { Id = 3, Name = "Размораживатель" },
-            new ProductCategory { Id = 4, Name = "СМОМ" },
-            new ProductCategory { Id = 5, Name = "Боксы" }
+            new ProductCategory { Id = 1, Deep = 0, Name = "Пастеризатор" },
+            new ProductCategory { Id = 2, Deep = 0, Name = "Такси" },
+            new ProductCategory { Id = 3, Deep = 0, Name = "Размораживатель" },
+            new ProductCategory { Id = 4, Deep = 0, Name = "СМОМ" },
+            new ProductCategory { Id = 5, Deep = 0, Name = "Боксы" }
         );
 
         modelBuilder.Entity<ProductTemplate>().HasData(

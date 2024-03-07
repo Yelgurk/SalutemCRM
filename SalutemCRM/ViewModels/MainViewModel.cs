@@ -1,6 +1,44 @@
-﻿namespace SalutemCRM.ViewModels;
+﻿using Avalonia.Controls.Models.TreeDataGrid;
+using Avalonia.Controls;
+using SalutemCRM.Database;
+using SalutemCRM.Domain.Model;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+
+namespace SalutemCRM.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    public string Greeting => "Welcome to Avalonia!";
+    public HierarchicalTreeDataGridSource<WarehouseCategory> CategoriesTree { get; set; }
+
+    public MainViewModel()
+    {
+        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+        {
+            int MaxDeep = db.WarehouseCategories.Max(wc => wc.Deep);
+            var CatTree = db.WarehouseCategories.Where(wc => wc.Deep == 0).ToList();
+            for (var CatDeep = CatTree; CatDeep.First().Deep != MaxDeep;)
+            {
+                foreach (var Cat in CatDeep)
+                    Cat.SubCategories = db.WarehouseCategories.Where(wc => wc.ParentCategoryForeignKey == Cat.Id).ToList();
+
+                CatDeep = CatDeep.SelectMany(ct => ct.SubCategories).ToList();
+            }
+
+            CategoriesTree = new HierarchicalTreeDataGridSource<WarehouseCategory>(CatTree)
+            {
+                Columns =
+                {
+                    new HierarchicalExpanderColumn<WarehouseCategory>(
+                        new TextColumn<WarehouseCategory, string>
+                            ("Id", x => $"{x.Id}."), x => x.SubCategories),
+                        new TextColumn<WarehouseCategory, string>
+                            ("Name", x => x.Name),
+                },
+            };
+        }
+    }
 }

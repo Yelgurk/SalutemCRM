@@ -8,5 +8,7 @@
         x:Class="SalutemCRM.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM">
-        <views:MainView />
+	<Grid>
+		<views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+	</Grid>
 </Window>
