@@ -4,18 +4,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class WarehouseCategory
+public class WarehouseCategory : ModelBase
 {
+    [NotMapped]
+    private int _id;
+    [NotMapped]
+    private string _name = null!;
+    [NotMapped]
+    private int _deep;
+    [NotMapped]
+    private int? _parentCategoryForeignKey;
+
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    public int Id { get => _id; set => OnPropertyChanged(ref _id, value); }
 
     [MaxLength(200)]
-    public string Name { get; set; } = null!;
+    public string Name { get => _name; set => OnPropertyChanged(ref _name, value); }
 
-    public int Deep { get; set; }
+    public int Deep { get => _deep; set => OnPropertyChanged(ref _deep, value); }
 
-    public int? ParentCategoryForeignKey { get; set; }
+    public int? ParentCategoryForeignKey { get => _parentCategoryForeignKey; set => OnPropertyChanged(ref _parentCategoryForeignKey, value); }
     [ForeignKey("ParentCategoryForeignKey")]
     public WarehouseCategory? ParentCategory { get; set; }
 

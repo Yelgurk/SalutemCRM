@@ -1,11 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
+using ReactiveUI;
+using SalutemCRM.Domain;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Domain.Modell;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +52,8 @@ public partial class DatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Ignore<ModelBase>();
+
         modelBuilder.Entity<UserRole>(UserRole_Config);
         modelBuilder.Entity<User>(User_Config);
         modelBuilder.Entity<Client>(Client_Config);
