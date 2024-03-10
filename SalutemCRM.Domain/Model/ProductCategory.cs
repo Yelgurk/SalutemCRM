@@ -1,24 +1,41 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class ProductCategory
+public partial class ProductCategory : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    [MaxLength(200)]
-    public string Name { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _name = null!;
 
-    public int Deep { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _deep;
 
-    public int? ParentCategoryForeignKey { get; set; }
-    [ForeignKey("ParentCategoryForeignKey")]
-    public ProductCategory? ParentCategory { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _parentCategoryForeignKey;
 
-    public List<ProductCategory> SubCategories { get; set; } = new();
-    public List<ProductTemplate> ProductTemplates { get; set; } = new();
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ProductCategory? _parentCategory;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<ProductCategory> _subCategories = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<ProductTemplate> _productTemplates = new();
 }

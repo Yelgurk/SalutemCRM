@@ -1,14 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class CurrencyUnit
+public partial class CurrencyUnit : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    [Required]
-    public string Name { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _name = null!;
 }

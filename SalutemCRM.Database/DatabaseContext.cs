@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
-using ReactiveUI;
 using SalutemCRM.Domain;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Domain.Modell;
@@ -52,7 +52,7 @@ public partial class DatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Ignore<ModelBase>();
+        modelBuilder.Ignore<ObservableObject>();
 
         modelBuilder.Entity<UserRole>(UserRole_Config);
         modelBuilder.Entity<User>(User_Config);
@@ -315,33 +315,78 @@ public partial class DatabaseContext : DbContext
     public void UserRole_Config(EntityTypeBuilder<UserRole> builder)
     {
         builder.HasKey(ur => ur.Id);
+        builder
+            .Property(ur => ur.Id)
+            .ValueGeneratedOnAdd();
         builder.HasAlternateKey(ur => ur.Name);
+        builder
+            .Property(ur => ur.Name)
+            .HasMaxLength(200);
     }
 
     public void User_Config(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(u => u.Id);
-        builder.HasAlternateKey(u => u.Login);
+        builder
+            .Property(u => u.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(u => u.UserRole)
             .WithMany(ur => ur.Users)
             .HasForeignKey(u => u.UserRoleForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.HasAlternateKey(u => u.Login);
+        builder
+            .Property(u => u.Login)
+            .HasMaxLength(200);
+        builder
+            .Property(u => u.IsActive)
+            .HasDefaultValue(true);
+        builder
+            .Property(u => u.PasswordMD5)
+            .HasMaxLength(200);
+        builder
+            .Property(u => u.FirstName)
+            .HasMaxLength(200);
+        builder
+            .Property(u => u.LastName)
+            .HasMaxLength(200);
     }
 
     public void Client_Config(EntityTypeBuilder<Client> builder)
     {
         builder.HasKey(c => c.Id);
+        builder
+            .Property(c => c.Id)
+            .ValueGeneratedOnAdd();
+        builder
+            .Property(c => c.Name)
+            .HasMaxLength(200);
+        builder
+            .Property(c => c.Address)
+            .HasMaxLength(200);
     }
 
     public void Vendor_Config(EntityTypeBuilder<Vendor> builder)
     {
         builder.HasKey(v => v.Id);
+        builder
+            .Property(v => v.Id)
+            .ValueGeneratedOnAdd();
+        builder
+            .Property(v => v.Name)
+            .HasMaxLength(200);
+        builder
+            .Property(v => v.Address)
+            .HasMaxLength(200);
     }
 
     public void FileAttach_Config(EntityTypeBuilder<FileAttach> builder)
     {
         builder.HasKey(fa => fa.Id);
+        builder
+            .Property(fa => fa.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(fa => fa.OfficeOrder)
             .WithMany(oo => oo.FileAttachs)
@@ -358,36 +403,58 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(fs => fs.CustomerServiceOrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
+            .Property(fa => fa.RecordDT)
+            .HasColumnType("datetime2");
+        builder
             .HasAlternateKey(fs => fs.FileName);
     }
 
     public void WarehouseCategory_Config(EntityTypeBuilder<WarehouseCategory> builder)
     {
-        builder.HasKey(wc => wc.Id);
+        builder
+            .HasKey(wc => wc.Id);
+        builder
+            .Property(wc => wc.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(wc => wc.ParentCategory)
             .WithMany(wc => wc.SubCategories)
             .HasForeignKey(wc => wc.ParentCategoryForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
+        builder
+            .Property(wc => wc.Name)
+            .HasMaxLength(200);
     }
 
     public void WarehouseItem_Config(EntityTypeBuilder<WarehouseItem> builder)
     {
         builder.HasKey(wi => wi.Id);
-        builder.HasAlternateKey(wi => wi.Code);
         builder
-            .Property(wi => wi.CountRequired)
-            .HasDefaultValue(0.0);
+            .Property(wi => wi.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(wi => wi.Category)
             .WithMany(wc => wc.WarehouseItems)
             .HasForeignKey(wi => wi.WarehouseCategoryForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
+        builder
+            .Property(wi => wi.Name)
+            .HasMaxLength(200);
+        builder.HasAlternateKey(wi => wi.Code);
+        builder
+            .Property(wi => wi.Code)
+            .HasMaxLength(200);
+        builder
+            .Property(wi => wi.CountRequired)
+            .HasDefaultValue(0.0);
     }
 
     public void WarehouseSupply_Config(EntityTypeBuilder<WarehouseSupply> builder)
     {
         builder.HasKey(ws => ws.Id);
+        builder
+            .Property(ws => ws.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(ws => ws.WarehouseItem)
             .WithMany(wi => wi.WarehouseSupplying)
@@ -403,16 +470,22 @@ public partial class DatabaseContext : DbContext
             .HasConversion<int>()
             .HasDefaultValue(Delivery_Status.NotDelivered);
         builder
-            .Property(ws => ws.Currency)
-            .HasDefaultValue("BYN");
+            .Property(ws => ws.Code)
+            .HasMaxLength(200);
         builder
-            .Property(ws => ws.UnitToBYNConversion)
-            .HasDefaultValue(1.0);
+            .Property(ws => ws.Currency)
+            .HasMaxLength(200);
+        builder
+            .Property(ws => ws.RecordDT)
+            .HasColumnType("datetime2");
     }
 
     public void WarehouseOrder_Config(EntityTypeBuilder<WarehouseOrder> builder)
     {
         builder.HasKey(wo => wo.Id);
+        builder
+            .Property(wo => wo.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(wo => wo.Storekeeper)
             .WithMany(u => u.WarehouseOrders)
@@ -431,31 +504,61 @@ public partial class DatabaseContext : DbContext
             .Property(wo => wo.PaymentStatus)
             .HasConversion<int>()
             .HasDefaultValue(Payment_Status.Unpaid);
+        builder
+            .Property(wo => wo.Currency)
+            .HasMaxLength(200);
+        builder
+            .Property(wo => wo.RecordDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(wo => wo.ShipmentDeadlineDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(wo => wo.ReceivedDT)
+            .HasColumnType("datetime2");
     }
 
     public void ProductCategory_Config(EntityTypeBuilder<ProductCategory> builder)
     {
-        builder.HasKey(wc => wc.Id);
+        builder.HasKey(pc => pc.Id);
         builder
-            .HasOne(wc => wc.ParentCategory)
-            .WithMany(wc => wc.SubCategories)
-            .HasForeignKey(wc => wc.ParentCategoryForeignKey)
+            .Property(pc => pc.Id)
+            .ValueGeneratedOnAdd();
+        builder
+            .HasOne(pc => pc.ParentCategory)
+            .WithMany(pc => pc.SubCategories)
+            .HasForeignKey(pc => pc.ParentCategoryForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
+        builder
+            .Property(pc => pc.Name)
+            .HasMaxLength(200);
     }
 
     public void ProductTemplate_Config(EntityTypeBuilder<ProductTemplate> builder)
     {
         builder.HasKey(pt => pt.Id);
         builder
+            .Property(pt => pt.Id)
+            .ValueGeneratedOnAdd();
+        builder
             .HasOne(pt => pt.Category)
             .WithMany(pc => pc.ProductTemplates)
             .HasForeignKey(pt => pt.ManufactureCategoryForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
+        builder
+            .Property(pt => pt.Name)
+            .HasMaxLength(200);
+        builder
+            .Property(pt => pt.Model)
+            .HasMaxLength(200);
     }
 
     public void ProductSchema_Config(EntityTypeBuilder<ProductSchema> builder)
     {
         builder.HasKey(ps => ps.Id);
+        builder
+            .Property(ps => ps.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(ps => ps.ProductTemplate)
             .WithMany(pt => pt.ProductSchemas)
@@ -470,13 +573,22 @@ public partial class DatabaseContext : DbContext
 
     public void ManufacturerDuty_Config(EntityTypeBuilder<ManufacturerDuty> builder)
     {
-        builder.HasKey(ms => ms.Id);
-        builder.HasAlternateKey(ms => ms.Name);
+        builder.HasKey(md => md.Id);
+        builder
+            .Property(md => md.Id)
+            .ValueGeneratedOnAdd();
+        builder.HasAlternateKey(md => md.Name);
+        builder
+            .Property(md => md.Name)
+            .HasMaxLength(200);
     }
 
     public void ManufactureProcess_Config(EntityTypeBuilder<ManufactureProcess> builder)
     {
-        builder.HasKey(ms => ms.Id);
+        builder.HasKey(mp => mp.Id);
+        builder
+            .Property(mp => mp.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(mp => mp.Employee)
             .WithMany(u => u.ManufactureProcesses)
@@ -496,11 +608,26 @@ public partial class DatabaseContext : DbContext
             .Property(mp => mp.TaskStatus)
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.NotStarted);
+        builder
+            .Property(mp => mp.RecordDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(mp => mp.DeadlineDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(mp => mp.StartedDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(mp => mp.CompletedDT)
+            .HasColumnType("datetime2");
     }
 
     public void Manufacture_Config(EntityTypeBuilder<Manufacture> builder)
     {
         builder.HasKey(ms => ms.Id);
+        builder
+            .Property(ms => ms.Id)
+            .ValueGeneratedOnAdd();
         builder.HasAlternateKey(ms => ms.Code);
         builder
             .HasOne(ms => ms.OfficeOrder)
@@ -515,11 +642,26 @@ public partial class DatabaseContext : DbContext
             .Property(ws => ws.TaskStatus)
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.NotAvailable);
+        builder
+            .Property(ws => ws.Code)
+            .HasMaxLength(200);
+        builder
+            .Property(ws => ws.Name)
+            .HasMaxLength(200);
+        builder
+            .Property(ws => ws.Model)
+            .HasMaxLength(200);
+        builder
+            .Property(ws => ws.ShipmentDT)
+            .HasColumnType("datetime2");
     }
     
     public void MaterialFlow_Config(EntityTypeBuilder<MaterialFlow> builder)
     {
         builder.HasKey(mf => mf.Id);
+        builder
+            .Property(mf => mf.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(ms => ms.WarehouseSupply)
             .WithMany(ws => ws.MaterialFlows)
@@ -546,6 +688,9 @@ public partial class DatabaseContext : DbContext
     {
         builder.HasKey(oo => oo.Id);
         builder
+            .Property(oo => oo.Id)
+            .ValueGeneratedOnAdd();
+        builder
             .HasOne(oo => oo.Manager)
             .WithMany(u => u.OfficeOrders)
             .HasForeignKey(oo => oo.ManagerForeignKey)
@@ -561,16 +706,31 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(oo => oo.PaymentAgreement)
             .HasConversion<int>()
-            .HasDefaultValue(Payment_Status.HalfPaid);
+            .HasDefaultValue(Payment_Status.FullyPaid);
         builder
             .Property(oo => oo.PaymentStatus)
             .HasConversion<int>()
             .HasDefaultValue(Payment_Status.Unpaid);
+        builder
+            .Property(oo => oo.Currency)
+            .HasMaxLength(200);
+        builder
+            .Property(oo => oo.RecordDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(oo => oo.ShipmentDeadlineDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(oo => oo.ShipmentDT)
+            .HasColumnType("datetime2");
     }
     
     public void CustomerService_Config(EntityTypeBuilder<CustomerService> builder)
     {
         builder.HasKey(cs => cs.Id);
+        builder
+            .Property(cs => cs.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(cs => cs.Employee)
             .WithMany(u => u.CustomerServices)
@@ -585,11 +745,20 @@ public partial class DatabaseContext : DbContext
             .Property(cs => cs.TaskStatus)
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.NotStarted);
+        builder
+            .Property(cs => cs.StartedDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(cs => cs.CompletedDT)
+            .HasColumnType("datetime2");
     }
     
     public void CustomerServiceOrder_Config(EntityTypeBuilder<CustomerServiceOrder> builder)
     {
         builder.HasKey(cso => cso.Id);
+        builder
+            .Property(cso => cso.Id)
+            .ValueGeneratedOnAdd();
         builder
             .HasOne(cso => cso.StockManager)
             .WithMany(u => u.CustomerServiceOrders)
@@ -612,39 +781,81 @@ public partial class DatabaseContext : DbContext
             .Property(cso => cso.TaskStatus)
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.NotStarted);
+        builder
+            .Property(cso => cso.Currency)
+            .HasMaxLength(200);
+        builder
+            .Property(cso => cso.RecordDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(cso => cso.DeadlineDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(cso => cso.StartedDT)
+            .HasColumnType("datetime2");
+        builder
+            .Property(cso => cso.CompletedDT)
+            .HasColumnType("datetime2");
     }
 
     public void CurrencyUnit_Config(EntityTypeBuilder<CurrencyUnit> builder)
     {
         builder.HasKey(ur => ur.Id);
+        builder
+            .Property(ur => ur.Id)
+            .ValueGeneratedOnAdd();
         builder.HasAlternateKey(ur => ur.Name);
     }
 
     public void Payment_Config(EntityTypeBuilder<Payment> builder)
     {
-        builder.HasKey(moneyzzz => moneyzzz.Id);
+        builder.HasKey(m => m.Id);
         builder
-            .HasOne(moneyzzz => moneyzzz.WarehouseOrder)
+            .Property(m => m.Id)
+            .ValueGeneratedOnAdd();
+        builder
+            .HasOne(m => m.WarehouseOrder)
             .WithMany(ws => ws.Payments)
-            .HasForeignKey(moneyzzz => moneyzzz.WarehouseOrderForeignKey)
+            .HasForeignKey(m => m.WarehouseOrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
-            .HasOne(moneyzzz => moneyzzz.OfficeOrder)
+            .HasOne(m => m.OfficeOrder)
             .WithMany(oo => oo.Payments)
-            .HasForeignKey(moneyzzz => moneyzzz.OfficeOrderForeignKey)
+            .HasForeignKey(m => m.OfficeOrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
-            .HasOne(moneyzzz => moneyzzz.CustomerServiceOrder)
+            .HasOne(m => m.CustomerServiceOrder)
             .WithMany(cso => cso.Payments)
-            .HasForeignKey(moneyzzz => moneyzzz.CustomerServiceOrderForeignKey)
+            .HasForeignKey(m => m.CustomerServiceOrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
-            .Property(oop => oop.UnitToBYNConversion)
+            .Property(m => m.Currency)
+            .HasMaxLength(200);
+        builder
+            .Property(m => m.UnitToBYNConversion)
             .HasDefaultValue(1.0);
+        builder
+            .Property(m => m.RecordDT)
+            .HasColumnType("datetime2");
     }
 
     public void Logging_Config(EntityTypeBuilder<Logging> builder)
     {
         builder.HasKey(log => log.Id);
+        builder
+            .Property(log => log.Id)
+            .ValueGeneratedOnAdd();
+        builder
+            .Property(log => log.UserLogin)
+            .HasMaxLength(200);
+        builder
+            .Property(log => log.UserFirstName)
+            .HasMaxLength(200);
+        builder
+            .Property(log => log.UserLastName)
+            .HasMaxLength(200);
+        builder
+            .Property(log => log.RecordDT)
+            .HasColumnType("datetime2");
     }
 }

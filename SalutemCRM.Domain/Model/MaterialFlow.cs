@@ -1,33 +1,54 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class MaterialFlow
+public partial class MaterialFlow : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int WarehouseSupplyForeignKey { get; set; }
-    [ForeignKey("WarehouseSupplyForeignKey")]
-    public WarehouseSupply WarehouseSupply { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _warehouseSupplyForeignKey;
 
-    public int? ManufactureForeignKey { get; set; }
-    [ForeignKey("ManufactureForeignKey")]
-    public Manufacture? Manufacture { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _manufactureForeignKey;
 
-    public int? OfficeOrderForeignKey { get; set; }
-    [ForeignKey("OfficeOrderForeignKey")]
-    public OfficeOrder? OfficeOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _officeOrderForeignKey;
 
-    public int? CustomerServiceForeignKey { get; set; }
-    [ForeignKey("CustomerServiceForeignKey")]
-    public CustomerServiceOrder? CustomerServiceOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _customerServiceForeignKey;
 
-    [MaxLength(200)]
-    public string? AdditionalInfo { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private string? _additionalInfo;
 
-    [Required]
-    public double? Count { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private double _count;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseSupply? _warehouseSupply;
+
+    [NotMapped]
+    [ObservableProperty]
+    private Manufacture? _manufacture;
+
+    [NotMapped]
+    [ObservableProperty]
+    private OfficeOrder? _officeOrder;
+
+    [NotMapped]
+    [ObservableProperty]
+    private CustomerServiceOrder? _customerServiceOrder;
 }

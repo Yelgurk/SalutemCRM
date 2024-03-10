@@ -1,6 +1,8 @@
-﻿using SalutemCRM.Domain.Model;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SalutemCRM.Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,15 +11,19 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Modell;
 
-public class UserRole
+public partial class UserRole : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    [Required]
-    [MaxLength(200)]
-    public string Name { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _name = null!;
 
-    public List<User> Users { get; set; } = new();
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<User> _users = new();
 }

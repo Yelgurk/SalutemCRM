@@ -1,37 +1,67 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class Manufacture
+public partial class Manufacture : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int? OfficeOrderForeignKey { get; set; }
-    [ForeignKey("OfficeOrderForeignKey")]
-    public OfficeOrder? OfficeOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _officeOrderForeignKey;
 
-    public Delivery_Status DeliveryStatus { get; set; }
-    public Task_Status TaskStatus { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private Delivery_Status _deliveryStatus;
 
-    [MaxLength(200)]
-    public string Code { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private Task_Status _taskStatus;
 
-    [MaxLength(200)]
-    public string Name { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _code = null!;
 
-    [MaxLength(200)]
-    public string Model { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _name = null!;
 
-    [MaxLength(200)]
-    public string AdditionalInfo { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _model = null!;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? ShipmentDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private string _additionalInfo = null!;
 
-    public List<MaterialFlow> MaterialFlows { get; set; } = new();
-    public List<ManufactureProcess> ManufactureProcesses { get; set; } = new();
-    public List<CustomerServiceOrder> CustomerServiceOrders { get; set; } = new();
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _shipmentDT;
+
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private OfficeOrder? _officeOrder;
+
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _materialFlows = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<ManufactureProcess> _manufactureProcesses = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<CustomerServiceOrder> _customerServiceOrders = new();
 }

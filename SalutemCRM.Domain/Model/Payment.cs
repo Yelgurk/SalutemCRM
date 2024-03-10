@@ -1,36 +1,58 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class Payment
+public partial class Payment : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int? WarehouseOrderForeignKey { get; set; }
-    [ForeignKey("WarehouseOrderForeignKey")]
-    public WarehouseOrder? WarehouseOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _warehouseOrderForeignKey;
 
-    public int? OfficeOrderForeignKey { get; set; }
-    [ForeignKey("OfficeOrderForeignKey")]
-    public OfficeOrder? OfficeOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _officeOrderForeignKey;
 
-    public int? CustomerServiceOrderForeignKey { get; set; }
-    [ForeignKey("CustomerServiceOrderForeignKey")]
-    public CustomerServiceOrder? CustomerServiceOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _customerServiceOrderForeignKey;
 
-    [MaxLength(200)]
-    public string? AdditionalInfo { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private string? _additionalInfo;
 
-    [StringLength(200)]
-    public string Currency { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _currency = null!;
 
-    public double UnitToBYNConversion { get; set; }
-    public double PaymentValue { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private double _unitToBYNConversion;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime RecordDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private double _paymentValue;
+
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _recordDT;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseOrder? _warehouseOrder;
+
+    [NotMapped]
+    [ObservableProperty]
+    private OfficeOrder? _officeOrder;
+
+    [NotMapped]
+    [ObservableProperty]
+    private CustomerServiceOrder? _customerServiceOrder;
 }

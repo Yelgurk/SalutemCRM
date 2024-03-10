@@ -28,7 +28,7 @@ public partial class MainViewModel : ViewModelBase
             for (var CatDeep = CatTree; CatDeep.First().Deep != MaxDeep;)
             {
                 foreach (var Cat in CatDeep)
-                    Cat.SubCategories = db.WarehouseCategories.Where(wc => wc.ParentCategoryForeignKey == Cat.Id).ToList();
+                    Cat.SubCategories = new ObservableCollection<WarehouseCategory>(db.WarehouseCategories.Where(wc => wc.ParentCategoryForeignKey == Cat.Id).ToList());
 
                 CatDeep = CatDeep.SelectMany(ct => ct.SubCategories).ToList();
                 Last = CatDeep.Last();

@@ -1,41 +1,63 @@
-﻿using System.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class ManufactureProcess
+public partial class ManufactureProcess : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int EmployeeForeignKey { get; set; }
-    [ForeignKey("EmployeeForeignKey")]
-    public User Employee { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _employeeForeignKey;
 
-    public int ManufactureForeignKey { get; set; }
-    [ForeignKey("ManufactureForeignKey")]
-    public Manufacture Manufacture { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _manufactureForeignKey;
 
-    public int ManufactureDutyForeignKey { get; set; }
-    [ForeignKey("ManufactureDutyForeignKey")]
-    public ManufacturerDuty ManufacturerDuty { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _manufactureDutyForeignKey;
 
-    public Task_Status TaskStatus { get; set; }
-    public int Queue { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private Task_Status _taskStatus;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime RecordDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _queue;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime DeadlineDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _recordDT;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? StartedDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _deadlineDT;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? CompletedDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _startedDT;
+
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _completedDT;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private User? _employee;
+
+    [NotMapped]
+    [ObservableProperty]
+    private Manufacture? _manufacture;
+
+    [NotMapped]
+    [ObservableProperty]
+    private ManufacturerDuty? _manufacturerDuty;
 }

@@ -1,22 +1,31 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class Vendor
+public partial class Vendor : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    [StringLength(200)]
-    public string Name { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _name = null!;
 
-    [StringLength(200)]
-    public string Address { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _address = null!;
 
-    [StringLength(200)]
-    public string? AdditionalInfo { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private string? _additionalInfo;
 
-    public List<WarehouseOrder> WarehouseOrders { get; set; } = new();
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<WarehouseOrder> _warehouseOrders = new();
 }

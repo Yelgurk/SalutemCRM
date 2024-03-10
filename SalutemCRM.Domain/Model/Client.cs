@@ -1,33 +1,30 @@
 ﻿
-using ReactiveUI;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class Client : ModelBase
+public partial class Client : ObservableObject
 {
     [NotMapped]
+    [ObservableProperty]
     private int _id;
+
     [NotMapped]
+    [ObservableProperty]
     private string _name = null!;
+
     [NotMapped]
+    [ObservableProperty]
     private string _address = null!;
+
     [NotMapped]
+    [ObservableProperty]
     private string? _additionalInfo;
 
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get => _id; set => OnPropertyChanged(ref _id, value); }
-
-    [StringLength(200)]
-    public string Name { get => _name; set => OnPropertyChanged(ref _name, value); }
-
-    [StringLength(200)]
-    public string Address { get => _address; set => OnPropertyChanged(ref _address, value); }
-
-    [StringLength(200)]
-    public string? AdditionalInfo { get => _additionalInfo; set => OnPropertyChanged(ref _additionalInfo, value); }
-
-    public List<OfficeOrder> OfficeOrders { get; set; } = new();
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<OfficeOrder> _officeOrders = new();
 }

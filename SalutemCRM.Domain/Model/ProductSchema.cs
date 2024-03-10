@@ -1,21 +1,34 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class ProductSchema
+public partial class ProductSchema : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int ProductTemplateForeignKey { get; set; }
-    [ForeignKey("ProductTemplateForeignKey")]
-    public ProductTemplate ProductTemplate { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _productTemplateForeignKey;
 
-    public int WarehouseItemForeignKey { get; set; }
-    [ForeignKey("WarehouseItemForeignKey")]
-    public WarehouseItem WarehouseItem { get; set; } = null!;
-    
-    public double Count { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _warehouseItemForeignKey;
+
+    [NotMapped]
+    [ObservableProperty]
+    private double _count;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ProductTemplate? _productTemplate;
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseItem? _warehouseItem;
 }

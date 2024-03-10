@@ -1,27 +1,42 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class CustomerService
+public partial class CustomerService : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int EmployeeForeignKey { get; set; }
-    [ForeignKey("EmployeeForeignKey")]
-    public User Employee { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _employeeForeignKey;
 
-    public int CustomerServiceOrderForeignKey { get; set; }
-    [ForeignKey("CustomerServiceOrderForeignKey")]
-    public CustomerServiceOrder CustomerServiceOrder { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _customerServiceOrderForeignKey;
 
-    public Task_Status TaskStatus { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private Task_Status _taskStatus;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? StartedDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _startedDT;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? CompletedDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _completedDT;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private User? _employee;
+
+    [NotMapped]
+    [ObservableProperty]
+    private CustomerServiceOrder? _customerServiceOrder;
 }

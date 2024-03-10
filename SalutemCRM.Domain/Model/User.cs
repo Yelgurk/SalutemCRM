@@ -8,43 +8,66 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using SalutemCRM.Domain.Modell;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class User
+public partial class User : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    [Required]
-    [MaxLength(200)]
-    public int UserRoleForeignKey { get; set; }
-    [ForeignKey("UserRoleForeignKey")]
-    public UserRole UserRole { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _userRoleForeignKey;
 
-    [DefaultValue(true)]
-    public bool IsActive { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private bool _isActive;
 
-    [Required]
-    [MaxLength(200)]
-    public string Login { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _login = null!;
 
-    [Required]
-    [MaxLength(200)]
-    public string PasswordMD5 { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _passwordMD5 = null!;
 
-    [Required]
-    [MaxLength(200)]
-    public string FirstName { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _firstName = null!;
 
-    [Required]
-    [MaxLength(200)]
-    public string LastName { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _lastName = null!;
 
-    public List<ManufactureProcess> ManufactureProcesses { get; set; } = new();
-    public List<OfficeOrder> OfficeOrders { get; set; } = new();
-    public List<WarehouseOrder> WarehouseOrders { get; set; } = new();
-    public List<CustomerServiceOrder> CustomerServiceOrders { get; set; } = new();
-    public List<CustomerService> CustomerServices { get; set; } = new();
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private UserRole? _userRole;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<ManufactureProcess> _manufactureProcesses = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<OfficeOrder> _officeOrders = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<WarehouseOrder> _warehouseOrders = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<CustomerServiceOrder> _customerServiceOrders = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<CustomerService> _customerServices = new();
 }

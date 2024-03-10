@@ -1,30 +1,50 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class WarehouseItem
+public partial class WarehouseItem : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int? WarehouseCategoryForeignKey { get; set; }
-    [ForeignKey("WarehouseCategoryForeignKey")]
-    public WarehouseCategory? Category { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _warehouseCategoryForeignKey;
 
-    [MaxLength(200)]
-    public string Name { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _name = null!;
 
-    [MaxLength(200)]
-    public string? AdditionalInfo { get; set; }
-    
-    [MaxLength(200)]
-    public string Code { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _code = null!;
 
-    public double CountRequired { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private string? _additionalInfo;
 
-    public List<WarehouseSupply> WarehouseSupplying { get; set; } = new();
-    public List<ProductSchema> ProductSchemas { get; set; } = new();
+    [NotMapped]
+    [ObservableProperty]
+    private double _countRequired;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseCategory? _category;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<WarehouseSupply> _warehouseSupplying = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<ProductSchema> _productSchemas = new();
 }

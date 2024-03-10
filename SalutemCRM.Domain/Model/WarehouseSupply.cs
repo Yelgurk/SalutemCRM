@@ -1,43 +1,83 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class WarehouseSupply
+public partial class WarehouseSupply : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int WarehouseItemForeignKey { get; set; }
-    [ForeignKey("WarehouseItemForeignKey")]
-    public WarehouseItem WarehouseItem { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _warehouseItemForeignKey;
 
-    public int WarehouseOrderForeignKey { get; set; }
-    [ForeignKey("WarehouseOrderForeignKey")]
-    public WarehouseOrder WarehouseOrder { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private int _warehouseOrderForeignKey;
 
-    public Delivery_Status DeliveryStatus { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private Delivery_Status _deliveryStatus;
 
-    [MaxLength(200)]
-    public string Code { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _code = null!;
 
-    [StringLength(200)]
-    public string Currency { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    [NotifyPropertyChangedFor(nameof(PriceSingleBYN))]
+    private string _currency = null!;
 
-    public double UnitToBYNConversion { get; set; }
-    public double PriceRequired { get; set; }
-    public double PriceTotal { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    [NotifyPropertyChangedFor(nameof(PriceSingleBYN))]
+    private double _unitToBYNConversion;
 
-    public double Count { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private double _priceRequired;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime RecordDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    [NotifyPropertyChangedFor(nameof(PriceSingleBYN))]
+    private double _priceTotal;
 
-    public List<MaterialFlow> MaterialFlows { get; set; } = new();
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    [NotifyPropertyChangedFor(nameof(PriceSingleBYN))]
+    private double _count;
+
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _recordDT;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseItem _warehouseItem = null!;
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseOrder _warehouseOrder = null!;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _materialFlows = new();
+
+
 
     [NotMapped]
     public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }

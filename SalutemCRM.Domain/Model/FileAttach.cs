@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,28 +9,43 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public class FileAttach
+public partial class FileAttach : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int? OfficeOrderForeignKey { get; set; }
-    [ForeignKey("OfficeOrderForeignKey")]
-    public OfficeOrder? OfficeOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _officeOrderForeignKey;
 
-    public int? WarehouseOrderForeignKey { get; set; }
-    [ForeignKey("WarehouseOrderForeignKey")]
-    public WarehouseOrder? WarehouseOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _warehouseOrderForeignKey;
 
-    public int? CustomerServiceOrderForeignKey { get; set; }
-    [ForeignKey("CustomerServiceOrderForeignKey")]
-    public CustomerServiceOrder? CustomerServiceOrder { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _customerServiceOrderForeignKey;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime RecordDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _recordDT;
 
-    [Required]
-    public string FileName { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _fileName = null!;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private OfficeOrder? _officeOrder;
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseOrder? _warehouseOrder;
+
+    [NotMapped]
+    [ObservableProperty]
+    private CustomerServiceOrder? _customerServiceOrder;
 }

@@ -1,29 +1,37 @@
 ﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public class Logging
+public partial class Logging : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int UserId { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _userId;
 
-    [MaxLength(200)]
-    public string UserLogin { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _userLogin = null!;
 
-    [MaxLength(200)]
-    public string UserFirstName { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _userFirstName = null!;
 
-    [MaxLength(200)]
-    public string UserLastName { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _userLastName = null!;
 
-    public string SQLQuery { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private string _sQLQuery = null!;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime RecordDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _recordDT;
 }

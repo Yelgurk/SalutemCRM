@@ -1,56 +1,104 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public class CustomerServiceOrder
+public partial class CustomerServiceOrder : ObservableObject
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int _id;
 
-    public int? OfficeManagerID { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _stockManagerForeignKey;
 
-    public int? StockManagerForeignKey { get; set; }
-    [ForeignKey("StockManagerForeignKey")]
-    public User? StockManager { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private int? _manufactureForeignKey;
 
-    public int? ManufactureForeignKey { get; set; }
-    [ForeignKey("ManufactureForeignKey")]
-    public Manufacture? Manufacture { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private Payment_Status _paymentAgreement;
 
-    public Payment_Status PaymentAgreement { get; set; }
-    public Payment_Status PaymentStatus { get; set; }
-    public Task_Status TaskStatus { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private Payment_Status _paymentStatus;
 
-    [MaxLength(200)]
-    public string AdditionalInfo { get; set; } = null!;
+    [NotMapped]
+    [ObservableProperty]
+    private Task_Status _taskStatus;
 
-    [StringLength(200)]
-    public string Currency { get; set; } = null;
+    [NotMapped]
+    [ObservableProperty]
+    private string _additionalInfo = null!;
 
-    public double UnitToBYNConversion { get; set; }
-    public double PriceRequired { get; set; }
-    public double PriceTotal { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    private string _currency = null!;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime RecordDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    private double _unitToBYNConversion;
 
-    [Required]
-    [Column(TypeName = "datetime2")]
-    public DateTime DeadlineDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private double _priceRequired;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? StartedDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
+    private double _priceTotal;
 
-    [Column(TypeName = "datetime2")]
-    public DateTime? CompletedDT { get; set; }
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _recordDT;
 
-    public List<Payment> Payments { get; set; } = new();
-    public List<MaterialFlow> MaterialFlows { get; set; } = new();
-    public List<CustomerService> CustomerServices { get; set; } = new();
-    public List<FileAttach> FileAttachs { get; set; } = new();
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _deadlineDT;
+
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _startedDT;
+
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime? _completedDT;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private User? _stockManager;
+
+    [NotMapped]
+    [ObservableProperty]
+    private Manufacture? _manufacture;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<Payment> _payments = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _materialFlows = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<CustomerService> _customerServices = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<FileAttach> _fileAttachs = new();
+
+
 
     [NotMapped]
     public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
