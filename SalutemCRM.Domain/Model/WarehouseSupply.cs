@@ -27,7 +27,7 @@ public partial class WarehouseSupply : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private string _code = null!;
+    private string? _vendorCode;
 
     [NotMapped]
     [ObservableProperty]
@@ -53,9 +53,13 @@ public partial class WarehouseSupply : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
+    private double _orderCount;
+
+    [NotMapped]
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
     [NotifyPropertyChangedFor(nameof(PriceSingleBYN))]
-    private double _count;
+    private double _inStockCount;
 
     [NotMapped]
     [ObservableProperty]
@@ -83,5 +87,5 @@ public partial class WarehouseSupply : ObservableObject
     public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
 
     [NotMapped]
-    public double PriceSingleBYN { get => PriceTotalBYN / Count!; }
+    public double PriceSingleBYN { get => PriceTotalBYN / InStockCount; }
 }

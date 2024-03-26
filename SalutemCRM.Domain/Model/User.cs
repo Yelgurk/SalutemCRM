@@ -70,4 +70,8 @@ public partial class User : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<CustomerService> _customerServices = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _materialsFlow = new();
 }

@@ -22,7 +22,7 @@ public partial class WarehouseItem : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private string _code = null!;
+    private string _innerCode = null!;
 
     [NotMapped]
     [ObservableProperty]
@@ -30,9 +30,11 @@ public partial class WarehouseItem : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
+    private string _mesurementUnit = null!;
+
+    [NotMapped]
+    [ObservableProperty]
     private double _countRequired;
-
-
 
     [NotMapped]
     [ObservableProperty]
