@@ -53,23 +53,11 @@ public partial class User : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<ManufactureProcess> _manufactureProcesses = new();
+    private ObservableCollection<Order> _orders = new();
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<OfficeOrder> _officeOrders = new();
-
-    [NotMapped]
-    [ObservableProperty]
-    private ObservableCollection<WarehouseOrder> _warehouseOrders = new();
-
-    [NotMapped]
-    [ObservableProperty]
-    private ObservableCollection<CustomerServiceOrder> _customerServiceOrders = new();
-
-    [NotMapped]
-    [ObservableProperty]
-    private ObservableCollection<CustomerService> _customerServices = new();
+    private ObservableCollection<OrderProcess> _orderProcesses = new();
 
     [NotMapped]
     [ObservableProperty]

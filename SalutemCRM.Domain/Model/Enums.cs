@@ -32,7 +32,7 @@ public enum Task_Status {
 };
 
 public enum Order_Type {
-    Manufacture,
-    StockItem,
-    Manufacture_StockItem
-}; 
+    ManagerSale,
+    CustomerService,
+    WarehouseRestocking
+};

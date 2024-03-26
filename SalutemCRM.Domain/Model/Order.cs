@@ -17,7 +17,7 @@ public partial class Order : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int? _employeeForeignkey;
+    private int _employeeForeignkey;
 
     [NotMapped]
     [ObservableProperty]
@@ -27,11 +27,11 @@ public partial class Order : ObservableObject
     [ObservableProperty]
     private int? _vendorForeignKey;
 
+
+
     [NotMapped]
     [ObservableProperty]
-    private int? _manufactureForeignKey;
-
-
+    private Order_Type _orderType;
 
     [NotMapped]
     [ObservableProperty]
@@ -102,14 +102,6 @@ public partial class Order : ObservableObject
     [ObservableProperty]
     private Vendor? _vendor;
 
-    [NotMapped]
-    [ObservableProperty]
-    private Manufacture? _manufacture;
-
-    
-
-
-
     
 
     [NotMapped]
@@ -134,7 +126,7 @@ public partial class Order : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<CustomerService> _customerServices = new();
+    private ObservableCollection<OrderProcess> _orderProcesses = new();
 
 
 

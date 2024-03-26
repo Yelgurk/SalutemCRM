@@ -26,5 +26,5 @@ public partial class Client : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<OfficeOrder> _officeOrders = new();
+    private ObservableCollection<Order> _orders = new();
 }

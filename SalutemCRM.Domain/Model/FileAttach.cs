@@ -17,15 +17,11 @@ public partial class FileAttach : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int? _officeOrderForeignKey;
+    private int? _orderForeignKey;
 
     [NotMapped]
     [ObservableProperty]
-    private int? _warehouseOrderForeignKey;
-
-    [NotMapped]
-    [ObservableProperty]
-    private int? _customerServiceOrderForeignKey;
+    private int? _warehouseItemForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -39,13 +35,9 @@ public partial class FileAttach : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private OfficeOrder? _officeOrder;
+    private Order? _order;
 
     [NotMapped]
     [ObservableProperty]
-    private WarehouseOrder? _warehouseOrder;
-
-    [NotMapped]
-    [ObservableProperty]
-    private CustomerServiceOrder? _customerServiceOrder;
+    private WarehouseItem? _warehouseItem;
 }

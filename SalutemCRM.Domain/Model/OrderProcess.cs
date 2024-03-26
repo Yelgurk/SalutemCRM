@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class ManufactureProcess : ObservableObject
+public partial class OrderProcess : ObservableObject
 {
     [NotMapped]
     [ObservableProperty]
@@ -17,11 +17,15 @@ public partial class ManufactureProcess : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int _manufactureForeignKey;
+    private int? _manufactureForeignKey;
 
     [NotMapped]
     [ObservableProperty]
-    private int _manufactureDutyForeignKey;
+    private int? _orderForeignKey;
+
+    [NotMapped]
+    [ObservableProperty]
+    private int _orderDutyForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -59,5 +63,9 @@ public partial class ManufactureProcess : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ManufacturerDuty? _manufacturerDuty;
+    private Order? _order;
+
+    [NotMapped]
+    [ObservableProperty]
+    private OrderDuty? _orderDuty;
 }

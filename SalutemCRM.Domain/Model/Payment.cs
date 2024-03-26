@@ -12,15 +12,7 @@ public partial class Payment : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int? _warehouseOrderForeignKey;
-
-    [NotMapped]
-    [ObservableProperty]
-    private int? _officeOrderForeignKey;
-
-    [NotMapped]
-    [ObservableProperty]
-    private int? _customerServiceOrderForeignKey;
+    private int? _orderForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -46,13 +38,5 @@ public partial class Payment : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private WarehouseOrder? _warehouseOrder;
-
-    [NotMapped]
-    [ObservableProperty]
-    private OfficeOrder? _officeOrder;
-
-    [NotMapped]
-    [ObservableProperty]
-    private CustomerServiceOrder? _customerServiceOrder;
+    private Order? _order;
 }

@@ -13,7 +13,7 @@ public partial class Manufacture : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int? _officeOrderForeignKey;
+    private int? _orderForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -48,7 +48,7 @@ public partial class Manufacture : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private OfficeOrder? _officeOrder;
+    private Order? _order;
 
 
 
@@ -59,9 +59,5 @@ public partial class Manufacture : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<ManufactureProcess> _manufactureProcesses = new();
-
-    [NotMapped]
-    [ObservableProperty]
-    private ObservableCollection<CustomerServiceOrder> _customerServiceOrders = new();
+    private ObservableCollection<OrderProcess> _orderProcesses = new();
 }

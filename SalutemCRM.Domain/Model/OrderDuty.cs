@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class ManufacturerDuty : ObservableObject
+public partial class OrderDuty : ObservableObject
 {
     [NotMapped]
     [ObservableProperty]
@@ -19,5 +19,5 @@ public partial class ManufacturerDuty : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<ManufactureProcess> _manufactureProcesses = new();
+    private ObservableCollection<OrderProcess> _orderProcesses = new();
 }

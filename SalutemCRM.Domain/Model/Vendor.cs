@@ -27,5 +27,5 @@ public partial class Vendor : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<WarehouseOrder> _warehouseOrders = new();
+    private ObservableCollection<Order> _orders = new();
 }

@@ -12,7 +12,7 @@ public partial class MaterialFlow : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int _stockManagerForeignKey;
+    private int _employeeForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -24,11 +24,7 @@ public partial class MaterialFlow : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private int? _officeOrderForeignKey;
-
-    [NotMapped]
-    [ObservableProperty]
-    private int? _customerServiceForeignKey;
+    private int? _orderForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -40,17 +36,13 @@ public partial class MaterialFlow : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private bool _isOrderIncoming;
-
-    [NotMapped]
-    [ObservableProperty]
     private DateTime _recordDT;
 
 
 
     [NotMapped]
     [ObservableProperty]
-    private User? _stockManager;
+    private User? _employee;
 
     [NotMapped]
     [ObservableProperty]
@@ -62,9 +54,5 @@ public partial class MaterialFlow : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private OfficeOrder? _officeOrder;
-
-    [NotMapped]
-    [ObservableProperty]
-    private CustomerServiceOrder? _customerServiceOrder;
+    private Order? _order;
 }

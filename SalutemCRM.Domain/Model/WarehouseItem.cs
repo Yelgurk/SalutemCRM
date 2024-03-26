@@ -49,4 +49,8 @@ public partial class WarehouseItem : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<ProductSchema> _productSchemas = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<FileAttach> _fileAttachs = new();
 }
