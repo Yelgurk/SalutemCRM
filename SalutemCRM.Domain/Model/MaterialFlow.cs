@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
@@ -9,6 +10,10 @@ public partial class MaterialFlow : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private int _id;
+
+    [NotMapped]
+    [ObservableProperty]
+    private int? _returnedForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -32,13 +37,25 @@ public partial class MaterialFlow : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
-    private double _count;
+    private double _countReservedFromStock;
+
+    [NotMapped]
+    [ObservableProperty]
+    private double _countUsed;
+
+    [NotMapped]
+    [ObservableProperty]
+    private double _countReturnedToStock;
 
     [NotMapped]
     [ObservableProperty]
     private DateTime _recordDT;
 
 
+
+    [NotMapped]
+    [ObservableProperty]
+    private MaterialFlow? _returnedMaterial;
 
     [NotMapped]
     [ObservableProperty]
@@ -55,4 +72,14 @@ public partial class MaterialFlow : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private Order? _order;
+
+
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _exchangedMaterials = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<FileAttach> _fileAttachs = new();
 }

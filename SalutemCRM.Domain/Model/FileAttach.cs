@@ -25,6 +25,10 @@ public partial class FileAttach : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
+    private int? _materialFlowForeignKey;
+
+    [NotMapped]
+    [ObservableProperty]
     private DateTime _recordDT;
 
     [NotMapped]
@@ -40,4 +44,8 @@ public partial class FileAttach : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private WarehouseItem? _warehouseItem;
+
+    [NotMapped]
+    [ObservableProperty]
+    private MaterialFlow? _materialFlow;
 }

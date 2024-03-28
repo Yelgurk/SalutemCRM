@@ -404,6 +404,11 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(fs => fs.WarehouseItemForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
+            .HasOne(fa => fa.MaterialFlow)
+            .WithMany(oo => oo.FileAttachs)
+            .HasForeignKey(fs => fs.MaterialFlowForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder
             .Property(fa => fa.RecordDT)
             .HasColumnType("datetime2");
         builder
@@ -695,6 +700,11 @@ public partial class DatabaseContext : DbContext
             .Property(mf => mf.Id)
             .ValueGeneratedOnAdd();
 
+        builder
+            .HasOne(mf => mf.ReturnedMaterial)
+            .WithMany(u => u.ExchangedMaterials)
+            .HasForeignKey(mf => mf.ReturnedForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
         builder
             .HasOne(mf => mf.Employee)
             .WithMany(u => u.MaterialsFlow)
