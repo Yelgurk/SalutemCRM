@@ -4,11 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:SalutemCRM.Views"
+		xmlns:control="clr-namespace:SalutemCRM.Control"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SalutemCRM.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM">
 	<Grid>
-		<views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+		<!--views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/-->
+		<control:SearchVendorControl/>
 	</Grid>
 </Window>

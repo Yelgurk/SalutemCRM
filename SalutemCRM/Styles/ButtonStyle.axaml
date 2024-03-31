@@ -85,7 +85,7 @@
 	</Style>
 
 	<!-- Button - iconed (small/only icons) + colors -->
-	
+
 	<Style Selector="Button.iconed">
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -103,10 +103,14 @@
 	</Style>
 
 	<Style Selector="Button /template/ Border">
-		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
 		<Setter Property="VerticalAlignment" Value="Stretch"/>
 		<Setter Property="CornerRadius" Value="0"/>
 		<Setter Property="Padding" Value="5"/>
+	</Style>
+
+	<Style Selector="Button.rounded /template/ Border">
+		<Setter Property="CornerRadius" Value="{Binding $parent[Button].CornerRadius}"/>
 	</Style>
 
 	<Style Selector="Button /template/ Border">

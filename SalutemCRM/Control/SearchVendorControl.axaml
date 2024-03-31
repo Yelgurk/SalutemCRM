@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemCRM.Control.SearchVendorControl"
+			 xmlns:controls="using:SalutemCRM.Control"
+			 xmlns:conv="using:SalutemCRM.Converter"
+			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
+			 x:DataType="vm:SearchVendorControlViewModel"
+			 Design.Width="600"
+			 Design.Height="400">
+	<UserControl.DataContext>
+		<vm:SearchVendorControlViewModel/>
+	</UserControl.DataContext>
+	
+	<UserControl.Resources>
+		<conv:NumberInversionConverter x:Key="NumberInversionConverter"/>
+	</UserControl.Resources>
+	
+	<Canvas>
+		<StackPanel Orientation="Horizontal"
+					Canvas.Left="{Binding $parent[Canvas].Bounds.Width, Converter={StaticResource NumberInversionConverter}}">
+			<Grid VerticalAlignment="Stretch"
+				  HorizontalAlignment="Stretch"
+				  Background="White"
+				  RowDefinitions="auto, *"
+				  Width="{Binding $parent[Canvas].Bounds.Width}">
+				<TextBox Classes="custom header always"
+						 Grid.Row="0"
+						 Watermark="Название компании"
+						 Margin="5"/>
+				<ListBox Classes="custom"
+						 Grid.Row="1">
+
+				</ListBox>
+			</Grid>
+			<Grid VerticalAlignment="Stretch"
+				  HorizontalAlignment="Stretch"
+				  Background="White"
+				  RowDefinitions="auto, *"
+				  ColumnDefinitions="*, auto"
+				  Width="{Binding $parent[Canvas].Bounds.Width}">
+				<TextBox Classes="custom header always"
+						 Grid.Row="0"
+						 Watermark="Поиск по названию"
+						 Margin="5"
+						 Text="{Binding SearchVendorInputStr}"/>
+				
+				<Button Classes="custom iconed orange plus rounded"
+						Width="{Binding $self.Bounds.Height}"
+						CornerRadius="5"
+						Margin="0 5 5 5"
+						Grid.Column="1"
+						IsVisible="True"/>
+				
+				<ListBox Classes="custom"
+						 Grid.Row="1"
+						 Grid.ColumnSpan="2"
+						 ItemsSource="{Binding Vendors}"
+						 SelectedItem="{Binding SelectedItem}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<DockPanel VerticalAlignment="Center">
+								<TextBlock Text="{Binding Name}" Margin="10 0 20 0"/>
+								<TextBlock Text="["/>
+								<TextBlock Text="{Binding Address}"/>
+								<TextBlock Text="]"/>
+							</DockPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</StackPanel>
+	</Canvas>
+</UserControl>

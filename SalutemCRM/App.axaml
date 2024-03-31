@@ -9,11 +9,11 @@
     <Application.Styles>
         <FluentTheme />
 		<StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
-		<StyleInclude Source="/Control/ButtonStyle.axaml"/>
-		<StyleInclude Source="/Control/ListStyle.axaml"/>
-		<StyleInclude Source="/Control/TextBoxStyle.axaml"/>
-		<StyleInclude Source="/Control/ProgressBarStyle.axaml"/>
-		<StyleInclude Source="/Control/SwitchStyle.axaml"/>
-		<StyleInclude Source="/CustomControl/ManufactureOrderControl.axaml"/>
+		<StyleInclude Source="/Styles/ButtonStyle.axaml"/>
+		<StyleInclude Source="/Styles/ListStyle.axaml"/>
+		<StyleInclude Source="/Styles/TextBoxStyle.axaml"/>
+		<StyleInclude Source="/Styles/ProgressBarStyle.axaml"/>
+		<StyleInclude Source="/Styles/SwitchStyle.axaml"/>
+		<StyleInclude Source="/Control/ManufactureOrderControl.axaml"/>
     </Application.Styles>
 </Application>
