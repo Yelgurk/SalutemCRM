@@ -107,7 +107,7 @@
 								HorizontalAlignment="Stretch"
 								Content="Добавить новый +"
 								FontWeight="SemiBold"
-								Command="{Binding AddNewVendor}"/>
+								Command="{Binding $parent[UserControl].DataContext.AddNewVendor}"/>
 					</StackPanel>
 				</ScrollViewer>
 			</Grid>
@@ -153,7 +153,8 @@
 								Margin="10 5"
 								HorizontalAlignment="Stretch"
 								Content="Применить изменения"
-								FontWeight="SemiBold"/>
+								FontWeight="SemiBold"
+								Command="{Binding $parent[UserControl].DataContext.EditVendor}"/>
 					</StackPanel>
 				</ScrollViewer>
 			</Grid>
