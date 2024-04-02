@@ -68,4 +68,6 @@ public partial class OrderProcess : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private OrderDuty? _orderDuty;
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

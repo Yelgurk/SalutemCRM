@@ -26,4 +26,6 @@ public partial class UserRole : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<User> _users = new();
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

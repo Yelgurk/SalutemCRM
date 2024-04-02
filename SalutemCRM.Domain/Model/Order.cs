@@ -132,4 +132,6 @@ public partial class Order : ObservableObject
 
     [NotMapped]
     public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

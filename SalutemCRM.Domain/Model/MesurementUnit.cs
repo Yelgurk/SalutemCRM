@@ -13,4 +13,6 @@ public partial class MesurementUnit : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private string _name = null!;
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

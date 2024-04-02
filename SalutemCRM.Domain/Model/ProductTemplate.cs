@@ -38,4 +38,6 @@ public partial class ProductTemplate : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<ProductSchema> _productSchemas = new();
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

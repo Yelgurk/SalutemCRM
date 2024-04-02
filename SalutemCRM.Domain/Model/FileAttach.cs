@@ -48,4 +48,6 @@ public partial class FileAttach : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private MaterialFlow? _materialFlow;
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

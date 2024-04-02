@@ -20,4 +20,6 @@ public partial class OrderDuty : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<OrderProcess> _orderProcesses = new();
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

@@ -2,6 +2,8 @@
 
 namespace SalutemCRM;
 
+public delegate void SearchHandler(string keyword);
+
 public static partial class Extensions
 {
     public static T? Cast<T>(this object obj) where T : class => obj as T;

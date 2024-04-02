@@ -39,4 +39,6 @@ public partial class Payment : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private Order? _order;
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

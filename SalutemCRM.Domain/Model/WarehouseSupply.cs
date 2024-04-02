@@ -95,4 +95,6 @@ public partial class WarehouseSupply : ObservableObject
 
     [NotMapped]
     public double InStockPriceTotalBYN { get => OrderPriceTotalBYN / OrderCount * InStockCount; }
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

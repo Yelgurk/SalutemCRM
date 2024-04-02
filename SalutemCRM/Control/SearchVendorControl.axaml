@@ -9,68 +9,192 @@
 			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
 			 x:DataType="vm:SearchVendorControlViewModel"
 			 Design.Width="600"
-			 Design.Height="400">
+			 Design.Height="400"
+			 Background="White"
+			 IsEnabled="True">
 	<UserControl.DataContext>
 		<vm:SearchVendorControlViewModel/>
 	</UserControl.DataContext>
-	
-	<UserControl.Resources>
-		<conv:NumberInversionConverter x:Key="NumberInversionConverter"/>
-	</UserControl.Resources>
-	
-	<Canvas>
-		<StackPanel Orientation="Horizontal"
-					Canvas.Left="{Binding $parent[Canvas].Bounds.Width, Converter={StaticResource NumberInversionConverter}}">
-			<Grid VerticalAlignment="Stretch"
-				  HorizontalAlignment="Stretch"
-				  Background="White"
-				  RowDefinitions="auto, *"
-				  Width="{Binding $parent[Canvas].Bounds.Width}">
-				<TextBox Classes="custom header always"
-						 Grid.Row="0"
-						 Watermark="Название компании"
-						 Margin="5"/>
-				<ListBox Classes="custom"
-						 Grid.Row="1">
 
-				</ListBox>
-			</Grid>
-			<Grid VerticalAlignment="Stretch"
-				  HorizontalAlignment="Stretch"
-				  Background="White"
-				  RowDefinitions="auto, *"
-				  ColumnDefinitions="*, auto"
-				  Width="{Binding $parent[Canvas].Bounds.Width}">
+	<Grid Classes="pages_container"
+		  Classes.is_disabled="{Binding !$parent[UserControl].IsEnabled}">
+		
+		<Grid Classes.selected_page="{Binding Context.IsPage1}"
+			  RowDefinitions="auto, *">
+			
+			<TextBlock Classes="text_header"
+					   Text="Поставщики"/>
+
+			<Grid RowDefinitions="auto, *"
+				  ColumnDefinitions="*, auto">
 				<TextBox Classes="custom header always"
-						 Grid.Row="0"
-						 Watermark="Поиск по названию"
-						 Margin="5"
-						 Text="{Binding SearchVendorInputStr}"/>
-				
+					 Grid.Row="0"
+					 Watermark="Поиск"
+					 Margin="10 5 5 5"
+					 Text="{Binding Context.SearchVendorInputStr}"/>
+
 				<Button Classes="custom iconed orange plus rounded"
 						Width="{Binding $self.Bounds.Height}"
 						CornerRadius="5"
-						Margin="0 5 5 5"
+						Margin="0 5 10 5"
 						Grid.Column="1"
-						IsVisible="True"/>
-				
+						IsVisible="{Binding Context.IsFuncAddNewAvailable}"
+						Command="{Binding GoAddVendor}"/>
+
 				<ListBox Classes="custom"
 						 Grid.Row="1"
 						 Grid.ColumnSpan="2"
-						 ItemsSource="{Binding Vendors}"
-						 SelectedItem="{Binding SelectedItem}">
+						 ItemsSource="{Binding Context.Vendors}"
+						 SelectedItem="{Binding Context.SelectedItem}">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<DockPanel VerticalAlignment="Center">
-								<TextBlock Text="{Binding Name}" Margin="10 0 20 0"/>
-								<TextBlock Text="["/>
-								<TextBlock Text="{Binding Address}"/>
-								<TextBlock Text="]"/>
-							</DockPanel>
+							<Grid>
+								<Grid ColumnDefinitions="auto, 20, auto, auto, auto, *"
+									  VerticalAlignment="Center">
+									<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Margin="10 0 0 0"/>
+									<TextBlock Grid.Column="2" Text="[" VerticalAlignment="Center"/>
+									<TextBlock Grid.Column="3" Text="{Binding Address}" VerticalAlignment="Center"/>
+									<TextBlock Grid.Column="4" Text="]" VerticalAlignment="Center"/>
+								</Grid>
+								<Button Grid.Column="5"
+										HorizontalAlignment="Right"
+										Margin="0 2 15 2"
+										Classes="custom iconed blue rounded sys edit"
+										Command="{Binding $parent[UserControl].DataContext.GoEditVendor}"
+										CommandParameter="{Binding}"/>
+							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
 			</Grid>
-		</StackPanel>
-	</Canvas>
+		</Grid>
+
+		<Grid Classes.selected_page="{Binding Context.IsPage2}"
+			  RowDefinitions="auto, *">
+
+			<DockPanel HorizontalAlignment="Center"
+					   Margin="0 5 0 0">
+				<Button Classes="custom orange"
+						Height="30"
+						Content="Полный список"
+						Command="{Binding GoBack}"/>
+
+				<TextBlock Classes="text_header"
+						   Text=" &gt; Новый поставщик"/>
+			</DockPanel>
+
+			<Grid>
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Background="{Binding $parent[UserControl].Background}">
+						<TextBox Classes="custom header new_input"
+								 Watermark="Название организации"
+								 Text="{Binding Context.NewVendor.Name}"/>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Адрес"
+								 Text="{Binding Context.NewVendor.Address}"/>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Дополнительная инфомрация"
+								 Text="{Binding Context.NewVendor.AdditionalInfo}"
+								 Height="100"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"/>
+						
+						<Button Classes="custom orange whiteText"
+								Height="40"
+								Margin="10 5"
+								HorizontalAlignment="Stretch"
+								Content="Добавить новый +"
+								FontWeight="SemiBold"
+								Command="{Binding AddNewVendor}"/>
+					</StackPanel>
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+
+		<Grid Classes.selected_page="{Binding Context.IsPage3}"
+			  RowDefinitions="auto, *">
+			<DockPanel HorizontalAlignment="Center"
+					   Margin="0 5 0 0">
+				<Button Classes="custom orange"
+						Height="30"
+						Content="Отмена"
+						Command="{Binding GoBack}"/>
+
+				<TextBlock Classes="text_header"
+						   Text=" Редактировать ["/>
+				<TextBlock Classes="text_header"
+						   Text="{Binding Context.EditVendor.Name}"/>
+				<TextBlock Classes="text_header"
+						   Text="]"/>
+			</DockPanel>
+
+			<Grid>
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Background="{Binding $parent[UserControl].Background}">
+						<TextBox Classes="custom header new_input"
+								 Watermark="Название организации"
+								 Text="{Binding Context.EditTempVendor.Name}"/>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Адрес"
+								 Text="{Binding Context.EditTempVendor.Address}"/>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Дополнительная инфомрация"
+								 Text="{Binding Context.EditTempVendor.AdditionalInfo}"
+								 Height="100"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"/>
+
+						<Button Classes="custom orange whiteText"
+								Height="40"
+								Margin="10 5"
+								HorizontalAlignment="Stretch"
+								Content="Применить изменения"
+								FontWeight="SemiBold"/>
+					</StackPanel>
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="Grid.pages_container.is_disabled">
+			<Setter Property="Opacity" Value="0.5"/>
+		</Style>
+		
+		<Style Selector="Grid.pages_container.is_disabled TextBlock#PART_FloatingWatermark">
+			<Setter Property="Opacity" Value="0"/>
+		</Style>
+			
+		<Style Selector="Grid.pages_container > Grid > Grid">
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
+		</Style>
+
+		<Style Selector=" Grid.pages_container > Grid">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+		
+		<Style Selector=" Grid.pages_container > Grid.selected_page">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+
+		<Style Selector="Grid.pages_container > Grid > Grid">
+			<Setter Property="Grid.Row" Value="1"/>
+		</Style>
+
+		<Style Selector="Grid.pages_container TextBlock.text_header">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="16"/>
+			<Setter Property="Margin" Value="0 10"/>
+		</Style>
+
+		<Style Selector="TextBox.custom.header.new_input">
+			<Setter Property="Margin" Value="10 8 10 0"/>
+		</Style>
+	</UserControl.Styles>
 </UserControl>

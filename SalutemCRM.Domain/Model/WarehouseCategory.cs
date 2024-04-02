@@ -38,4 +38,6 @@ public partial class WarehouseCategory : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<WarehouseItem> _warehouseItems = new();
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

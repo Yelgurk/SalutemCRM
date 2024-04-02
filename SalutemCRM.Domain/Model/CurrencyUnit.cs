@@ -9,4 +9,6 @@ public partial class CurrencyUnit : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private string _name = null!;
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

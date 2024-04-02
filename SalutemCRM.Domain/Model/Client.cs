@@ -27,4 +27,6 @@ public partial class Client : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<Order> _orders = new();
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

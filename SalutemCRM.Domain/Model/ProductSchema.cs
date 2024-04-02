@@ -31,4 +31,6 @@ public partial class ProductSchema : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private WarehouseItem? _warehouseItem;
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

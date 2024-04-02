@@ -3,6 +3,12 @@
              x:Class="SalutemCRM.App"
              RequestedThemeVariant="Default">
 	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://SalutemCRM/Assets/Color.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+		
 		<FontFamily x:Key="OpenSans">avares://SalutemCRM/Assets/Font/#Open Sans</FontFamily>
 	</Application.Resources>
 	
@@ -15,5 +21,10 @@
 		<StyleInclude Source="/Styles/ProgressBarStyle.axaml"/>
 		<StyleInclude Source="/Styles/SwitchStyle.axaml"/>
 		<StyleInclude Source="/Control/ManufactureOrderControl.axaml"/>
+
+		<Style Selector="TextBlock">
+			<Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
+			<Setter Property="Foreground" Value="{DynamicResource Primary_DarkBlue}"/>
+		</Style>
     </Application.Styles>
 </Application>

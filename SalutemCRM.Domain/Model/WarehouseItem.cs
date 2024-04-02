@@ -53,4 +53,6 @@ public partial class WarehouseItem : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<FileAttach> _fileAttachs = new();
+
+    public object Clone() { return this.MemberwiseClone(); }
 }
