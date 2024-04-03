@@ -12,7 +12,7 @@
 		<Grid Height="800"
 			  Width="300">
 			<StackPanel VerticalAlignment="Center">
-				<Button Classes="custom whiteText orange demo" Margin="0 0 0 5"/>
+				<Button Classes="custom whiteText orange demo" IsEnabled="False" Margin="0 0 0 5"/>
 				<Button Classes="custom orange stretch demo" Margin="0 0 0 5"/>
 				<Button Classes="custom demo" Margin="0 0 0 5"/>
 				<Button Classes="custom pink demo" Margin="0 0 0 5"/>
@@ -22,7 +22,7 @@
 					<Button Classes="iconed close pink" Margin="0 0 0 5"/>
 				</Label>
 
-				<Button Classes="iconed plus orange" Margin="0 0 0 5"/>
+				<Button Classes="iconed plus orange" IsEnabled="False" Margin="0 0 0 5"/>
 				<Button Classes="iconed edit orange" Margin="0 0 0 5"/>
 
 				<Label Height="80" Margin="0" Padding="0">
@@ -71,7 +71,7 @@
 				Opacity="0.15"/>
 		</Setter>
 	</Style>
-
+	
 	<Style Selector="Button.custom.whiteText">
 		<Setter Property="Foreground" Value="White"/>
 	</Style>
@@ -95,6 +95,11 @@
 				</Border>
 			</ControlTemplate>
 		</Setter>
+	</Style>
+
+	<Style Selector="Button.iconed:disabled /template/ Border">
+		<Setter Property="Background" Value="Gray"/>
+		<Setter Property="Opacity" Value="0.5"/>
 	</Style>
 
 	<Style Selector="Button">

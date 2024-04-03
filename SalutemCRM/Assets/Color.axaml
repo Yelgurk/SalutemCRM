@@ -17,4 +17,6 @@
 	<Color x:Key="Sys_Green">#BDECB6</Color>
 	<Color x:Key="Basic_LightGray">#F0F1F5</Color>
 	<Color x:Key="Basic_Orange">#FFEFCE</Color>
+	<Color x:Key="Control_Green">#F0FFF0</Color>
+	<Color x:Key="Control_Orange">#FFE4C4</Color>
 </ResourceDictionary>

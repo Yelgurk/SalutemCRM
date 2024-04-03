@@ -10,8 +10,7 @@
 			 x:DataType="vm:SearchVendorControlViewModel"
 			 Design.Width="600"
 			 Design.Height="400"
-			 Background="White"
-			 IsEnabled="True">
+			 Background="{Binding $self.DataContext.Context.DynamicColor}">
 	<UserControl.DataContext>
 		<vm:SearchVendorControlViewModel/>
 	</UserControl.DataContext>
@@ -26,42 +25,56 @@
 					   Text="Поставщики"/>
 
 			<Grid RowDefinitions="auto, *"
-				  ColumnDefinitions="*, auto">
+				  ColumnDefinitions="*, auto, auto">
 				<TextBox Classes="custom header always"
-					 Grid.Row="0"
-					 Watermark="Поиск"
-					 Margin="10 5 5 5"
-					 Text="{Binding Context.SearchVendorInputStr}"/>
+						 Grid.Row="0"
+						 Watermark="Поиск"
+						 Margin="10 5 5 5"
+						 Text="{Binding Context.SearchVendorInputStr}"/>
 
-				<Button Classes="custom iconed orange plus rounded"
+				<Button Classes="custom iconed pink close rounded"
+						Grid.Column="1"
 						Width="{Binding $self.Bounds.Height}"
 						CornerRadius="5"
 						Margin="0 5 10 5"
-						Grid.Column="1"
+						Command="{Binding ClearSearchCommand}"/>
+				
+				<Button Classes="custom iconed orange plus rounded"
+						Grid.Column="2"
+						Width="{Binding $self.Bounds.Height}"
+						CornerRadius="5"
+						Margin="-5 5 10 5"
 						IsVisible="{Binding Context.IsFuncAddNewAvailable}"
-						Command="{Binding GoAddVendor}"/>
+						Command="{Binding GoAddVendorCommand}"/>
 
 				<ListBox Classes="custom"
 						 Grid.Row="1"
-						 Grid.ColumnSpan="2"
+						 Grid.ColumnSpan="3"
 						 ItemsSource="{Binding Context.Vendors}"
-						 SelectedItem="{Binding Context.SelectedItem}">
+						 SelectedItem="{Binding Context.SelectedVendor}"
+						 ClipToBounds="True">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<Grid>
-								<Grid ColumnDefinitions="auto, 20, auto, auto, auto, *"
-									  VerticalAlignment="Center">
-									<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Margin="10 0 0 0"/>
-									<TextBlock Grid.Column="2" Text="[" VerticalAlignment="Center"/>
-									<TextBlock Grid.Column="3" Text="{Binding Address}" VerticalAlignment="Center"/>
-									<TextBlock Grid.Column="4" Text="]" VerticalAlignment="Center"/>
+								<Grid ColumnDefinitions="auto, *"
+									  RowDefinitions="auto, auto"
+									  VerticalAlignment="Center"
+									  Margin="10 0 0 0">
+									<TextBlock Grid.Row="0" FontSize="16" Margin="0 0 0 -5" Text="{Binding Name}"/>
+									<DockPanel Grid.Row="1">
+										<TextBlock FontSize="12" Text="Поставок: "/>
+										<TextBlock FontSize="12" Text="{Binding Orders.Count}"/>
+										<TextBlock FontSize="12" Text="шт, последняя: "/>
+										<TextBlock FontSize="12" Text="{Binding LastOrderDT}"/>
+									</DockPanel>
 								</Grid>
-								<Button Grid.Column="5"
+								<Button Grid.Column="7"
 										HorizontalAlignment="Right"
 										Margin="0 2 15 2"
 										Classes="custom iconed blue rounded sys edit"
-										Command="{Binding $parent[UserControl].DataContext.GoEditVendor}"
-										CommandParameter="{Binding}"/>
+										Command="{Binding $parent[UserControl].DataContext.GoEditVendorCommand}"
+										CommandParameter="{Binding}"
+										IsVisible="{Binding $parent[UserControl].DataContext.Context.IsFuncEditAvailable}"/>
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
@@ -77,7 +90,7 @@
 				<Button Classes="custom orange"
 						Height="30"
 						Content="Полный список"
-						Command="{Binding GoBack}"/>
+						Command="{Binding GoBackCommand}"/>
 
 				<TextBlock Classes="text_header"
 						   Text=" &gt; Новый поставщик"/>
@@ -107,7 +120,7 @@
 								HorizontalAlignment="Stretch"
 								Content="Добавить новый +"
 								FontWeight="SemiBold"
-								Command="{Binding $parent[UserControl].DataContext.AddNewVendor}"/>
+								Command="{Binding $parent[UserControl].DataContext.AddNewVendorCommand}"/>
 					</StackPanel>
 				</ScrollViewer>
 			</Grid>
@@ -120,7 +133,7 @@
 				<Button Classes="custom orange"
 						Height="30"
 						Content="Отмена"
-						Command="{Binding GoBack}"/>
+						Command="{Binding GoBackCommand}"/>
 
 				<TextBlock Classes="text_header"
 						   Text=" Редактировать ["/>
@@ -154,7 +167,7 @@
 								HorizontalAlignment="Stretch"
 								Content="Применить изменения"
 								FontWeight="SemiBold"
-								Command="{Binding $parent[UserControl].DataContext.EditVendor}"/>
+								Command="{Binding $parent[UserControl].DataContext.EditVendorCommand}"/>
 					</StackPanel>
 				</ScrollViewer>
 			</Grid>
@@ -195,7 +208,7 @@
 		</Style>
 
 		<Style Selector="TextBox.custom.header.new_input">
-			<Setter Property="Margin" Value="10 8 10 0"/>
+			<Setter Property="Margin" Value="10 12 10 0"/>
 		</Style>
 	</UserControl.Styles>
 </UserControl>

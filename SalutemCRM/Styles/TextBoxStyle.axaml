@@ -63,8 +63,8 @@
 
 	<Style Selector="TextBox.custom.header /template/ TextBlock#PART_FloatingWatermark">
 		<Setter Property="Background" Value="{Binding $parent[TextBox].Background}"/>
-		<Setter Property="Padding" Value="5 0"/>
-		<Setter Property="Margin" Value="0 -20 0 0"/>
+		<Setter Property="Padding" Value="5 -4"/>
+		<Setter Property="Margin" Value="0 -22 0 10"/>
 		<Setter Property="VerticalAlignment" Value="Top"/>
 		<Setter Property="HorizontalAlignment" Value="Left"/>
 	</Style>

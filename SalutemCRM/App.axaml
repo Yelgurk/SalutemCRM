@@ -26,5 +26,52 @@
 			<Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
 			<Setter Property="Foreground" Value="{DynamicResource Primary_DarkBlue}"/>
 		</Style>
+
+		<Style Selector="Label.card">
+			<Setter Property="ClipToBounds" Value="False"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border BorderThickness="1"
+							BorderBrush="Gray"
+							ClipToBounds="True"
+							x:Name="PART_CardControlTemplate">
+						<Grid>
+							<Border ClipToBounds="True"
+									CornerRadius="{Binding $parent[Border].CornerRadius}">
+								<ContentPresenter Content="{TemplateBinding Content}"/>
+							</Border>
+
+							<Border CornerRadius="0 0 10 0"
+									Height="32"
+									Width="32"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Top"
+									Background="Gray"
+									IsVisible="False">
+								<TextBlock Text="{TemplateBinding Tag}"
+										   FontSize="16"
+										   FontWeight="SemiBold"
+										   Foreground="White"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"/>
+							</Border>
+						</Grid>
+
+						<Border.Effect>
+							<DropShadowEffect BlurRadius="10"
+											  Opacity="0.2"/>
+						</Border.Effect>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="Label.card.rounded /template/ Border#PART_CardControlTemplate">
+			<Setter Property="CornerRadius" Value="10"/>
+		</Style>
+
+		<Style Selector="Label.card.tag /template/ Border#PART_CardControlTemplate > Grid > Border">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
     </Application.Styles>
 </Application>

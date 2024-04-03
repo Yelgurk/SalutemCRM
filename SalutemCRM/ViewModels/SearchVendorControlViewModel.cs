@@ -15,14 +15,29 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Reactive.Linq;
+using Avalonia.Media;
+using Avalonia.Markup.Xaml.Converters;
 
 namespace SalutemCRM.ViewModels;
 
 public partial class SearchVendorControlViewModelContext : ObservableObject
 {
+    public IBrush DynamicColor {
+        get {
+            App.Current!.TryGetResource("Control_Green", App.Current!.ActualThemeVariant, out var res1);
+            App.Current!.TryGetResource("Control_Orange", App.Current!.ActualThemeVariant, out var res2);
+
+            return (IBrush)ColorToBrushConverter.Convert(
+                !IsResponsiveControl ? Brushes.White : new SolidColorBrush(IsVendorSelected ? (Color)res1! : (Color)res2!)
+                , typeof(string)
+            )!;
+        }
+    }
+
     public bool IsVendorSelected => SelectedVendor != null;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DynamicColor))]
     private bool _isResponsiveControl = false;
 
     [ObservableProperty]
@@ -46,6 +61,7 @@ public partial class SearchVendorControlViewModelContext : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsVendorSelected))]
+    [NotifyPropertyChangedFor(nameof(DynamicColor))]
     private Vendor? _selectedVendor = null;
 
     [ObservableProperty]
@@ -73,25 +89,23 @@ public partial class SearchVendorControlViewModelContext : ObservableObject
 
 public class SearchVendorControlViewModel : ViewModelBase
 {
-    private SearchVendorControlViewModelContext _context = new();
-    public SearchVendorControlViewModelContext Context
-    {
-        get => _context;
-        set => this.RaiseAndSetIfChanged(ref _context, value);
-    }
+    public SearchVendorControlViewModelContext Context { get; } = new();
 
-    public ReactiveCommand<Unit, Unit> GoBack { get; }
-    public ReactiveCommand<Unit, Unit> GoAddVendor { get; }
-    public ReactiveCommand<Vendor, Unit> GoEditVendor { get; }
-    public ReactiveCommand<Unit, Unit> AddNewVendor { get; }
-    public ReactiveCommand<Unit, Unit> EditVendor { get; }
+    public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
+    public ReactiveCommand<Unit, Unit> GoAddVendorCommand { get; }
+    public ReactiveCommand<Vendor, Unit> GoEditVendorCommand { get; }
+    public ReactiveCommand<Unit, Unit> AddNewVendorCommand { get; }
+    public ReactiveCommand<Unit, Unit> EditVendorCommand { get; }
+    public ReactiveCommand<Unit, Unit> ClearSearchCommand { get; }
 
     public SearchVendorControlViewModel()
     {
         Context.Notify += SearchVendorByInput;
 
+
+
         IObservable<bool> _ifNewVendorFilled = this.WhenAnyValue(
-            x => x.Context.NewVendor, x => x.Context.NewVendor.Name, x => x.Context.NewVendor.Address,
+            x => x.Context.NewVendor, x => x.Context.NewVendor!.Name, x => x.Context.NewVendor!.Address,
             (obj, n, a) =>
                 obj != null &&
                 !string.IsNullOrWhiteSpace(n) &&
@@ -101,7 +115,7 @@ public class SearchVendorControlViewModel : ViewModelBase
         );
 
         IObservable<bool> _ifEditVendorFilled = this.WhenAnyValue(
-            x => x.Context.EditVendor.Name, x => x.Context.EditVendor.Address, x => x.Context.EditTempVendor.Name, x => x.Context.EditTempVendor.Address,
+            x => x.Context.EditVendor!.Name, x => x.Context.EditVendor!.Address, x => x.Context.EditTempVendor!.Name, x => x.Context.EditTempVendor!.Address,
             (on, oa, nn, na) =>
                 !string.IsNullOrWhiteSpace(on) &&
                 !string.IsNullOrWhiteSpace(oa) &&
@@ -112,23 +126,32 @@ public class SearchVendorControlViewModel : ViewModelBase
                 (on != nn || oa != na)
         );
 
-        GoBack = ReactiveCommand.Create(() => {
+        IObservable<bool> _ifSearchStrNotNull = this.WhenAnyValue(
+            x => x.Context.SearchVendorInputStr,
+            (s) =>
+                !string.IsNullOrWhiteSpace(s) &&
+                s.Length > 0
+        );
+
+
+
+        GoBackCommand = ReactiveCommand.Create(() => {
             Context.ActivePage = 0;
         });
 
-        GoAddVendor = ReactiveCommand.Create(() => {
+        GoAddVendorCommand = ReactiveCommand.Create(() => {
             Context.ActivePage = 1;
             Context.NewVendor = new();
         });
 
-        GoEditVendor = ReactiveCommand.Create<Vendor>(x => {
+        GoEditVendorCommand = ReactiveCommand.Create<Vendor>(x => {
             Context.ActivePage = 2;
             Context.EditVendor = x.Clone() as Vendor;
             Context.EditTempVendor = x.Clone() as Vendor;
             Context.EditTempVendor!.AdditionalInfo = "";
         });
 
-        AddNewVendor = ReactiveCommand.Create(() => {
+        AddNewVendorCommand = ReactiveCommand.Create(() => {
             Context
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
@@ -142,7 +165,7 @@ public class SearchVendorControlViewModel : ViewModelBase
             .DoInst(x => x.ActivePage = 0);
         }, _ifNewVendorFilled);
 
-        EditVendor = ReactiveCommand.Create(() => {
+        EditVendorCommand = ReactiveCommand.Create(() => {
             Context
             .Do(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
@@ -161,18 +184,22 @@ public class SearchVendorControlViewModel : ViewModelBase
             .DoInst(x => x.ActivePage = 0);
         }, _ifEditVendorFilled);
 
+        ClearSearchCommand = ReactiveCommand.Create(() => {
+            Context.SearchVendorInputStr = "";
+        }, _ifSearchStrNotNull);
+
+
 
         if (!Design.IsDesignMode)
             SearchVendorByInput("");
     }
 
-    public SearchVendorControlViewModel(SearchVendorControlViewModelContext UIConfig) : this() => this.Context = UIConfig;
-
     public void SearchVendorByInput(string keyword)
     {
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
             Context.Vendors = db.Vendors
-                .Do(x => x.Where(v => v.Name.ToLower().Contains(keyword.ToLower()) || v.Address.ToLower().Contains(keyword.ToLower())))
+                .Do(x => x.Where(vendor => vendor.Name.ToLower().Contains(keyword.ToLower()) || vendor.Address.ToLower().Contains(keyword.ToLower())))
+                .Do(x => x.Include(vendor => vendor.Orders))
                 .Do(x => new ObservableCollection<Vendor>(x.ToList()));
     }
 }
