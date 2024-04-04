@@ -17,28 +17,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Reactive.Linq;
 using Avalonia.Media;
 using Avalonia.Markup.Xaml.Converters;
+using SalutemCRM.Interface;
 
 namespace SalutemCRM.ViewModels;
 
-public partial class SearchVendorControlViewModelContext : ObservableObject
+public partial class SearchVendorControlViewModelSource : ReactiveControlSource<Vendor>
 {
-    public IBrush DynamicColor {
-        get {
-            App.Current!.TryGetResource("Control_Green", App.Current!.ActualThemeVariant, out var res1);
-            App.Current!.TryGetResource("Control_Orange", App.Current!.ActualThemeVariant, out var res2);
-
-            return (IBrush)ColorToBrushConverter.Convert(
-                !IsResponsiveControl ? Brushes.White : new SolidColorBrush(IsVendorSelected ? (Color)res1! : (Color)res2!)
-                , typeof(string)
-            )!;
-        }
-    }
-
-    public bool IsVendorSelected => SelectedVendor != null;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DynamicColor))]
-    private bool _isResponsiveControl = false;
+    public SearchVendorControlViewModelSource() : base(3) { }
 
     [ObservableProperty]
     private bool _isFuncAddNewAvailable = true;
@@ -47,22 +32,7 @@ public partial class SearchVendorControlViewModelContext : ObservableObject
     private bool _isFuncEditAvailable = true;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsPage1))]
-    [NotifyPropertyChangedFor(nameof(IsPage2))]
-    [NotifyPropertyChangedFor(nameof(IsPage3))]
-    private int _activePage = 0;
-
-    public bool IsPage1 => ActivePage == 0;
-    public bool IsPage2 => ActivePage == 1;
-    public bool IsPage3 => ActivePage == 2;
-
-    [ObservableProperty]
     private string _searchVendorInputStr = "";
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsVendorSelected))]
-    [NotifyPropertyChangedFor(nameof(DynamicColor))]
-    private Vendor? _selectedVendor = null;
 
     [ObservableProperty]
     private Vendor? _editVendor = new();
@@ -89,7 +59,7 @@ public partial class SearchVendorControlViewModelContext : ObservableObject
 
 public class SearchVendorControlViewModel : ViewModelBase
 {
-    public SearchVendorControlViewModelContext Context { get; } = new();
+    public SearchVendorControlViewModelSource Source { get; } = new();
 
     public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
     public ReactiveCommand<Unit, Unit> GoAddVendorCommand { get; }
@@ -100,12 +70,12 @@ public class SearchVendorControlViewModel : ViewModelBase
 
     public SearchVendorControlViewModel()
     {
-        Context.Notify += SearchVendorByInput;
+        Source.Notify += SearchVendorByInput;
 
 
 
         IObservable<bool> _ifNewVendorFilled = this.WhenAnyValue(
-            x => x.Context.NewVendor, x => x.Context.NewVendor!.Name, x => x.Context.NewVendor!.Address,
+            x => x.Source.NewVendor, x => x.Source.NewVendor!.Name, x => x.Source.NewVendor!.Address,
             (obj, n, a) =>
                 obj != null &&
                 !string.IsNullOrWhiteSpace(n) &&
@@ -115,7 +85,7 @@ public class SearchVendorControlViewModel : ViewModelBase
         );
 
         IObservable<bool> _ifEditVendorFilled = this.WhenAnyValue(
-            x => x.Context.EditVendor!.Name, x => x.Context.EditVendor!.Address, x => x.Context.EditTempVendor!.Name, x => x.Context.EditTempVendor!.Address,
+            x => x.Source.EditVendor!.Name, x => x.Source.EditVendor!.Address, x => x.Source.EditTempVendor!.Name, x => x.Source.EditTempVendor!.Address,
             (on, oa, nn, na) =>
                 !string.IsNullOrWhiteSpace(on) &&
                 !string.IsNullOrWhiteSpace(oa) &&
@@ -127,7 +97,7 @@ public class SearchVendorControlViewModel : ViewModelBase
         );
 
         IObservable<bool> _ifSearchStrNotNull = this.WhenAnyValue(
-            x => x.Context.SearchVendorInputStr,
+            x => x.Source.SearchVendorInputStr,
             (s) =>
                 !string.IsNullOrWhiteSpace(s) &&
                 s.Length > 0
@@ -136,23 +106,23 @@ public class SearchVendorControlViewModel : ViewModelBase
 
 
         GoBackCommand = ReactiveCommand.Create(() => {
-            Context.ActivePage = 0;
+            Source.SetActivePage(0);
         });
 
         GoAddVendorCommand = ReactiveCommand.Create(() => {
-            Context.ActivePage = 1;
-            Context.NewVendor = new();
+            Source.SetActivePage(1);
+            Source.NewVendor = new();
         });
 
         GoEditVendorCommand = ReactiveCommand.Create<Vendor>(x => {
-            Context.ActivePage = 2;
-            Context.EditVendor = x.Clone() as Vendor;
-            Context.EditTempVendor = x.Clone() as Vendor;
-            Context.EditTempVendor!.AdditionalInfo = "";
+            Source.SetActivePage(2);
+            Source.EditVendor = x.Clone() as Vendor;
+            Source.EditTempVendor = x.Clone() as Vendor;
+            Source.EditTempVendor!.AdditionalInfo = "";
         });
 
         AddNewVendorCommand = ReactiveCommand.Create(() => {
-            Context
+            Source
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
@@ -162,11 +132,11 @@ public class SearchVendorControlViewModel : ViewModelBase
             }, x => x.NewVendor != null)?
             .DoInst(x => x.SearchVendorInputStr = x.NewVendor!.Name)
             .DoInst(x => x.NewVendor = new())
-            .DoInst(x => x.ActivePage = 0);
+            .Do(x => x.SetActivePage(0));
         }, _ifNewVendorFilled);
 
         EditVendorCommand = ReactiveCommand.Create(() => {
-            Context
+            Source
             .Do(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
@@ -181,23 +151,25 @@ public class SearchVendorControlViewModel : ViewModelBase
                 };
             })?
             .DoInst(x => x.SearchVendorInputStr = x.EditTempVendor!.Name)
-            .DoInst(x => x.ActivePage = 0);
+            .Do(x => x.SetActivePage(0));
         }, _ifEditVendorFilled);
 
         ClearSearchCommand = ReactiveCommand.Create(() => {
-            Context.SearchVendorInputStr = "";
+            Source.SearchVendorInputStr = "";
         }, _ifSearchStrNotNull);
 
 
 
         if (!Design.IsDesignMode)
             SearchVendorByInput("");
+
+        Source.SetActivePage(0);
     }
 
     public void SearchVendorByInput(string keyword)
     {
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-            Context.Vendors = db.Vendors
+            Source.Vendors = db.Vendors
                 .Do(x => x.Where(vendor => vendor.Name.ToLower().Contains(keyword.ToLower()) || vendor.Address.ToLower().Contains(keyword.ToLower())))
                 .Do(x => x.Include(vendor => vendor.Orders))
                 .Do(x => new ObservableCollection<Vendor>(x.ToList()));

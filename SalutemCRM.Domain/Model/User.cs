@@ -63,5 +63,9 @@ public partial class User : ObservableObject
     [ObservableProperty]
     private ObservableCollection<MaterialFlow> _materialsFlow = new();
 
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<RegionMonitoring> _regionsMonitoring = new();
+
     public object Clone() { return this.MemberwiseClone(); }
 }

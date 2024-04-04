@@ -15,9 +15,14 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        (SVC.DataContext as SearchVendorControlViewModel)!
-            .DoInst(v => v.Context.IsResponsiveControl = true)
-            .DoInst(v => v.Context.IsFuncAddNewAvailable = false)
-            .DoInst(v => v.Context.IsFuncEditAvailable = false);
-    }
+        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+        {
+            db.DatabaseInit();
+        }
+
+            (SVC.DataContext as SearchVendorControlViewModel)!
+               .DoInst(v => v.Source.IsResponsiveControl = true)
+               .DoInst(v => v.Source.IsFuncAddNewAvailable = false)
+               .DoInst(v => v.Source.IsFuncEditAvailable = false);
+        }
 }

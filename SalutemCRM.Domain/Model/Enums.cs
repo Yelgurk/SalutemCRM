@@ -16,10 +16,10 @@ public enum Payment_Status {
 };
 
 public enum Delivery_Status {
-    InStock,
     NotDelivered,
     PartiallyDelivered,
-    FullyDelivered
+    FullyDelivered,
+    Completed
 };
 
 public enum Task_Status {

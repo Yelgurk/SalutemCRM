@@ -49,6 +49,10 @@ public partial class MaterialFlow : ObservableObject
 
     [NotMapped]
     [ObservableProperty]
+    private Delivery_Status _deliveryStatus;
+
+    [NotMapped]
+    [ObservableProperty]
     private DateTime _recordDT;
 
 
