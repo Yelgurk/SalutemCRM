@@ -10,7 +10,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM">
 	<Grid>
-		<views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsVisible="False"/>
+		<!--views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsVisible="False"/-->
 
 		<Grid ColumnDefinitions="*, *">
 			<Label Classes="card rounded tag" Tag="1."
@@ -18,8 +18,7 @@
 				<control:SearchVendorControl x:Name="SVC"/>
 			</Label>
 
-
-			<Label Classes="card rounded tag" Tag="2." Grid.Column="1"
+			<Label Classes="card rounded tag shadow" Tag="2." Grid.Column="1"
 				   Margin="40">
 				<control:SearchVendorControl
 					IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>

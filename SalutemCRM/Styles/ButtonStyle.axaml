@@ -17,12 +17,14 @@
 				<Button Classes="custom demo" Margin="0 0 0 5"/>
 				<Button Classes="custom pink demo" Margin="0 0 0 5"/>
 				<Button Classes="custom bold green demo" Margin="0 0 0 5"/>
+				
+				<Button Classes="custom orange demo" Margin="0 0 0 5"/>
 
 				<Label Height="80" Margin="0" Padding="0">
 					<Button Classes="iconed close pink" Margin="0 0 0 5"/>
 				</Label>
 
-				<Button Classes="iconed plus orange" IsEnabled="False" Margin="0 0 0 5"/>
+				<Button Classes="iconed demo plus orange" IsEnabled="False" Margin="0 0 0 5"/>
 				<Button Classes="iconed edit orange" Margin="0 0 0 5"/>
 
 				<Label Height="80" Margin="0" Padding="0">
@@ -90,8 +92,15 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border>
-					<Image Width="24"
-						   Height="24"/>
+					<Grid ColumnDefinitions="*, auto, *">
+						<Label Content="{TemplateBinding Content}"
+							   Padding="0"
+							   FontSize="16"
+							   VerticalAlignment="Center"/>
+						<Image Width="24"
+							   Height="24"
+							   Grid.Column="1"/>
+					</Grid>
 				</Border>
 			</ControlTemplate>
 		</Setter>
@@ -122,35 +131,35 @@
 		<Setter Property="Background" Value="{Binding $parent[Button].Background}"/>
 	</Style>
 
-	<Style Selector="Button.close /template/ Border > Image">
+	<Style Selector="Button.close /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Close.png"/>
 	</Style>
 
-	<Style Selector="Button.plus /template/ Border > Image">
+	<Style Selector="Button.plus /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Plus.png"/>
 	</Style>
 
-	<Style Selector="Button.ok /template/ Border > Image">
+	<Style Selector="Button.ok /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Ok.png"/>
 	</Style>
 
-	<Style Selector="Button.edit /template/ Border > Image">
+	<Style Selector="Button.edit /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Edit.png"/>
 	</Style>
 
-	<Style Selector="Button.eye /template/ Border > Image">
+	<Style Selector="Button.eye /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Eye.png"/>
 	</Style>
 
-	<Style Selector="Button.resize /template/ Border > Image">
+	<Style Selector="Button.resize /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Resize.png"/>
 	</Style>
 
-	<Style Selector="Button.hide /template/ Border > Image">
+	<Style Selector="Button.hide /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Minimize.png"/>
 	</Style>
 
-	<Style Selector="Button.account /template/ Border > Image">
+	<Style Selector="Button.account /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Account.png"/>
 	</Style>
 

@@ -60,7 +60,14 @@
 									  RowDefinitions="auto, auto"
 									  VerticalAlignment="Center"
 									  Margin="10 0 0 0">
-									<TextBlock Grid.Row="0" FontSize="16" Margin="0 0 0 -5" Text="{Binding Name}"/>
+									<DockPanel Grid.Row="0"
+											   Margin="0 0 0 -3">
+										<TextBlock FontSize="15" Text="{Binding Name}" FontWeight="SemiBold"/>
+										<TextBlock FontSize="15" Text=", "/>
+										<TextBlock FontSize="15" Text="{Binding City.Name}"/>
+										<TextBlock FontSize="15" Text=", "/>
+										<TextBlock FontSize="15" Text="{Binding City.Country.Name}"/>
+									</DockPanel>
 									<DockPanel Grid.Row="1">
 										<TextBlock FontSize="12" Text="Поставок: "/>
 										<TextBlock FontSize="12" Text="{Binding Orders.Count}"/>
@@ -98,7 +105,7 @@
 
 			<Grid>
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
-					<StackPanel Background="{Binding $parent[UserControl].Background}">
+					<StackPanel Classes="background">
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название организации"
 								 Text="{Binding Source.NewVendor.Name}"/>
@@ -107,6 +114,65 @@
 								 Watermark="Адрес"
 								 Text="{Binding Source.NewVendor.Address}"/>
 
+						<Grid Classes="background"
+							  ColumnDefinitions="*, auto"
+							  RowDefinitions="auto, auto">
+							<ItemsControl Classes="new_input"
+										  ItemsSource="{Binding Source.ContactsSplitted}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Button Classes="custom iconed orange close rounded"
+												Content="{Binding}"
+												Command="{Binding $parent[UserControl].DataContext.NewVednorDeleteContactCommand}"
+												CommandParameter="{Binding}"
+												Margin="3 0 3 6"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+							
+							<TextBox Classes="custom header new_input"
+									 Grid.Row="1"
+									 Watermark="Телефон, почта, сайт"
+									 Text="{Binding Source.NewVendorContactInputStr}"/>
+							<Button Classes="custom iconed orange plus rounded new_input"
+									Grid.Column="1" Grid.Row="1"
+									Width="{Binding $self.Bounds.Height}"
+									IsDefault="True"
+									Command="{Binding NewVednorAddContactCommand}"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, *">
+							<StackPanel Classes="background">
+								<TextBlock Classes="new_input" Text="Страна"
+										   Foreground="{Binding #Control_SelectCountry.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCountry"
+										  ItemsSource="{Binding Source.Countries}"
+										  SelectedItem="{Binding Source.SelectedCountry}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+							
+							<StackPanel Classes="background" Grid.Column="1">
+								<TextBlock Classes="new_input" Text="Город"
+										   Foreground="{Binding #Control_SelectCity.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCity"
+										  ItemsSource="{Binding Source.Cities}"
+										  SelectedItem="{Binding Source.SelectedCity}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+						</Grid>
+						
 						<TextBox Classes="custom header new_input"
 								 Watermark="Дополнительная инфомрация"
 								 Text="{Binding Source.NewVendor.AdditionalInfo}"
@@ -145,7 +211,7 @@
 
 			<Grid>
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
-					<StackPanel Background="{Binding $parent[UserControl].Background}">
+					<StackPanel Classes="background">
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название организации"
 								 Text="{Binding Source.EditTempVendor.Name}"/>
@@ -207,8 +273,47 @@
 			<Setter Property="Margin" Value="0 10"/>
 		</Style>
 
-		<Style Selector="TextBox.custom.header.new_input">
+		<Style Selector="StackPanel.background, Grid.background">
+			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
+		</Style>
+
+		<Style Selector="TextBlock.new_input">
+			<Setter Property="Margin" Value="25 6 10 -12"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{DynamicResource Primary_Gray}"/>
+		</Style>
+
+		<Style Selector="TextBox.custom.new_input">
+			<Setter Property="Margin" Value="10 16 10 0"/>
+		</Style>
+
+		<Style Selector="Button.custom.new_input">
+			<Setter Property="Margin" Value="0 16 10 0"/>
+		</Style>
+
+		<Style Selector="ComboBox.custom.new_input">
 			<Setter Property="Margin" Value="10 12 10 0"/>
+		</Style>
+		
+		<Style Selector="ItemsControl.new_input">
+			<Setter Property="Margin" Value="10 12 10 0"/>
+			<Setter Property="ItemsControl.ItemsPanel">
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="ItemsControl.new_input Button.custom:pointerover /template/ Border">
+			<Setter Property="Background" Value="{DynamicResource Sys_Red}"/>
+		</Style>
+
+		<Style Selector="ItemsControl.new_input Button.custom /template/ Image">
+			<Setter Property="Height" Value="14"/>
+		</Style>
+
+		<Style Selector="ItemsControl.new_input Button.custom:pointerover /template/ Image">
+			<Setter Property="Height" Value="20"/>
 		</Style>
 	</UserControl.Styles>
 </UserControl>

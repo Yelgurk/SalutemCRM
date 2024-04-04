@@ -20,6 +20,7 @@
 		<StyleInclude Source="/Styles/TextBoxStyle.axaml"/>
 		<StyleInclude Source="/Styles/ProgressBarStyle.axaml"/>
 		<StyleInclude Source="/Styles/SwitchStyle.axaml"/>
+		<StyleInclude Source="/Styles/ComboBoxStyle.axaml"/>
 		<StyleInclude Source="/Control/ManufactureOrderControl.axaml"/>
 
 		<Style Selector="TextBlock">
@@ -43,7 +44,7 @@
 
 							<Border CornerRadius="0 0 10 0"
 									Height="32"
-									Width="32"
+									MinWidth="32"
 									HorizontalAlignment="Left"
 									VerticalAlignment="Top"
 									Background="Gray"
@@ -53,13 +54,16 @@
 										   FontWeight="SemiBold"
 										   Foreground="White"
 										   HorizontalAlignment="Center"
-										   VerticalAlignment="Center"/>
+										   VerticalAlignment="Center"
+										   Margin="5 0"/>
 							</Border>
 						</Grid>
 
 						<Border.Effect>
-							<DropShadowEffect BlurRadius="10"
-											  Opacity="0.2"/>
+							<DropShadowEffect BlurRadius="5"
+											  Opacity="0.2"
+											  OffsetX="0"
+											  OffsetY="0"/>
 						</Border.Effect>
 					</Border>
 				</ControlTemplate>
@@ -72,6 +76,13 @@
 
 		<Style Selector="Label.card.tag /template/ Border#PART_CardControlTemplate > Grid > Border">
 			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+
+		<Style Selector="Label.card.shadow /template/ Border#PART_CardControlTemplate">
+			<Setter Property="Effect">
+				<DropShadowEffect BlurRadius="10"
+								  Opacity="0.2"/>
+			</Setter>
 		</Style>
     </Application.Styles>
 </Application>

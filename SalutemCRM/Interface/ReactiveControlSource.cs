@@ -16,7 +16,7 @@ public partial class ReactiveControlSource<T> : ObservableObject
     [ObservableProperty]
     private bool[] _activePage = { false };
 
-    public ReactiveControlSource(int _pagesCount) => ResetPages(_pagesCount, 0);
+    public required int PagesCount { set => ResetPages(value, 0); }
 
     private void ResetPages(int _size, int _isActive)
     {
@@ -54,5 +54,5 @@ public partial class ReactiveControlSource<T> : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsItemSelected))]
     [NotifyPropertyChangedFor(nameof(DynamicColor))]
-    private Vendor? _selectedItem = null;
+    private T? _selectedItem = default(T?);
 }
