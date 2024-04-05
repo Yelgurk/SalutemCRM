@@ -194,6 +194,7 @@
 
 		<Grid Classes.selected_page="{Binding Source.ActivePage[2]}"
 			  RowDefinitions="auto, *">
+
 			<DockPanel HorizontalAlignment="Center"
 					   Margin="0 5 0 0">
 				<Button Classes="custom orange"
@@ -202,11 +203,11 @@
 						Command="{Binding GoBackCommand}"/>
 
 				<TextBlock Classes="text_header"
-						   Text=" Редактировать ["/>
+						   Text=" Редактор {"/>
 				<TextBlock Classes="text_header"
 						   Text="{Binding Source.EditVendor.Name}"/>
 				<TextBlock Classes="text_header"
-						   Text="]"/>
+						   Text="}"/>
 			</DockPanel>
 
 			<Grid>
@@ -220,13 +221,72 @@
 								 Watermark="Адрес"
 								 Text="{Binding Source.EditTempVendor.Address}"/>
 
+						<Grid Classes="background"
+							  ColumnDefinitions="*, auto"
+							  RowDefinitions="auto, auto">
+							<ItemsControl Classes="new_input"
+										  ItemsSource="{Binding Source.ContactsSplitted}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Button Classes="custom iconed orange close rounded"
+												Content="{Binding}"
+												Command="{Binding $parent[UserControl].DataContext.NewVednorDeleteContactCommand}"
+												CommandParameter="{Binding}"
+												Margin="3 0 3 6"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+							<TextBox Classes="custom header new_input"
+									 Grid.Row="1"
+									 Watermark="Телефон, почта, сайт"
+									 Text="{Binding Source.NewVendorContactInputStr}"/>
+							<Button Classes="custom iconed orange plus rounded new_input"
+									Grid.Column="1" Grid.Row="1"
+									Width="{Binding $self.Bounds.Height}"
+									IsDefault="True"
+									Command="{Binding NewVednorAddContactCommand}"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, *">
+							<StackPanel Classes="background">
+								<TextBlock Classes="new_input" Text="Страна"
+										   Foreground="{Binding #Control_SelectCountry_2.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCountry_2"
+										  ItemsSource="{Binding Source.Countries}"
+										  SelectedItem="{Binding Source.SelectedCountry}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+
+							<StackPanel Classes="background" Grid.Column="1">
+								<TextBlock Classes="new_input" Text="Город"
+										   Foreground="{Binding #Control_SelectCity_2.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCity_2"
+										  ItemsSource="{Binding Source.Cities}"
+										  SelectedItem="{Binding Source.SelectedCity}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+						</Grid>
+
 						<TextBox Classes="custom header new_input"
 								 Watermark="Дополнительная инфомрация"
 								 Text="{Binding Source.EditTempVendor.AdditionalInfo}"
 								 Height="100"
 								 TextWrapping="Wrap"
 								 AcceptsReturn="True"/>
-
+						
 						<Button Classes="custom orange whiteText"
 								Height="40"
 								Margin="10 5"
@@ -238,6 +298,7 @@
 				</ScrollViewer>
 			</Grid>
 		</Grid>
+
 	</Grid>
 
 	<UserControl.Styles>

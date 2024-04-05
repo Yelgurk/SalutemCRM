@@ -18,6 +18,8 @@ using System.Reactive.Linq;
 using Avalonia.Media;
 using Avalonia.Markup.Xaml.Converters;
 using SalutemCRM.Interface;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SalutemCRM.ViewModels;
 
@@ -113,16 +115,22 @@ public class SearchVendorControlViewModel : ViewModelBase
         IObservable<bool> _ifEditVendorFilled = this.WhenAnyValue(
             x => x.Source.EditVendor!.Name,
             x => x.Source.EditVendor!.Address,
+            x => x.Source.EditVendor!.Contacts,
             x => x.Source.EditTempVendor!.Name,
             x => x.Source.EditTempVendor!.Address,
-            (on, oa, nn, na) =>
+            x => x.Source.ContactsSplitted.Count,
+            x => x.Source.ContactsSplitted,
+            x => x.Source.EditVendor!.City,
+            x => x.Source.SelectedCity,
+            (on, oa, om, nn, na, ncnt, nm, oc, sc) =>
+                sc != null &&
                 !string.IsNullOrWhiteSpace(on) &&
                 !string.IsNullOrWhiteSpace(oa) &&
                 !string.IsNullOrWhiteSpace(nn) &&
                 !string.IsNullOrWhiteSpace(na) &&
                 nn.Length >= 5 &&
                 na.Length >= 5 &&
-                (on != nn || oa != na)
+                (on != nn || oa != na || oc!.Name != sc.Name || om != string.Join("|", nm))
         );
 
         IObservable<bool> _ifSearchStrNotNull = this.WhenAnyValue(
@@ -160,10 +168,22 @@ public class SearchVendorControlViewModel : ViewModelBase
         });
 
         GoEditVendorCommand = ReactiveCommand.Create<Vendor>(x => {
-            Source.SetActivePage(2);
-            Source.EditVendor = x.Clone() as Vendor;
-            Source.EditTempVendor = x.Clone() as Vendor;
-            Source.EditTempVendor!.AdditionalInfo = "";
+            Source
+                .DoInst(s => s.EditVendor = x.Clone() as Vendor)
+                .DoInst(s => s.EditTempVendor = x.Clone() as Vendor)
+                .DoInst(s => s.EditTempVendor!.AdditionalInfo = "")
+                .DoInst(s => s.ContactsSplitted = new ObservableCollection<string>((s.EditTempVendor!.Contacts ?? "").Split("|")))
+                .DoInst(s => s.ContactsSplitted.DoIf(c => c.Clear(), c => c.Count == 1 && c.First() == ""))
+                .Do(s => {
+                    using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+                        s.Countries = new ObservableCollection<Country>(db.Countries
+                            .Where(s => s.Id > 0)
+                            .Include(s => s.Cities)
+                            );
+                })
+                .DoInst(s => s.SelectedCountry = s.Countries.Single(country => country.Cities.Select(c => c.Name).Contains(s.EditVendor!.City!.Name)))
+                .DoInst(s => s.SelectedCity = s.SelectedCountry!.Cities.Single(c => c.Name == s.EditVendor!.City!.Name))
+                .Do(s => s.SetActivePage(2));
         });
 
         AddNewVendorCommand = ReactiveCommand.Create(() => {
@@ -171,10 +191,15 @@ public class SearchVendorControlViewModel : ViewModelBase
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
+                    x.NewVendor!.City = db.Cities.Single(z => z.Id == x.SelectedCity!.Id);
+                    x.NewVendor!.Contacts = string.Join("|", x.ContactsSplitted); 
                     db.Vendors.Add(x.NewVendor!);
                     db.SaveChanges();
                 };
-            }, x => x.NewVendor != null)?
+            }, x =>
+                x.NewVendor != null &&
+                x.SelectedCity != null
+            )?
             .DoInst(x => x.SearchVendorInputStr = x.NewVendor!.Name)
             .DoInst(x => x.NewVendor = new())
             .Do(x => x.SetActivePage(0));
@@ -193,8 +218,8 @@ public class SearchVendorControlViewModel : ViewModelBase
 
                     vendor.Name = x.EditTempVendor!.Name;
                     vendor.Address = x.EditTempVendor!.Address;
-                    vendor.Contacts = x.EditTempVendor!.Contacts;
-                    vendor.City = x.EditTempVendor!.City;
+                    vendor.Contacts = string.Join("|", x.ContactsSplitted);
+                    vendor.City = db.Cities.Single(z => z.Id == x.SelectedCity!.Id);
                     vendor.AdditionalInfo +=
                         $"\n\n{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}, \n...пользователь..." +
                         $"\n{((x.EditTempVendor!.AdditionalInfo ?? "").Length > 0 ? x.EditTempVendor!.AdditionalInfo : "*тихо внесена правка*")}";
@@ -202,6 +227,7 @@ public class SearchVendorControlViewModel : ViewModelBase
                     db.SaveChanges();
                 };
             })
+            .DoInst(x => x.DoIf(z => SearchVendorByInput(z.EditTempVendor!.Name), z => z.SearchVendorInputStr == x.EditTempVendor!.Name))
             .DoInst(x => x.SearchVendorInputStr = x.EditTempVendor!.Name)
             .Do(x => x.SetActivePage(0));
         }, _ifEditVendorFilled);
@@ -210,10 +236,15 @@ public class SearchVendorControlViewModel : ViewModelBase
             Source.SearchVendorInputStr = "";
         }, _ifSearchStrNotNull);
         
-        NewVednorAddContactCommand = ReactiveCommand.Create(() => {
-            Source.ContactsSplitted = Source.ContactsSplitted.Do(x => x.Add(Source.NewVendorContactInputStr));
-            Source.NewVendorContactInputStr = "";
-        }, _ifNewVendorAddContactStrNotNull);
+        NewVednorAddContactCommand = ReactiveCommand.Create(() =>
+        {
+            Source.ContactsSplitted = Source.ContactsSplitted.DoIf(x =>
+            {
+                x.Add(Source.NewVendorContactInputStr);
+                Source.NewVendorContactInputStr = "";
+            },
+            x => !x.Contains(Source.NewVendorContactInputStr)) ?? Source.ContactsSplitted;
+        },_ifNewVendorAddContactStrNotNull);
 
 
         NewVednorDeleteContactCommand = ReactiveCommand.Create<string>(x => {
@@ -229,6 +260,32 @@ public class SearchVendorControlViewModel : ViewModelBase
 
     public void SearchVendorByInput(string keyword)
     {
+        
+        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+            db.Do(f =>
+            {
+                Source.Vendors = new(
+                from v in db.Vendors.AsEnumerable()
+                    where Regex.Replace(keyword.ToLower(), @"\s+", " ").Split(" ").Any(s =>
+                        v.Name.ToLower().Contains(s) ||
+                        (v.Address ?? "").ToLower().Contains(s) ||
+                        (v.Contacts ?? "").ToLower().Contains(s)
+                    )
+                    select v
+                );
+            })
+            .Do(f =>
+            {
+                foreach (Vendor v in Source.Vendors)
+                    v.City = db.Cities
+                        .Where(c => c.Id == v.CityForeignKey)
+                        .Include(c => c.Country)
+                        .First();
+
+            });
+        
+
+        /*
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
             Source.Vendors = db.Vendors
                 .Where(vendor =>
@@ -240,5 +297,6 @@ public class SearchVendorControlViewModel : ViewModelBase
                 .Include(vendor => vendor.City)
                 .ThenInclude(city => city!.Country)
                 .Do(x => new ObservableCollection<Vendor>(x.ToList()));
+        */
     }
 }
