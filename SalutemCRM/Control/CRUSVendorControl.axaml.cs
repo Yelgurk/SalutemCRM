@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace SalutemCRM.Control
 {
-    public partial class SearchVendorControl : UserControl
+    public partial class CRUSVendorControl : UserControl
     {
-        public SearchVendorControl()
+        public CRUSVendorControl()
         {
             InitializeComponent();
         }

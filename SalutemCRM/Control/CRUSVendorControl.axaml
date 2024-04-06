@@ -3,16 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SalutemCRM.Control.SearchVendorControl"
+             x:Class="SalutemCRM.Control.CRUSVendorControl"
 			 xmlns:controls="using:SalutemCRM.Control"
 			 xmlns:conv="using:SalutemCRM.Converter"
 			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
-			 x:DataType="vm:SearchVendorControlViewModel"
+			 x:DataType="vm:CRUSVendorControlViewModel"
 			 Design.Width="600"
 			 Design.Height="400"
 			 Background="{Binding $self.DataContext.Source.DynamicColor}">
 	<UserControl.DataContext>
-		<vm:SearchVendorControlViewModel/>
+		<vm:CRUSVendorControlViewModel/>
 	</UserControl.DataContext>
 
 	<Grid Classes="pages_container"
@@ -46,7 +46,7 @@
 						Margin="-5 5 10 5"
 						IsVisible="{Binding Source.IsFuncAddNewAvailable}"
 						Command="{Binding GoAddVendorCommand}"/>
-
+				
 				<ListBox Classes="custom"
 						 Grid.Row="1"
 						 Grid.ColumnSpan="3"
@@ -110,10 +110,6 @@
 								 Watermark="Название организации"
 								 Text="{Binding Source.NewVendor.Name}"/>
 
-						<TextBox Classes="custom header new_input"
-								 Watermark="Адрес"
-								 Text="{Binding Source.NewVendor.Address}"/>
-
 						<Grid Classes="background"
 							  ColumnDefinitions="*, auto"
 							  RowDefinitions="auto, auto">
@@ -129,7 +125,7 @@
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
-							
+
 							<TextBox Classes="custom header new_input"
 									 Grid.Row="1"
 									 Watermark="Телефон, почта, сайт"
@@ -156,7 +152,7 @@
 									</ComboBox.ItemTemplate>
 								</ComboBox>
 							</StackPanel>
-							
+
 							<StackPanel Classes="background" Grid.Column="1">
 								<TextBlock Classes="new_input" Text="Город"
 										   Foreground="{Binding #Control_SelectCity.BorderBrush}"/>
@@ -172,6 +168,10 @@
 								</ComboBox>
 							</StackPanel>
 						</Grid>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Адрес"
+								 Text="{Binding Source.NewVendor.Address}"/>
 						
 						<TextBox Classes="custom header new_input"
 								 Watermark="Дополнительная инфомрация"
@@ -216,10 +216,6 @@
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название организации"
 								 Text="{Binding Source.EditTempVendor.Name}"/>
-
-						<TextBox Classes="custom header new_input"
-								 Watermark="Адрес"
-								 Text="{Binding Source.EditTempVendor.Address}"/>
 
 						<Grid Classes="background"
 							  ColumnDefinitions="*, auto"
@@ -279,6 +275,10 @@
 								</ComboBox>
 							</StackPanel>
 						</Grid>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Адрес"
+								 Text="{Binding Source.EditTempVendor.Address}"/>
 
 						<TextBox Classes="custom header new_input"
 								 Watermark="Дополнительная инфомрация"

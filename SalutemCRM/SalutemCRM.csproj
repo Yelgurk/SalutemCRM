@@ -29,6 +29,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Control\CRUSVendorControl.axaml.cs">
+	    <DependentUpon>CRUSVendorControl.axaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="appsettings.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

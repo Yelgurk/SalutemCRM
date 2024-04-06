@@ -15,12 +15,12 @@
 		<Grid ColumnDefinitions="*, *">
 			<Label Classes="card rounded tag" Tag="1."
 				   Margin="40">
-				<control:SearchVendorControl x:Name="SVC"/>
+				<control:CRUSVendorControl x:Name="SVC"/>
 			</Label>
 
 			<Label Classes="card rounded tag shadow" Tag="2." Grid.Column="1"
 				   Margin="40">
-				<control:SearchVendorControl
+				<control:CRUSVendorControl
 					IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
 			</Label>
 		</Grid>

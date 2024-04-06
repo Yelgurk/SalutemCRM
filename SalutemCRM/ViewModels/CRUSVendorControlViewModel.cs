@@ -23,7 +23,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SalutemCRM.ViewModels;
 
-public partial class SearchVendorControlViewModelSource : ReactiveControlSource<Vendor>
+public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Vendor>
 {
     [ObservableProperty]
     private bool _isFuncAddNewAvailable = true;
@@ -49,17 +49,7 @@ public partial class SearchVendorControlViewModelSource : ReactiveControlSource<
     private Vendor? _newVendor = new();
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Cities))]
-    private Country? _selectedCountry;
-
-    [ObservableProperty]
-    private City? _selectedCity;
-
-
-    [ObservableProperty]
-    private ObservableCollection<Country> _countries = new();
-
-    public ObservableCollection<City> Cities => SelectedCountry?.Cities ?? new ObservableCollection<City>();
+    private ObservableCollection<string> _contactsSplitted = new();
 
     [ObservableProperty]
     private ObservableCollection<Vendor> _vendors = new() {
@@ -70,18 +60,42 @@ public partial class SearchVendorControlViewModelSource : ReactiveControlSource<
         new Vendor() { Name = "Test 5", Address = "*** address ***" }
     };
 
-    [ObservableProperty]
-    private ObservableCollection<string> _contactsSplitted = new();
 
+
+    public static Country DefaultCountry { get; } = new() { Id = 0, Name = "{ все }" };
+
+    public static City DefaultCity { get; } = new() { Id = 0, Name = "{ все }", CountryForeignKey = DefaultCountry.Id, Country = DefaultCountry };
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Cities))]
+    private Country? _selectedCountry;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SearchCities))]
+    private Country _selectedSearchCountry = DefaultCountry;
+
+    [ObservableProperty]
+    private City? _selectedCity;
+
+    [ObservableProperty]
+    private City _selectedSearchCity = DefaultCity;
+
+    [ObservableProperty]
+    private ObservableCollection<Country> _countries = new();
+
+    public ObservableCollection<City> Cities => SelectedCountry?.Cities ?? new ObservableCollection<City>();
+
+    public ObservableCollection<City> SearchCities => SelectedSearchCountry?.Cities ?? new ObservableCollection<City>();
+
+    
 
     public event SearchHandler? Notify = null;
-
     partial void OnSearchVendorInputStrChanged(string? oldValue, string? newValue) => Notify?.Do(x => x(SearchVendorInputStr));
 }
 
-public class SearchVendorControlViewModel : ViewModelBase
+public class CRUSVendorControlViewModel : ViewModelBase
 {
-    public SearchVendorControlViewModelSource Source { get; } = new() { PagesCount = 3 };
+    public CRUSVendorControlViewModelSource Source { get; } = new() { PagesCount = 3 };
 
     public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
     public ReactiveCommand<Unit, Unit> GoAddVendorCommand { get; }
@@ -92,7 +106,7 @@ public class SearchVendorControlViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> NewVednorAddContactCommand { get; }
     public ReactiveCommand<string, Unit> NewVednorDeleteContactCommand { get; }
 
-    public SearchVendorControlViewModel()
+    public CRUSVendorControlViewModel()
     {
         Source.Notify += SearchVendorByInput;
 
@@ -260,43 +274,22 @@ public class SearchVendorControlViewModel : ViewModelBase
 
     public void SearchVendorByInput(string keyword)
     {
-        
+        keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
+
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
             db.Do(f =>
             {
                 Source.Vendors = new(
-                from v in db.Vendors.AsEnumerable()
-                    where Regex.Replace(keyword.ToLower(), @"\s+", " ").Split(" ").Any(s =>
+                from v in db.Vendors.Include(z => z.City).ThenInclude(z => z!.Country).AsEnumerable()
+                    where keyword.Split(" ").Any(s =>
                         v.Name.ToLower().Contains(s) ||
                         (v.Address ?? "").ToLower().Contains(s) ||
                         (v.Contacts ?? "").ToLower().Contains(s)
+                        //v.City!.Name.ToLower().Contains(s) ||
+                        //v.City!.Country!.Name.ToLower().Contains(s)
                     )
                     select v
                 );
-            })
-            .Do(f =>
-            {
-                foreach (Vendor v in Source.Vendors)
-                    v.City = db.Cities
-                        .Where(c => c.Id == v.CityForeignKey)
-                        .Include(c => c.Country)
-                        .First();
-
             });
-        
-
-        /*
-        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-            Source.Vendors = db.Vendors
-                .Where(vendor =>
-                    vendor.Name.ToLower().Contains(keyword.ToLower()) ||
-                    (vendor.Address ?? "").ToLower().Contains(keyword.ToLower()) ||
-                    (vendor.Contacts ?? "").ToLower().Contains(keyword.ToLower())
-                 )
-                .Include(vendor => vendor.Orders)
-                .Include(vendor => vendor.City)
-                .ThenInclude(city => city!.Country)
-                .Do(x => new ObservableCollection<Vendor>(x.ToList()));
-        */
     }
 }
