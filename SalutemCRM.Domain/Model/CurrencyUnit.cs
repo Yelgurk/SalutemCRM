@@ -10,5 +10,6 @@ public partial class CurrencyUnit : ObservableObject
     [ObservableProperty]
     private string _name = null!;
 
-    public object Clone() { return this.MemberwiseClone(); }
+
+    public CurrencyUnit Clone() { return (this.MemberwiseClone() as CurrencyUnit)!; }
 }

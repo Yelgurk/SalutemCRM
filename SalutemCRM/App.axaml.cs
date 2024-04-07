@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -17,6 +18,10 @@ public partial class App : Application
 
     public override void Initialize()
     {
+        //if (!Design.IsDesignMode)
+        //    using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+        //        db.DatabaseInit();
+
         AvaloniaXamlLoader.Load(this);
         Host =
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()

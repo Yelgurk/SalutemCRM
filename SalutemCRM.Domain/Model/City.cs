@@ -42,4 +42,8 @@ public partial class City : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<Vendor> _vendors = new();
+
+
+
+    public City Clone() { return (this.MemberwiseClone() as City)!; }
 }

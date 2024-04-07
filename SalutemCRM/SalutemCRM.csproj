@@ -29,6 +29,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Control\CRUSCityControl.axaml.cs">
+	    <DependentUpon>CRUSCityControl.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Control\CRUSCurrencyUnitControl.axaml.cs">
+	    <DependentUpon>CRUSCurrencyUnitControl.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Control\CRUSCountryControl.axaml.cs">
 	    <DependentUpon>CRUSCountryControl.axaml</DependentUpon>
 	  </Compile>

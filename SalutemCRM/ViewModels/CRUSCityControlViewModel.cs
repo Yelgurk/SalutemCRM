@@ -8,6 +8,7 @@ using SalutemCRM.Reactive;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Text;
@@ -16,40 +17,49 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.ViewModels;
 
-public partial class CRUSCountryControlViewModelSource : ReactiveControlSource<Country>
+public partial class CRUSCityControlViewModelSource : ReactiveControlSource<City>
 {
     [ObservableProperty]
-    private ObservableCollection<Country> _countries = new() {
-        new Country() { Name = "Test 1" },
-        new Country() { Name = "Test 2" },
-        new Country() { Name = "Test 3" },
-        new Country() { Name = "Test 4" },
-        new Country() { Name = "Test 5" }
+    private ObservableCollection<City> _cities = new() {
+        new City() { Name = "Test 1" },
+        new City() { Name = "Test 2" },
+        new City() { Name = "Test 3" },
+        new City() { Name = "Test 4" },
+        new City() { Name = "Test 5" }
     };
+
+    [ObservableProperty]
+    private ObservableCollection<Country> _countries = new();
 
     public override void SearchByInput(string keyword)
     {
         keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
 
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-            Countries = new(
-                from c in db.Countries.Include(x => x.Cities).AsEnumerable()
+            Cities = new(
+                from c in db.Cities
+                    .Include(x => x.Country)
+                    .Include(x => x.Vendors)
+                    .Include(x => x.Clients)
+                    .AsEnumerable()
                 where keyword.Split(" ").Any(s => c.Name.ToLower().Contains(s))
                 select c
             );
     }
 }
 
-public class CRUSCountryControlViewModel : ViewModelBase<Country>
+public class CRUSCityControlViewModel : ViewModelBase<City>
 {
-    public CRUSCountryControlViewModelSource Source { get; } = new() { PagesCount = 3 };
+    public CRUSCityControlViewModelSource Source { get; } = new() { PagesCount = 3 };
 
-    public CRUSCountryControlViewModel()
+    public CRUSCityControlViewModel()
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,
             x => x.Source.TempItem!.Name,
-            (obj, name) =>
+            x => x.Source.TempItem!.Country,
+            (obj, name, country) =>
+                country != null &&
                 obj != null &&
                 !string.IsNullOrWhiteSpace(name) &&
                 name.Length >= 2
@@ -58,10 +68,14 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
         IfEditFilled = this.WhenAnyValue(
             x => x.Source.EditItem!.Name,
             x => x.Source.TempItem!.Name,
-            (old_name, new_name) =>
-                old_name != new_name &&
+            x => x.Source.EditItem!.Country,
+            x => x.Source.TempItem!.Country,
+            (old_name, new_name, old_c, new_c) =>
+                old_c != null &&
+                new_c != null &&
                 !string.IsNullOrWhiteSpace(new_name) &&
-                new_name.Length >= 2
+                new_name.Length >= 2 &&
+                (new_c.Name != old_c.Name || old_name != new_name)
         );
 
         IfSearchStrNotNull = this.WhenAnyValue(
@@ -77,14 +91,23 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
 
         GoAddCommand = ReactiveCommand.Create(() => {
             Source
+                .Do(s => {
+                    using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                        s.Countries = new(db.Countries.Where(x => x.Id > 0));
+                })
                 .DoInst(x => x.TempItem = new())
                 .Do(x => x.SetActivePage(1));
         });
 
-        GoEditCommand = ReactiveCommand.Create<Country>(x => {
+        GoEditCommand = ReactiveCommand.Create<City>(x => {
             Source
+                .Do(s => {
+                    using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                        s.Countries = new(db.Countries.Where(x => x.Id > 0));
+                })
                 .DoInst(s => s.EditItem = x.Clone())
-                .DoInst(s => s.TempItem = x.Clone())
+                .DoInst(s => s.EditItem!.Country = s.Countries.Single(f => f.Name == s.EditItem!.Country!.Name))
+                .DoInst(s => s.TempItem = s.EditItem!.Clone())
                 .Do(s => s.SetActivePage(2));
         });
 
@@ -92,11 +115,14 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
             Source
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-                {
-                    db.Countries.Add(x.TempItem!);
-                    db.SaveChanges();
-                };
-            }, x => x.TempItem != null)?
+                    new City()
+                    .Do(n => n = x.TempItem!.Clone())
+                    .DoInst(n => n.Country = db.Countries.Single(f => f.Id == n.Country!.Id))
+                    .Do(n => db.Cities.Add(n))
+                    .Do(n => db.SaveChanges());
+            }, x =>
+                x.TempItem != null &&
+                x.TempItem!.Country != null)?
             .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
             .DoInst(x => x.TempItem = new())
             .Do(x => x.SetActivePage(0));
@@ -107,11 +133,12 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
             .Do(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
-                    Country? country = db.Countries
+                    City? city = db.Cities
                         .Where(c => c.Id == x.EditItem!.Id)
                         .First();
 
-                    country.Name = x.TempItem!.Name;
+                    city.Name = x.TempItem!.Name;
+                    city.Country = db.Countries.Single(s => s.Id == x.TempItem.Country!.Id);
                     db.SaveChanges();
                 };
             })

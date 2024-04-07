@@ -12,17 +12,30 @@
 	<Grid>
 		<!--views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsVisible="False"/-->
 
-		<Grid ColumnDefinitions="*, *">
-			<Label Classes="card rounded tag" Tag="1."
-				   Margin="40">
-				<control:CRUSVendorControl x:Name="SVC"/>
-			</Label>
+		<ScrollViewer HorizontalScrollBarVisibility="Visible"
+					  Padding="10 20">
+			<DockPanel HorizontalAlignment="Center">
+				
+				<Label Width="400" Classes="card rounded tag" Tag="1." Margin="10 0">
+					<control:CRUSVendorControl x:Name="SVC"/>
+				</Label>
 
-			<Label Classes="card rounded tag shadow" Tag="2." Grid.Column="1"
-				   Margin="40">
-				<control:CRUSCountryControl
-					IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
-			</Label>
-		</Grid>
+				<Label Width="400" Classes="card rounded tag shadow" Tag="2." Margin="10 0">
+					<control:CRUSCountryControl
+						IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
+				</Label>
+
+				<Label Width="400" Classes="card rounded tag shadow" Tag="3." Margin="10 0">
+					<control:CRUSCityControl
+						IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
+				</Label>
+
+				<Label Width="400" Classes="card rounded tag shadow" Tag="4." Margin="10 0">
+					<control:CRUSCurrencyUnitControl
+						IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
+				</Label>
+				
+			</DockPanel>
+		</ScrollViewer>
 	</Grid>
 </Window>

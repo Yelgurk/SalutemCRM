@@ -1,0 +1,192 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:controls="using:SalutemCRM.Control"
+			 xmlns:conv="using:SalutemCRM.Converter"
+			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
+			 x:DataType="vm:CRUSCurrencyUnitControlViewModel"
+             x:Class="SalutemCRM.Control.CRUSCurrencyUnitControl"
+			 Design.Width="600"
+			 Design.Height="400"
+			 Background="{Binding $self.DataContext.Source.DynamicColor}">
+	<UserControl.DataContext>
+		<vm:CRUSCurrencyUnitControlViewModel/>
+	</UserControl.DataContext>
+
+	<Grid Classes="pages_container"
+		  Classes.is_disabled="{Binding !$parent[UserControl].IsEnabled}">
+		
+		<Grid Classes.selected_page="{Binding Source.ActivePage[0]}"
+			  RowDefinitions="auto, *">
+			
+			<TextBlock Classes="text_header"
+					   Text="Список валют"/>
+
+			<Grid RowDefinitions="auto, *"
+				  ColumnDefinitions="*, auto, auto">
+				<TextBox Classes="custom header always"
+						 Grid.Row="0"
+						 Watermark="Поиск"
+						 Margin="10 5 5 5"
+						 Text="{Binding Source.SearchInputStr}"/>
+
+				<Button Classes="custom iconed pink close rounded"
+						Grid.Column="1"
+						Width="{Binding $self.Bounds.Height}"
+						CornerRadius="5"
+						Margin="0 5 10 5"
+						Command="{Binding ClearSearchCommand}"/>
+				
+				<Button Classes="custom iconed orange plus rounded"
+						Grid.Column="2"
+						Width="{Binding $self.Bounds.Height}"
+						CornerRadius="5"
+						Margin="-5 5 10 5"
+						IsVisible="{Binding Source.IsFuncAddNewAvailable}"
+						Command="{Binding GoAddCommand}"/>
+				
+				<ListBox Classes="custom"
+						 Grid.Row="1"
+						 Grid.ColumnSpan="3"
+						 ItemsSource="{Binding Source.CurrencyUnits}"
+						 SelectedItem="{Binding Source.SelectedItem}"
+						 ClipToBounds="True">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid ColumnDefinitions="auto, *"
+									  RowDefinitions="auto"
+									  VerticalAlignment="Center"
+									  Margin="10 0 0 0">
+									<DockPanel Grid.Row="0"
+											   Margin="0 0 0 -3">
+										<TextBlock FontSize="15" Text="{Binding Name}" FontWeight="SemiBold"/>
+									</DockPanel>
+								</Grid>
+								<Button Grid.Column="7"
+										HorizontalAlignment="Right"
+										Margin="0 2 15 2"
+										Classes="custom iconed pink rounded sys close"
+										Command="{Binding $parent[UserControl].DataContext.GoEditCommand}"
+										CommandParameter="{Binding}"
+										IsVisible="{Binding $parent[UserControl].DataContext.Source.IsFuncEditAvailable}"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</Grid>
+
+		<Grid Classes.selected_page="{Binding Source.ActivePage[1]}"
+			  RowDefinitions="auto, *">
+
+			<DockPanel HorizontalAlignment="Center"
+					   Margin="0 5 0 0">
+				<Button Classes="custom orange"
+						Height="30"
+						Content="Полный список"
+						Command="{Binding GoBackCommand}"/>
+
+				<TextBlock Classes="text_header"
+						   Text=" &gt; Новая валюта"/>
+			</DockPanel>
+
+			<Grid>
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Classes="background">
+						<TextBox Classes="custom header new_input"
+								 Watermark="Название"
+								 Text="{Binding Source.TempItem.Name}"/>
+						
+						<Button Classes="custom orange whiteText"
+								Height="40"
+								Margin="10 5"
+								HorizontalAlignment="Stretch"
+								Content="Добавить новый +"
+								FontWeight="SemiBold"
+								Command="{Binding $parent[UserControl].DataContext.AddNewCommand}"/>
+					</StackPanel>
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="Grid.pages_container.is_disabled">
+			<Setter Property="Opacity" Value="0.5"/>
+		</Style>
+		
+		<Style Selector="Grid.pages_container.is_disabled TextBlock#PART_FloatingWatermark">
+			<Setter Property="Opacity" Value="0"/>
+		</Style>
+			
+		<Style Selector="Grid.pages_container > Grid > Grid">
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
+		</Style>
+
+		<Style Selector=" Grid.pages_container > Grid">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+		
+		<Style Selector=" Grid.pages_container > Grid.selected_page">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+
+		<Style Selector="Grid.pages_container > Grid > Grid">
+			<Setter Property="Grid.Row" Value="1"/>
+		</Style>
+
+		<Style Selector="Grid.pages_container TextBlock.text_header">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="16"/>
+			<Setter Property="Margin" Value="0 10"/>
+		</Style>
+
+		<Style Selector="StackPanel.background, Grid.background">
+			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
+		</Style>
+
+		<Style Selector="TextBlock.new_input">
+			<Setter Property="Margin" Value="25 6 10 -12"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{DynamicResource Primary_Gray}"/>
+		</Style>
+
+		<Style Selector="TextBox.custom.new_input">
+			<Setter Property="Margin" Value="10 16 10 0"/>
+		</Style>
+
+		<Style Selector="Button.custom.new_input">
+			<Setter Property="Margin" Value="0 16 10 0"/>
+		</Style>
+
+		<Style Selector="ComboBox.custom.new_input">
+			<Setter Property="Margin" Value="10 12 10 0"/>
+		</Style>
+		
+		<Style Selector="ItemsControl.new_input">
+			<Setter Property="Margin" Value="10 12 10 0"/>
+			<Setter Property="ItemsControl.ItemsPanel">
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="ItemsControl.new_input Button.custom:pointerover /template/ Border">
+			<Setter Property="Background" Value="{DynamicResource Sys_Red}"/>
+		</Style>
+
+		<Style Selector="ItemsControl.new_input Button.custom /template/ Image">
+			<Setter Property="Height" Value="14"/>
+		</Style>
+
+		<Style Selector="ItemsControl.new_input Button.custom:pointerover /template/ Image">
+			<Setter Property="Height" Value="20"/>
+		</Style>
+	</UserControl.Styles>
+</UserControl>

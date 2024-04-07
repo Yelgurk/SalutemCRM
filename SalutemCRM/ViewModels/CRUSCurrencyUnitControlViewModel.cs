@@ -16,15 +16,15 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.ViewModels;
 
-public partial class CRUSCountryControlViewModelSource : ReactiveControlSource<Country>
+public partial class CRUSCurrencyUnitControlViewModelSource : ReactiveControlSource<CurrencyUnit>
 {
     [ObservableProperty]
-    private ObservableCollection<Country> _countries = new() {
-        new Country() { Name = "Test 1" },
-        new Country() { Name = "Test 2" },
-        new Country() { Name = "Test 3" },
-        new Country() { Name = "Test 4" },
-        new Country() { Name = "Test 5" }
+    private ObservableCollection<CurrencyUnit> _currencyUnits = new() {
+        new CurrencyUnit() { Name = "Test 1" },
+        new CurrencyUnit() { Name = "Test 2" },
+        new CurrencyUnit() { Name = "Test 3" },
+        new CurrencyUnit() { Name = "Test 4" },
+        new CurrencyUnit() { Name = "Test 5" }
     };
 
     public override void SearchByInput(string keyword)
@@ -32,19 +32,19 @@ public partial class CRUSCountryControlViewModelSource : ReactiveControlSource<C
         keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
 
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-            Countries = new(
-                from c in db.Countries.Include(x => x.Cities).AsEnumerable()
+            CurrencyUnits = new(
+                from c in db.CurrencyUnits.AsEnumerable()
                 where keyword.Split(" ").Any(s => c.Name.ToLower().Contains(s))
                 select c
             );
     }
 }
 
-public class CRUSCountryControlViewModel : ViewModelBase<Country>
+public class CRUSCurrencyUnitControlViewModel : ViewModelBase<CurrencyUnit>
 {
-    public CRUSCountryControlViewModelSource Source { get; } = new() { PagesCount = 3 };
+    public CRUSCurrencyUnitControlViewModelSource Source { get; } = new() { PagesCount = 3 };
 
-    public CRUSCountryControlViewModel()
+    public CRUSCurrencyUnitControlViewModel()
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,
@@ -52,7 +52,7 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
             (obj, name) =>
                 obj != null &&
                 !string.IsNullOrWhiteSpace(name) &&
-                name.Length >= 2
+                name.Length >= 1
         );
 
         IfEditFilled = this.WhenAnyValue(
@@ -61,7 +61,7 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
             (old_name, new_name) =>
                 old_name != new_name &&
                 !string.IsNullOrWhiteSpace(new_name) &&
-                new_name.Length >= 2
+                new_name.Length >= 1
         );
 
         IfSearchStrNotNull = this.WhenAnyValue(
@@ -81,11 +81,12 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
                 .Do(x => x.SetActivePage(1));
         });
 
-        GoEditCommand = ReactiveCommand.Create<Country>(x => {
-            Source
-                .DoInst(s => s.EditItem = x.Clone())
-                .DoInst(s => s.TempItem = x.Clone())
-                .Do(s => s.SetActivePage(2));
+        GoEditCommand = ReactiveCommand.Create<CurrencyUnit>(x => {
+            using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                Source
+                .DoInst(s => db.CurrencyUnits.Remove(db.CurrencyUnits.Single(c => c.Name == x.Name)))
+                .DoInst(s => db.SaveChanges())
+                .Do(s => s.SearchByInput(""));
         });
 
         AddNewCommand = ReactiveCommand.Create(() => {
@@ -93,7 +94,7 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
-                    db.Countries.Add(x.TempItem!);
+                    db.CurrencyUnits.Add(x.TempItem!);
                     db.SaveChanges();
                 };
             }, x => x.TempItem != null)?
@@ -101,24 +102,6 @@ public class CRUSCountryControlViewModel : ViewModelBase<Country>
             .DoInst(x => x.TempItem = new())
             .Do(x => x.SetActivePage(0));
         }, IfNewFilled);
-
-        EditCommand = ReactiveCommand.Create(() => {
-            Source
-            .Do(x => {
-                using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-                {
-                    Country? country = db.Countries
-                        .Where(c => c.Id == x.EditItem!.Id)
-                        .First();
-
-                    country.Name = x.TempItem!.Name;
-                    db.SaveChanges();
-                };
-            })
-            .DoInst(x => x.DoIf(s => Source.SearchByInput(s.TempItem!.Name), s => s.SearchInputStr == s.TempItem!.Name))
-            .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
-            .Do(x => x.SetActivePage(0));
-        }, IfEditFilled);
 
         ClearSearchCommand = ReactiveCommand.Create(() => {
             Source.SearchInputStr = "";

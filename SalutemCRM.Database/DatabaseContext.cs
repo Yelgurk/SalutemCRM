@@ -778,7 +778,8 @@ public partial class DatabaseContext : DbContext
 
     public void CurrencyUnit_Config(EntityTypeBuilder<CurrencyUnit> builder)
     {
-        builder.HasKey(cu => cu.Name);
+        builder
+            .HasKey(cu => cu.Name);
         builder
             .Property(cu => cu.Name)
             .HasMaxLength(200);

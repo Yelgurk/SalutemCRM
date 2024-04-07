@@ -52,5 +52,6 @@ public partial class Vendor : ObservableObject
     [NotMapped]
     public string LastOrderDT => LastOrder?.RecordDT.ToString("dd.MM.yyyy HH:mm:ss") ?? "{ нет }";
 
-    public object Clone() { return this.MemberwiseClone(); }
+
+    public Vendor Clone() { return (this.MemberwiseClone() as Vendor)!; }
 }

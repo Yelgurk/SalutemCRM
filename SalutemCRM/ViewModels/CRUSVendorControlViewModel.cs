@@ -170,8 +170,8 @@ public class CRUSVendorControlViewModel : ViewModelBase<Vendor>
 
         GoEditCommand = ReactiveCommand.Create<Vendor>(x => {
             Source
-                .DoInst(s => s.EditItem = x.Clone() as Vendor)
-                .DoInst(s => s.TempItem = x.Clone() as Vendor)
+                .DoInst(s => s.EditItem = x.Clone())
+                .DoInst(s => s.TempItem = x.Clone())
                 .DoInst(s => s.TempItem!.AdditionalInfo = "")
                 .DoInst(s => s.ContactsSplitted = new ObservableCollection<string>((s.TempItem!.Contacts ?? "").Split("|")))
                 .DoInst(s => s.ContactsSplitted.DoIf(c => c.Clear(), c => c.Count == 1 && c.First() == ""))

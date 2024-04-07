@@ -24,5 +24,5 @@ public partial class Country : ObservableObject
     private ObservableCollection<City> _cities = new();
 
 
-    public object Clone() { return this.MemberwiseClone(); }
+    public Country Clone() { return (this.MemberwiseClone() as Country)!; }
 }
