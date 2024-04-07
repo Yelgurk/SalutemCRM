@@ -348,7 +348,9 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(ur => ur.Id)
             .ValueGeneratedOnAdd();
-        builder.HasAlternateKey(ur => ur.Name);
+        builder
+            .HasIndex(ur => ur.Name)
+            .IsUnique();
         builder
             .Property(ur => ur.Name)
             .HasMaxLength(200);
@@ -365,7 +367,9 @@ public partial class DatabaseContext : DbContext
             .WithMany(ur => ur.Users)
             .HasForeignKey(u => u.UserRoleForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
-        builder.HasAlternateKey(u => u.Login);
+        builder
+            .HasIndex(u => u.Login)
+            .IsUnique();
         builder
             .Property(u => u.Login)
             .HasMaxLength(200);
@@ -444,7 +448,8 @@ public partial class DatabaseContext : DbContext
             .Property(fa => fa.RecordDT)
             .HasColumnType("datetime2");
         builder
-            .HasAlternateKey(fs => fs.FileName);
+            .HasIndex(fs => fs.FileName)
+            .IsUnique();
     }
 
     public void WarehouseCategory_Config(EntityTypeBuilder<WarehouseCategory> builder)
@@ -478,7 +483,9 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(wi => wi.Name)
             .HasMaxLength(200);
-        builder.HasAlternateKey(wi => wi.InnerCode);
+        builder
+            .HasIndex(wi => wi.InnerCode)
+            .IsUnique();
         builder
             .Property(wi => wi.InnerCode)
             .HasMaxLength(200);
@@ -638,7 +645,9 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(md => md.Id)
             .ValueGeneratedOnAdd();
-        builder.HasAlternateKey(md => md.Name);
+        builder
+            .HasIndex(md => md.Name)
+            .IsUnique();
         builder
             .Property(md => md.Name)
             .HasMaxLength(200);
@@ -694,7 +703,9 @@ public partial class DatabaseContext : DbContext
         builder
             .Property(ms => ms.Id)
             .ValueGeneratedOnAdd();
-        builder.HasAlternateKey(ms => ms.Code);
+        builder
+            .HasIndex(ms => ms.Code)
+            .IsUnique();
         builder
             .HasOne(ms => ms.Order)
             .WithMany(oo => oo.Manufactures)
@@ -826,7 +837,9 @@ public partial class DatabaseContext : DbContext
     public void Country_Config(EntityTypeBuilder<Country> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.HasAlternateKey(x => x.Name);
+        builder
+            .HasIndex(x => x.Name)
+            .IsUnique();
         builder
             .Property(x => x.Name)
             .HasMaxLength(200);

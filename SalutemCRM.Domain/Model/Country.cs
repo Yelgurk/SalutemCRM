@@ -22,4 +22,7 @@ public partial class Country : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<City> _cities = new();
+
+
+    public object Clone() { return this.MemberwiseClone(); }
 }

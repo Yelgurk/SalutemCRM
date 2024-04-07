@@ -17,7 +17,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Reactive.Linq;
 using Avalonia.Media;
 using Avalonia.Markup.Xaml.Converters;
-using SalutemCRM.Interface;
+using SalutemCRM.Reactive;
 using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -25,32 +25,6 @@ namespace SalutemCRM.ViewModels;
 
 public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Vendor>
 {
-    [ObservableProperty]
-    private bool _isFuncAddNewAvailable = true;
-
-    [ObservableProperty]
-    private bool _isFuncEditAvailable = true;
-
-
-
-    [ObservableProperty]
-    private string _searchVendorInputStr = "";
-    
-    [ObservableProperty]
-    private string _newVendorContactInputStr = "";
-
-    [ObservableProperty]
-    private Vendor? _editVendor = new();
-
-    [ObservableProperty]
-    private Vendor? _editTempVendor = new();
-
-    [ObservableProperty]
-    private Vendor? _newVendor = new();
-
-    [ObservableProperty]
-    private ObservableCollection<string> _contactsSplitted = new();
-
     [ObservableProperty]
     private ObservableCollection<Vendor> _vendors = new() {
         new Vendor() { Name = "Test 1", Address = "*** address ***" },
@@ -61,6 +35,14 @@ public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Ve
     };
 
 
+    
+    [ObservableProperty]
+    private string _newVendorContactInputStr = "";
+
+    [ObservableProperty]
+    private ObservableCollection<string> _contactsSplitted = new();
+
+    
 
     public static Country DefaultCountry { get; } = new() { Id = 0, Name = "{ все }" };
 
@@ -80,6 +62,8 @@ public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Ve
     [ObservableProperty]
     private City _selectedSearchCity = DefaultCity;
 
+
+
     [ObservableProperty]
     private ObservableCollection<Country> _countries = new();
 
@@ -87,35 +71,40 @@ public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Ve
 
     public ObservableCollection<City> SearchCities => SelectedSearchCountry?.Cities ?? new ObservableCollection<City>();
 
-    
 
-    public event SearchHandler? Notify = null;
-    partial void OnSearchVendorInputStrChanged(string? oldValue, string? newValue) => Notify?.Do(x => x(SearchVendorInputStr));
+
+    public override void SearchByInput(string keyword)
+    {
+        keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
+
+        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+            Vendors = new(
+                from v in db.Vendors.Include(z => z.City).ThenInclude(z => z!.Country).AsEnumerable()
+                where keyword.Split(" ").Any(s =>
+                    v.Name.ToLower().Contains(s) ||
+                    (v.Address ?? "").ToLower().Contains(s) ||
+                    (v.Contacts ?? "").ToLower().Contains(s)
+                //v.City!.Name.ToLower().Contains(s) ||
+                //v.City!.Country!.Name.ToLower().Contains(s)
+                )
+                select v
+            );
+    }
 }
 
-public class CRUSVendorControlViewModel : ViewModelBase
+public class CRUSVendorControlViewModel : ViewModelBase<Vendor>
 {
     public CRUSVendorControlViewModelSource Source { get; } = new() { PagesCount = 3 };
 
-    public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
-    public ReactiveCommand<Unit, Unit> GoAddVendorCommand { get; }
-    public ReactiveCommand<Vendor, Unit> GoEditVendorCommand { get; }
-    public ReactiveCommand<Unit, Unit> AddNewVendorCommand { get; }
-    public ReactiveCommand<Unit, Unit> EditVendorCommand { get; }
-    public ReactiveCommand<Unit, Unit> ClearSearchCommand { get; }
     public ReactiveCommand<Unit, Unit> NewVednorAddContactCommand { get; }
     public ReactiveCommand<string, Unit> NewVednorDeleteContactCommand { get; }
 
     public CRUSVendorControlViewModel()
     {
-        Source.Notify += SearchVendorByInput;
-
-
-
-        IObservable<bool> _ifNewVendorFilled = this.WhenAnyValue(
-            x => x.Source.NewVendor,
-            x => x.Source.NewVendor!.Name,
-            x => x.Source.NewVendor!.Address,
+        IfNewFilled = this.WhenAnyValue(
+            x => x.Source.TempItem,
+            x => x.Source.TempItem!.Name,
+            x => x.Source.TempItem!.Address,
             x => x.Source.SelectedCity,
             (obj, n, a, sc) =>
                 obj != null &&
@@ -126,15 +115,15 @@ public class CRUSVendorControlViewModel : ViewModelBase
                 a.Length >= 5
         );
 
-        IObservable<bool> _ifEditVendorFilled = this.WhenAnyValue(
-            x => x.Source.EditVendor!.Name,
-            x => x.Source.EditVendor!.Address,
-            x => x.Source.EditVendor!.Contacts,
-            x => x.Source.EditTempVendor!.Name,
-            x => x.Source.EditTempVendor!.Address,
+        IfEditFilled = this.WhenAnyValue(
+            x => x.Source.EditItem!.Name,
+            x => x.Source.EditItem!.Address,
+            x => x.Source.EditItem!.Contacts,
+            x => x.Source.TempItem!.Name,
+            x => x.Source.TempItem!.Address,
             x => x.Source.ContactsSplitted.Count,
             x => x.Source.ContactsSplitted,
-            x => x.Source.EditVendor!.City,
+            x => x.Source.EditItem!.City,
             x => x.Source.SelectedCity,
             (on, oa, om, nn, na, ncnt, nm, oc, sc) =>
                 sc != null &&
@@ -147,8 +136,8 @@ public class CRUSVendorControlViewModel : ViewModelBase
                 (on != nn || oa != na || oc!.Name != sc.Name || om != string.Join("|", nm))
         );
 
-        IObservable<bool> _ifSearchStrNotNull = this.WhenAnyValue(
-            x => x.Source.SearchVendorInputStr,
+        IfSearchStrNotNull = this.WhenAnyValue(
+            x => x.Source.SearchInputStr,
             (s) =>
                 !string.IsNullOrWhiteSpace(s) &&
                 s.Length > 0
@@ -161,13 +150,11 @@ public class CRUSVendorControlViewModel : ViewModelBase
                 s.Length > 0
         );
 
-
-
         GoBackCommand = ReactiveCommand.Create(() => {
             Source.SetActivePage(0);
         });
 
-        GoAddVendorCommand = ReactiveCommand.Create(() => {
+        GoAddCommand = ReactiveCommand.Create(() => {
             Source
                 .Do(x => {
                     using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
@@ -176,17 +163,17 @@ public class CRUSVendorControlViewModel : ViewModelBase
                             .Include(x => x.Cities)
                             );
                 })
-                .DoInst(x => x.NewVendor = new())
+                .DoInst(x => x.TempItem = new())
                 .Do(x => x.ContactsSplitted.Clear())
                 .Do(x => x.SetActivePage(1));
         });
 
-        GoEditVendorCommand = ReactiveCommand.Create<Vendor>(x => {
+        GoEditCommand = ReactiveCommand.Create<Vendor>(x => {
             Source
-                .DoInst(s => s.EditVendor = x.Clone() as Vendor)
-                .DoInst(s => s.EditTempVendor = x.Clone() as Vendor)
-                .DoInst(s => s.EditTempVendor!.AdditionalInfo = "")
-                .DoInst(s => s.ContactsSplitted = new ObservableCollection<string>((s.EditTempVendor!.Contacts ?? "").Split("|")))
+                .DoInst(s => s.EditItem = x.Clone() as Vendor)
+                .DoInst(s => s.TempItem = x.Clone() as Vendor)
+                .DoInst(s => s.TempItem!.AdditionalInfo = "")
+                .DoInst(s => s.ContactsSplitted = new ObservableCollection<string>((s.TempItem!.Contacts ?? "").Split("|")))
                 .DoInst(s => s.ContactsSplitted.DoIf(c => c.Clear(), c => c.Count == 1 && c.First() == ""))
                 .Do(s => {
                     using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
@@ -195,60 +182,60 @@ public class CRUSVendorControlViewModel : ViewModelBase
                             .Include(s => s.Cities)
                             );
                 })
-                .DoInst(s => s.SelectedCountry = s.Countries.Single(country => country.Cities.Select(c => c.Name).Contains(s.EditVendor!.City!.Name)))
-                .DoInst(s => s.SelectedCity = s.SelectedCountry!.Cities.Single(c => c.Name == s.EditVendor!.City!.Name))
+                .DoInst(s => s.SelectedCountry = s.Countries.Single(country => country.Cities.Select(c => c.Name).Contains(s.EditItem!.City!.Name)))
+                .DoInst(s => s.SelectedCity = s.SelectedCountry!.Cities.Single(c => c.Name == s.EditItem!.City!.Name))
                 .Do(s => s.SetActivePage(2));
         });
 
-        AddNewVendorCommand = ReactiveCommand.Create(() => {
+        AddNewCommand = ReactiveCommand.Create(() => {
             Source
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
-                    x.NewVendor!.City = db.Cities.Single(z => z.Id == x.SelectedCity!.Id);
-                    x.NewVendor!.Contacts = string.Join("|", x.ContactsSplitted); 
-                    db.Vendors.Add(x.NewVendor!);
+                    x.TempItem!.City = db.Cities.Single(z => z.Id == x.SelectedCity!.Id);
+                    x.TempItem!.Contacts = string.Join("|", x.ContactsSplitted); 
+                    db.Vendors.Add(x.TempItem!);
                     db.SaveChanges();
                 };
             }, x =>
-                x.NewVendor != null &&
+                x.TempItem != null &&
                 x.SelectedCity != null
             )?
-            .DoInst(x => x.SearchVendorInputStr = x.NewVendor!.Name)
-            .DoInst(x => x.NewVendor = new())
+            .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
+            .DoInst(x => x.TempItem = new())
             .Do(x => x.SetActivePage(0));
-        }, _ifNewVendorFilled);
+        }, IfNewFilled);
 
-        EditVendorCommand = ReactiveCommand.Create(() => {
+        EditCommand = ReactiveCommand.Create(() => {
             Source
             .Do(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
                     Vendor? vendor = db.Vendors
-                        .Where(v => v.Id == x.EditVendor!.Id)
+                        .Where(v => v.Id == x.EditItem!.Id)
                         .Include(v => v.City)
                         .ThenInclude(x => x!.Country)
                         .First();
 
-                    vendor.Name = x.EditTempVendor!.Name;
-                    vendor.Address = x.EditTempVendor!.Address;
+                    vendor.Name = x.TempItem!.Name;
+                    vendor.Address = x.TempItem!.Address;
                     vendor.Contacts = string.Join("|", x.ContactsSplitted);
                     vendor.City = db.Cities.Single(z => z.Id == x.SelectedCity!.Id);
                     vendor.AdditionalInfo +=
                         $"\n\n{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}, \n...пользователь..." +
-                        $"\n{((x.EditTempVendor!.AdditionalInfo ?? "").Length > 0 ? x.EditTempVendor!.AdditionalInfo : "*тихо внесена правка*")}";
+                        $"\n{((x.TempItem!.AdditionalInfo ?? "").Length > 0 ? x.TempItem!.AdditionalInfo : "*тихо внесена правка*")}";
 
                     db.SaveChanges();
                 };
             })
-            .DoInst(x => x.DoIf(z => SearchVendorByInput(z.EditTempVendor!.Name), z => z.SearchVendorInputStr == x.EditTempVendor!.Name))
-            .DoInst(x => x.SearchVendorInputStr = x.EditTempVendor!.Name)
+            .DoInst(x => x.DoIf(z => Source.SearchByInput(z.TempItem!.Name), z => z.SearchInputStr == x.TempItem!.Name))
+            .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
             .Do(x => x.SetActivePage(0));
-        }, _ifEditVendorFilled);
+        }, IfEditFilled);
 
         ClearSearchCommand = ReactiveCommand.Create(() => {
-            Source.SearchVendorInputStr = "";
-        }, _ifSearchStrNotNull);
+            Source.SearchInputStr = "";
+        }, IfSearchStrNotNull);
         
         NewVednorAddContactCommand = ReactiveCommand.Create(() =>
         {
@@ -267,29 +254,8 @@ public class CRUSVendorControlViewModel : ViewModelBase
 
 
         if (!Design.IsDesignMode)
-            SearchVendorByInput("");
+            Source.SearchByInput("");
 
         Source.SetActivePage(0);
-    }
-
-    public void SearchVendorByInput(string keyword)
-    {
-        keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
-
-        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-            db.Do(f =>
-            {
-                Source.Vendors = new(
-                from v in db.Vendors.Include(z => z.City).ThenInclude(z => z!.Country).AsEnumerable()
-                    where keyword.Split(" ").Any(s =>
-                        v.Name.ToLower().Contains(s) ||
-                        (v.Address ?? "").ToLower().Contains(s) ||
-                        (v.Contacts ?? "").ToLower().Contains(s)
-                        //v.City!.Name.ToLower().Contains(s) ||
-                        //v.City!.Country!.Name.ToLower().Contains(s)
-                    )
-                    select v
-                );
-            });
     }
 }

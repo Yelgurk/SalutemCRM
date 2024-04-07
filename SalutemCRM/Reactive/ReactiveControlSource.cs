@@ -2,17 +2,25 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
+using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SalutemCRM.Interface;
+namespace SalutemCRM.Reactive;
 
 public partial class ReactiveControlSource<T> : ObservableObject
 {
+    [ObservableProperty]
+    private bool _isFuncAddNewAvailable = true;
+
+    [ObservableProperty]
+    private bool _isFuncEditAvailable = true;
+
     [ObservableProperty]
     private bool[] _activePage = { false };
 
@@ -45,6 +53,8 @@ public partial class ReactiveControlSource<T> : ObservableObject
         }
     }
 
+
+
     public bool IsItemSelected => SelectedItem != null;
 
     [ObservableProperty]
@@ -55,4 +65,19 @@ public partial class ReactiveControlSource<T> : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsItemSelected))]
     [NotifyPropertyChangedFor(nameof(DynamicColor))]
     private T? _selectedItem = default(T?);
+
+    [ObservableProperty]
+    private T? _tempItem = default(T?);
+
+    [ObservableProperty]
+    private T? _editItem = default(T?);
+
+
+
+    [ObservableProperty]
+    private string _searchInputStr = "";
+
+    partial void OnSearchInputStrChanged(string? oldValue, string newValue) => SearchByInput(SearchInputStr);
+
+    public virtual void SearchByInput(string keyword) { }
 }

@@ -20,7 +20,7 @@
 
 			<Label Classes="card rounded tag shadow" Tag="2." Grid.Column="1"
 				   Margin="40">
-				<control:CRUSVendorControl
+				<control:CRUSCountryControl
 					IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
 			</Label>
 		</Grid>
