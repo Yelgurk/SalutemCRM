@@ -12,7 +12,7 @@
 	</UserControl.DataContext>
 
 	<StackPanel VerticalAlignment="Center" Background="White">
-		<ListBox Classes="custom">
+		<ListBox Classes="custom" IsVisible="False">
 			<ListBoxItem>
 				<controls:ManufactureOrderControl />
 			</ListBoxItem>
