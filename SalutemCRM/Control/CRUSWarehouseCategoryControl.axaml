@@ -48,7 +48,7 @@
 						Command="{Binding GoAddCommand}"/>
 
 				<TreeDataGrid x:Name="TreeDataGridControl_1"
-							  Classes="custom"
+							  Classes="custom editable"
 							  Classes.search_result="{Binding Source.IsSearchMatch}"
 							  Grid.Row="1"
 							  Grid.ColumnSpan="3"
@@ -74,31 +74,38 @@
 			<Grid>
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Classes="background">
-						
-						<TextBlock Text="{
-										Binding Source.SelectedItem.Name,
-										StringFormat='в категорию [{0}]',
-										FallbackValue=[в корень каталога]
-									}"
-								   Margin="10 5"
-								   FontSize="14"
-								   FontWeight="SemiBold"/>
 
-						<Grid ColumnDefinitions="auto, *"
+						<TextBox Classes="custom header new_input"
+								 Watermark="Название"
+								 Text="{Binding Source.TempItem.Name}"/>
+
+						<Grid ColumnDefinitions="auto, auto, auto, *"
 							  Classes="background">
 							<Image Source="avares://SalutemCRM/Assets/Icon/Arrow.png"
-								   Height="28"
-								   Margin="8 -8 8 16"
+								   Height="24"
+								   Margin="10 -4 0 4"
 								   ClipToBounds="False">
 								<Image.RenderTransform>
 									<RotateTransform Angle="180" CenterX="0.5" CenterY="0.5"/>
 								</Image.RenderTransform>
 							</Image>
-							<TextBox Classes="custom header new_input"
-									 Watermark="Название"
-									 Text="{Binding Source.TempItem.Name}"
-									 Margin="5 10 10 10"
-									 Grid.Column="1"/>
+							
+							<TextBlock  Text="{
+											Binding Source.SelectedItem.Name,
+											StringFormat='в категорию [{0}]',
+											FallbackValue=[в корень каталога]
+										}"
+										Grid.Column="1"
+										Margin="10"
+										FontSize="14"
+										FontWeight="SemiBold"/>
+							
+							<Button Classes="iconed close pink rounded"
+									Command="{Binding RemoveCategoryInheritanceCommand}"
+									IsVisible="{Binding Source.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+									Grid.Column="2"
+									Width="36"
+									Height="36"/>
 						</Grid>
 
 						<TreeDataGrid x:Name="TreeDataGridControl_2"
@@ -136,38 +143,58 @@
 						   Text="}"/>
 			</DockPanel>
 
-			<!--Grid>
+			<Grid>
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Classes="background">
+
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.Name}"/>
 
-						<StackPanel Classes="background">
-							<TextBlock Classes="new_input" Text="Страна"
-									   Foreground="{Binding #Control_SelectCountry2.BorderBrush}"/>
-							<ComboBox Classes="custom new_input"
-									  x:Name="Control_SelectCountry2"
-									  ItemsSource="{Binding Source.Countries}"
-									  SelectedItem="{Binding Source.TempItem.Country}">
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										<TextBlock Text="{Binding Name}"/>
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-						</StackPanel>
+						<Grid ColumnDefinitions="auto, auto, auto, *"
+							  Classes="background">
+							<Image Source="avares://SalutemCRM/Assets/Icon/Arrow.png"
+								   Height="24"
+								   Margin="10 -4 0 4"
+								   ClipToBounds="False">
+								<Image.RenderTransform>
+									<RotateTransform Angle="180" CenterX="0.5" CenterY="0.5"/>
+								</Image.RenderTransform>
+							</Image>
+
+							<TextBlock  Text="{
+											Binding Source.SelectedItem.Name,
+											StringFormat='в категорию [{0}]',
+											FallbackValue=[в корень каталога]
+										}"
+										Grid.Column="1"
+										Margin="10"
+										FontSize="14"
+										FontWeight="SemiBold"/>
+
+							<Button Classes="iconed close pink rounded"
+									Command="{Binding RemoveCategoryInheritanceCommand}"
+									IsVisible="{Binding Source.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+									Grid.Column="2"
+									Width="36"
+									Height="36"/>
+						</Grid>
+
+						<TreeDataGrid x:Name="TreeDataGridControl_3"
+							  Classes="custom"
+							  Source="{Binding Source.CategoriesTree}"
+							  ShowColumnHeaders="False"/>
 
 						<Button Classes="custom orange whiteText"
 								Height="40"
 								Margin="10 5"
 								HorizontalAlignment="Stretch"
-								Content="Применить изменения"
+								Content="Добавить новый +"
 								FontWeight="SemiBold"
-								Command="{Binding $parent[UserControl].DataContext.EditCommand}"/>
+								Command="{Binding $parent[UserControl].DataContext.AddNewCommand}"/>
 					</StackPanel>
 				</ScrollViewer>
-			</Grid-->
+			</Grid>
 		</Grid>
 
 	</Grid>
@@ -238,37 +265,31 @@
 		<Style Selector="TreeDataGrid.custom.search_result ToggleButton">
 			<Setter Property="IsChecked" Value="True"/>
 		</Style>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		<Style Selector="ItemsControl.new_input">
-			<Setter Property="Margin" Value="10 12 10 0"/>
-			<Setter Property="ItemsControl.ItemsPanel">
-				<ItemsPanelTemplate>
-					<WrapPanel Orientation="Horizontal"/>
-				</ItemsPanelTemplate>
+
+		<Style Selector="TreeDataGrid.custom.editable Border#CellBorder > DockPanel > Decorator > TreeDataGridTextCell">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="CellBorder">
+						<DockPanel>
+							<TextBlock Text="{Binding $self.DataContext.Name}"
+									   VerticalAlignment="Center"/>
+							<Button Classes="iconed sys orange edit rounded"
+									Name="TreeDataGridEditItemButton"
+									Height="24"
+									Width="32"
+									Margin="10 2"
+									HorizontalAlignment="Left"
+									Command="{Binding $parent[UserControl].DataContext.GoEditCommand}"
+									CommandParameter="{Binding $self.DataContext}"
+									IsVisible="False"/>
+						</DockPanel>
+					</Border>
+				</ControlTemplate>
 			</Setter>
 		</Style>
 
-		<Style Selector="ItemsControl.new_input Button.custom:pointerover /template/ Border">
-			<Setter Property="Background" Value="{DynamicResource Sys_Red}"/>
-		</Style>
-
-		<Style Selector="ItemsControl.new_input Button.custom /template/ Image">
-			<Setter Property="Height" Value="14"/>
-		</Style>
-
-		<Style Selector="ItemsControl.new_input Button.custom:pointerover /template/ Image">
-			<Setter Property="Height" Value="20"/>
+		<Style Selector="TreeDataGrid.custom.editable TreeDataGridRow:selected Button#TreeDataGridEditItemButton">
+			<Setter Property="IsVisible" Value="True"/>
 		</Style>
 	</UserControl.Styles>
 </UserControl>

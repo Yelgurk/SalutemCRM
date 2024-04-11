@@ -19,6 +19,7 @@ namespace SalutemCRM.Control
 
             TreeDataGridControl_1.SelectionChanging += TreeDataGridControlSelectionChanging;
             TreeDataGridControl_2.SelectionChanging += TreeDataGridControlSelectionChanging;
+            TreeDataGridControl_3.SelectionChanging += TreeDataGridControlSelectionChanging;
         }
 
         private async void TreeDataGridControlSelectionChanging(object? s, System.ComponentModel.CancelEventArgs e)

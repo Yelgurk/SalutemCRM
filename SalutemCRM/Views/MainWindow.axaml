@@ -18,10 +18,15 @@
 
 				<Label Width="400" Classes="card rounded tag" Tag="0." Margin="10 0">
 					<control:CRUSWarehouseCategoryControl/>
-					
 				</Label>
+				
 				<Label Width="400" Classes="card rounded tag" Tag="1." Margin="10 0">
 					<control:CRUSVendorControl x:Name="SVC"/>
+				</Label>
+				
+				<Label Width="400" Classes="card rounded tag" Tag="1.2" Margin="10 0">
+					<control:CRUSVendorControl
+						IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
 				</Label>
 
 				<Label Width="400" Classes="card rounded tag shadow" Tag="2." Margin="10 0">

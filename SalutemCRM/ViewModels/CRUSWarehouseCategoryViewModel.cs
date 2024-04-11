@@ -97,6 +97,8 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
 {
     public CRUSWarehouseCategoryControlViewModelSource Source { get; } = new() { PagesCount = 3, IsResponsiveControl = true };
 
+    public ReactiveCommand<Unit, Unit>? RemoveCategoryInheritanceCommand { get; set; }
+
     public CRUSWarehouseCategoryControlViewModel()
     {
         IfNewFilled = this.WhenAnyValue(
@@ -140,13 +142,14 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
             Source
                 .DoInst(s => s.EditItem = x.Clone())
                 .DoInst(s => s.TempItem = s.EditItem!.Clone())
+                .DoInst(s => s.SelectedItem = null)
                 .Do(s => s.SearchByInput(""))
-                .Do(s => {
+                .DoIf(s => {
                     using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
-                        s.TempItem!.ParentCategory
-                        .Do(pc => pc = s.WarehouseCategories.SingleOrDefault(x => x.Id == (pc?.Id ?? 0)));
-                })
-                .Do(s => s.SetActivePage(2));
+                        s.SelectedItem = s.TempItem!.ParentCategory
+                        .Do(pc => pc = db.WarehouseCategories.SingleOrDefault(z => z.Id == s.TempItem!.ParentCategory!.Id));
+                }, s => s.TempItem!.ParentCategory is not null)
+                .Do(s => Source.SetActivePage(2));
         });
 
         AddNewCommand = ReactiveCommand.Create(() => {
@@ -154,7 +157,7 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                     x.TempItem
-                    .Do(w => w!.ParentCategory = w.ParentCategory is null ? null : db.WarehouseCategories.Single(s => s.Id == w.ParentCategory.Id))
+                    .DoInst(w => w!.ParentCategory = x.SelectedItem is null ? null : db.WarehouseCategories.Single(s => s.Id == x.SelectedItem.Id))
                     .DoInst(w => w!.Deep = w.ParentCategory is null ? 0 : w.ParentCategory.Deep + 1)
                     .Do(w => db.WarehouseCategories.Add(w!))
                     .Do(w => db.SaveChanges());
@@ -164,6 +167,7 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
             .Do(x => x.SetActivePage(0));
         }, IfNewFilled);
 
+        /*************** ???????????? ***************/
         EditCommand = ReactiveCommand.Create(() => {
             Source
             .DoIf(x => {
@@ -182,6 +186,10 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
         ClearSearchCommand = ReactiveCommand.Create(() => {
             Source.SearchInputStr = "";
         }, IfSearchStrNotNull);
+
+        RemoveCategoryInheritanceCommand = ReactiveCommand.Create(() => {
+            Source.SelectedItem = null;
+        });
 
 
 
