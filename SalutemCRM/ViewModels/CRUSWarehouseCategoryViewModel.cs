@@ -1,0 +1,193 @@
+﻿using Avalonia.Controls;
+using Avalonia.Controls.Models.TreeDataGrid;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+using ReactiveUI;
+using SalutemCRM.Database;
+using SalutemCRM.Domain.Model;
+using SalutemCRM.Reactive;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+using Avalonia.ReactiveUI;
+using DynamicData;
+using System.Threading;
+using Avalonia.Threading;
+using Microsoft.IdentityModel.Tokens;
+
+namespace SalutemCRM.ViewModels;
+
+public partial class CRUSWarehouseCategoryControlViewModelSource : ReactiveControlSource<WarehouseCategory>
+{
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CategoriesTree))]
+    private ObservableCollection<WarehouseCategory> _warehouseCategories = new() {
+        new WarehouseCategory() { Name = "Test 1", Deep = 0 },
+        new WarehouseCategory() { Name = "Test 2", Deep = 0 },
+        new WarehouseCategory() { Name = "Test 3", Deep = 0 },
+        new WarehouseCategory() { Name = "Test 4", Deep = 0 },
+        new WarehouseCategory() { Name = "Test 5", Deep = 0 }
+    };
+
+    public HierarchicalTreeDataGridSource<WarehouseCategory> CategoriesTree => new(WarehouseCategories)
+    {
+        Columns =
+        {
+            new HierarchicalExpanderColumn<WarehouseCategory>(
+                new TextColumn<WarehouseCategory, string> ("Name", x => $"{x.Name}"), x => x.SubCategories
+                ),
+            //new TextColumn<WarehouseCategory, string> ("Name", x => x.Name)
+        }
+    };
+
+    [ObservableProperty]
+    private bool _isSearchMatch = false;
+
+    public override void SearchByInput(string keyword)
+    {
+        IsSearchMatch = false;
+        SelectedItem = null;
+        keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
+
+        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+        {
+            int MaxDeep = db.WarehouseCategories.Max(wc => wc.Deep);
+            var CatTree = db.WarehouseCategories.Where(wc => wc.Deep == 0).ToList();
+            List<WarehouseCategory> Cat = new();
+            List<WarehouseCategory> CatMatch = new();
+
+            for (var CatDeep = CatTree; (CatDeep.FirstOrDefault()?.Deep ?? MaxDeep) != MaxDeep;)
+                CatDeep = CatDeep
+                    .DoForEach(x => x.SubCategories = new(db.WarehouseCategories.Where(wc => wc.ParentCategoryForeignKey == x.Id)))
+                    .DoForEach(x => x.SubCategories.DoForEach(c => c.ParentCategory = x))
+                    .DoInst(x => x.DoIf(y => Cat.Add(y), y => y.First().Deep == 0))
+                    .Do(x => x.SelectMany(sm => sm.SubCategories))
+                    .Do(x => Cat.Add(x))
+                    .Do(x => x.ToList());
+
+            CatMatch
+                .DoIf(x => { }, x => keyword.Length > 0)?
+                .Do(x => Cat
+                    .Where(y => y.Name.ToLower().Contains(keyword))
+                    .DoIf(y => { }, y => y.Count() > 0)?
+                    .DoForEach(y => y.ObjHierarchyToZeroDeepParent.Do(y => y.Reverse()).Do(z => {
+                        x?.Add(new(z.First()));
+                        z.RemoveAt(0);
+                        x?.Last().ObjHierarchyToLastChild(z);
+                    }))
+                );
+
+            Task.Factory
+                .Do(x => x.StartNew(() => WarehouseCategories = new(keyword.Length > 0 ? CatMatch : CatTree)))
+                .Do(x => x.Wait())
+                .Do(x => Task.Factory.StartNew(() => IsSearchMatch = keyword.Length > 0));
+        }
+    }
+}
+
+public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCategory>
+{
+    public CRUSWarehouseCategoryControlViewModelSource Source { get; } = new() { PagesCount = 3, IsResponsiveControl = true };
+
+    public CRUSWarehouseCategoryControlViewModel()
+    {
+        IfNewFilled = this.WhenAnyValue(
+            x => x.Source.TempItem,
+            x => x.Source.TempItem!.Name,
+            (obj, name) =>
+                obj != null &&
+                !string.IsNullOrWhiteSpace(name) &&
+                name.Length >= 2
+        );
+
+        IfEditFilled = this.WhenAnyValue(
+            x => x.Source.EditItem!.Name,
+            x => x.Source.TempItem!.Name,
+            (old_name, new_name) =>
+                !string.IsNullOrWhiteSpace(new_name) &&
+                new_name.Length >= 2 &&
+                old_name != new_name
+        );
+
+        IfSearchStrNotNull = this.WhenAnyValue(
+            x => x.Source.SearchInputStr,
+            (s) =>
+                !string.IsNullOrWhiteSpace(s) &&
+                s.Length > 0
+        );
+
+        GoBackCommand = ReactiveCommand.Create(() => {
+            Source.SelectedItem = null;
+            Source.SetActivePage(0);
+        });
+
+        GoAddCommand = ReactiveCommand.Create(() => {
+            Source
+                .Do(s => s.SearchByInput(""))
+                .DoInst(x => x.TempItem = new())
+                .Do(x => x.SetActivePage(1));
+        });
+
+        GoEditCommand = ReactiveCommand.Create<WarehouseCategory>(x => {
+            Source
+                .DoInst(s => s.EditItem = x.Clone())
+                .DoInst(s => s.TempItem = s.EditItem!.Clone())
+                .Do(s => s.SearchByInput(""))
+                .Do(s => {
+                    using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                        s.TempItem!.ParentCategory
+                        .Do(pc => pc = s.WarehouseCategories.SingleOrDefault(x => x.Id == (pc?.Id ?? 0)));
+                })
+                .Do(s => s.SetActivePage(2));
+        });
+
+        AddNewCommand = ReactiveCommand.Create(() => {
+            Source
+            .DoIf(x => {
+                using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+                    x.TempItem
+                    .Do(w => w!.ParentCategory = w.ParentCategory is null ? null : db.WarehouseCategories.Single(s => s.Id == w.ParentCategory.Id))
+                    .DoInst(w => w!.Deep = w.ParentCategory is null ? 0 : w.ParentCategory.Deep + 1)
+                    .Do(w => db.WarehouseCategories.Add(w!))
+                    .Do(w => db.SaveChanges());
+            }, x => x.TempItem != null)?
+            .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
+            .DoInst(x => x.TempItem = new())
+            .Do(x => x.SetActivePage(0));
+        }, IfNewFilled);
+
+        EditCommand = ReactiveCommand.Create(() => {
+            Source
+            .DoIf(x => {
+                using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
+                    db.WarehouseCategories.Single(s => s.Id == x.EditItem!.Id)
+                    .DoInst(e => e.Name = x.TempItem!.Name)
+                    .DoInst(e => e.ParentCategory = db.WarehouseCategories.SingleOrDefault(s => s.Id == x.TempItem!.ParentCategory.Do(pc => pc == null ? 0 : pc.Id)))
+                    .DoInst(e => e.Deep = e.ParentCategory == null ? 0 : e.ParentCategory.Deep + 1)
+                    .Do(e => db.SaveChanges());
+            }, x => x.TempItem != null)?
+            .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
+            .DoInst(x => x.TempItem = new())
+            .Do(x => x.SetActivePage(0));
+        }, IfEditFilled);
+
+        ClearSearchCommand = ReactiveCommand.Create(() => {
+            Source.SearchInputStr = "";
+        }, IfSearchStrNotNull);
+
+
+
+        if (!Design.IsDesignMode)
+            Source.SearchByInput("");
+
+        Source.SetActivePage(0);
+    }
+}

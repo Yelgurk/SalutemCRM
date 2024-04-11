@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Icon\arrow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="$(AvaloniaVersion)" />
@@ -29,6 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Control\CRUSWarehouseCategoryControl.axaml.cs">
+	    <DependentUpon>CRUSWarehouseCategoryControl.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Control\CRUSCityControl.axaml.cs">
 	    <DependentUpon>CRUSCityControl.axaml</DependentUpon>
 	  </Compile>

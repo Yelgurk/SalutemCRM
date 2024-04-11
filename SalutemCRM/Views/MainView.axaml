@@ -10,22 +10,4 @@
 	<UserControl.DataContext>
 		<vm:MainViewModel/>
 	</UserControl.DataContext>
-
-	<StackPanel VerticalAlignment="Center" Background="White">
-		<ListBox Classes="custom" IsVisible="False">
-			<ListBoxItem>
-				<controls:ManufactureOrderControl />
-			</ListBoxItem>
-
-			<ListBoxItem>
-				<controls:ManufactureOrderControl />
-			</ListBoxItem>
-
-			<ListBoxItem>
-				<controls:ManufactureOrderControl />
-			</ListBoxItem>
-		</ListBox>
-		
-		<TreeDataGrid ShowColumnHeaders="False" Source="{Binding CategoriesTree}" />
-	</StackPanel>
 </UserControl>

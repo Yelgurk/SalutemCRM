@@ -16,8 +16,10 @@
 			<DockPanel HorizontalAlignment="Center"
 					   Margin="10 20">
 
-				<views:MainView Width="400" HorizontalAlignment="Stretch"/>
-				
+				<Label Width="400" Classes="card rounded tag" Tag="0." Margin="10 0">
+					<control:CRUSWarehouseCategoryControl/>
+					
+				</Label>
 				<Label Width="400" Classes="card rounded tag" Tag="1." Margin="10 0">
 					<control:CRUSVendorControl x:Name="SVC"/>
 				</Label>

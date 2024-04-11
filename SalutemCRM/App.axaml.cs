@@ -1,13 +1,9 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SalutemCRM.Database;
-using SalutemCRM.Domain.Model;
-using SalutemCRM.ViewModels;
 using SalutemCRM.Views;
 
 namespace SalutemCRM;
