@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class WarehouseItem : ObservableObject
+public partial class WarehouseItem : ClonableObservableObject<WarehouseItem>
 {
     [NotMapped]
     [ObservableProperty]
@@ -53,6 +53,4 @@ public partial class WarehouseItem : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<FileAttach> _fileAttachs = new();
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

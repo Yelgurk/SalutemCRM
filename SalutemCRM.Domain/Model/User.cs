@@ -13,7 +13,7 @@ using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class User : ObservableObject
+public partial class User : ClonableObservableObject<User>
 {
     [NotMapped]
     [ObservableProperty]
@@ -66,6 +66,4 @@ public partial class User : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<RegionMonitoring> _regionsMonitoring = new();
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

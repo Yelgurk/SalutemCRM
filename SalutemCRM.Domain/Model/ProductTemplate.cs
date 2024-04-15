@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class ProductTemplate : ObservableObject
+public partial class ProductTemplate : ClonableObservableObject<ProductTemplate>
 {
     [NotMapped]
     [ObservableProperty]
@@ -38,6 +38,4 @@ public partial class ProductTemplate : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<ProductSchema> _productSchemas = new();
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

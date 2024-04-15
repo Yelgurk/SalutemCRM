@@ -11,19 +11,7 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Modell;
 
-public partial class UserRole : ClonableObservableObject<UserRole>
+public partial class UserRole
 {
-    [NotMapped]
-    [ObservableProperty]
-    private int _id;
 
-    [NotMapped]
-    [ObservableProperty]
-    private string _name = null!;
-
-
-
-    [NotMapped]
-    [ObservableProperty]
-    private ObservableCollection<User> _users = new();
 }

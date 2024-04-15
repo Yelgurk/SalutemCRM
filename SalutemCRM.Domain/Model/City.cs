@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class City : ObservableObject
+public partial class City : ClonableObservableObject<City>
 {
     [NotMapped]
     [ObservableProperty]
@@ -42,8 +42,4 @@ public partial class City : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<Vendor> _vendors = new();
-
-
-
-    public City Clone() { return (this.MemberwiseClone() as City)!; }
 }

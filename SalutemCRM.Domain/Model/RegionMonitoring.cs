@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class RegionMonitoring : ObservableObject
+public partial class RegionMonitoring : ClonableObservableObject<RegionMonitoring>
 {
     [NotMapped]
     [ObservableProperty]

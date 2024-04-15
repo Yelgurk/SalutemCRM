@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class OrderProcess : ObservableObject
+public partial class OrderProcess : ClonableObservableObject<OrderProcess>
 {
     [NotMapped]
     [ObservableProperty]
@@ -68,6 +68,4 @@ public partial class OrderProcess : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private OrderDuty? _orderDuty;
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

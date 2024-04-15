@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class Vendor : ObservableObject
+public partial class Vendor : ClonableObservableObject<Vendor>
 {
     [NotMapped]
     [ObservableProperty]
@@ -45,13 +45,4 @@ public partial class Vendor : ObservableObject
     [NotifyPropertyChangedFor(nameof(LastOrder))]
     [NotifyPropertyChangedFor(nameof(LastOrderDT))]
     private ObservableCollection<Order> _orders = new();
-
-    [NotMapped]
-    public Order? LastOrder => this.Orders.OrderBy(o => o.RecordDT).FirstOrDefault();
-
-    [NotMapped]
-    public string LastOrderDT => LastOrder?.RecordDT.ToString("dd.MM.yyyy HH:mm:ss") ?? "{ нет }";
-
-
-    public Vendor Clone() { return (this.MemberwiseClone() as Vendor)!; }
 }

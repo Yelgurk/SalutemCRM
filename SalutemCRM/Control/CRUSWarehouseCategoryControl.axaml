@@ -189,9 +189,9 @@
 								Height="40"
 								Margin="10 5"
 								HorizontalAlignment="Stretch"
-								Content="Добавить новый +"
+								Content="Применить изменения"
 								FontWeight="SemiBold"
-								Command="{Binding $parent[UserControl].DataContext.AddNewCommand}"/>
+								Command="{Binding $parent[UserControl].DataContext.EditCommand}"/>
 					</StackPanel>
 				</ScrollViewer>
 			</Grid>

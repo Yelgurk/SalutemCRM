@@ -167,16 +167,16 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
             .Do(x => x.SetActivePage(0));
         }, IfNewFilled);
 
-        /*************** ???????????? ***************/
         EditCommand = ReactiveCommand.Create(() => {
             Source
             .DoIf(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                     db.WarehouseCategories.Single(s => s.Id == x.EditItem!.Id)
+                    .DoIf(e => { }, e => x.SelectedItem is null || x.SelectedItem.Id != e.Id)?
                     .DoInst(e => e.Name = x.TempItem!.Name)
-                    .DoInst(e => e.ParentCategory = db.WarehouseCategories.SingleOrDefault(s => s.Id == x.TempItem!.ParentCategory.Do(pc => pc == null ? 0 : pc.Id)))
-                    .DoInst(e => e.Deep = e.ParentCategory == null ? 0 : e.ParentCategory.Deep + 1)
-                    .Do(e => db.SaveChanges());
+                    .DoInst(e => e.ParentCategoryForeignKey = x.SelectedItem is null ? null : db.WarehouseCategories.Single(s => s.Id == x.SelectedItem!.Id).Id)
+                    .DoInst(e => e.Deep = x.SelectedItem?.Deep + 1 ?? 0)
+                    .DoInst(e => db.SaveChanges());
             }, x => x.TempItem != null)?
             .DoInst(x => x.SearchInputStr = x.TempItem!.Name)
             .DoInst(x => x.TempItem = new())

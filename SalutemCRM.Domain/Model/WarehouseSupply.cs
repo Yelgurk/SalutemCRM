@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class WarehouseSupply : ObservableObject
+public partial class WarehouseSupply : ClonableObservableObject<WarehouseSupply>
 {
     [NotMapped]
     [ObservableProperty]
@@ -84,17 +84,4 @@ public partial class WarehouseSupply : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<MaterialFlow> _materialFlows = new();
-
-
-
-    [NotMapped]
-    public double OrderPriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
-
-    [NotMapped]
-    public double OrderPriceSingleBYN { get => OrderPriceTotalBYN / OrderCount; }
-
-    [NotMapped]
-    public double InStockPriceTotalBYN { get => OrderPriceTotalBYN / OrderCount * InStockCount; }
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

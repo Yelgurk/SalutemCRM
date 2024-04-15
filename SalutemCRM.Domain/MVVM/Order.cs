@@ -9,17 +9,9 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class Country : ClonableObservableObject<Country>
+public partial class Order
 {
-    [NotMapped]
-    [ObservableProperty]
-    private int _id;
 
     [NotMapped]
-    [ObservableProperty]
-    private string _name = null!;
-
-    [NotMapped]
-    [ObservableProperty]
-    private ObservableCollection<City> _cities = new();
+    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
 }

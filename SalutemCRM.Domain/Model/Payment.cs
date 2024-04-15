@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class Payment : ObservableObject
+public partial class Payment : ClonableObservableObject<Payment>
 {
     [NotMapped]
     [ObservableProperty]
@@ -39,6 +39,4 @@ public partial class Payment : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private Order? _order;
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

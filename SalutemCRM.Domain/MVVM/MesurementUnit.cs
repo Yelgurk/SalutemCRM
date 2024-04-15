@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class MesurementUnit : ClonableObservableObject<MesurementUnit>
+public partial class MesurementUnit
 {
-    [NotMapped]
-    [ObservableProperty]
-    private string _name = null!;
+
 }

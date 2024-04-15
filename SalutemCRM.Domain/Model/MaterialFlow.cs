@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class MaterialFlow : ObservableObject
+public partial class MaterialFlow : ClonableObservableObject<MaterialFlow>
 {
     [NotMapped]
     [ObservableProperty]
@@ -86,6 +86,4 @@ public partial class MaterialFlow : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<FileAttach> _fileAttachs = new();
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

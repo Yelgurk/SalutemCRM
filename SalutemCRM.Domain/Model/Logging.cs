@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class Logging : ObservableObject
+public partial class Logging : ClonableObservableObject<Logging>
 {
     [NotMapped]
     [ObservableProperty]
@@ -34,6 +34,4 @@ public partial class Logging : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private DateTime _recordDT;
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

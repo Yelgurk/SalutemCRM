@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class Order : ObservableObject
+public partial class Order : ClonableObservableObject<Order>
 {
     [NotMapped]
     [ObservableProperty]
@@ -127,11 +127,4 @@ public partial class Order : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<OrderProcess> _orderProcesses = new();
-
-
-
-    [NotMapped]
-    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class FileAttach : ObservableObject
+public partial class FileAttach : ClonableObservableObject<FileAttach>
 {
     [NotMapped]
     [ObservableProperty]
@@ -48,6 +48,4 @@ public partial class FileAttach : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private MaterialFlow? _materialFlow;
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

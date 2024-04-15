@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class ProductSchema : ObservableObject
+public partial class ProductSchema : ClonableObservableObject<ProductSchema>
 {
     [NotMapped]
     [ObservableProperty]
@@ -31,6 +31,4 @@ public partial class ProductSchema : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private WarehouseItem? _warehouseItem;
-
-    public object Clone() { return this.MemberwiseClone(); }
 }

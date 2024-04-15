@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemCRM.Domain.Model;
 
-public partial class ProductCategory : ObservableObject
+public partial class ProductCategory : ClonableObservableObject<ProductCategory>
 {
     [NotMapped]
     [ObservableProperty]
@@ -38,6 +38,4 @@ public partial class ProductCategory : ObservableObject
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<ProductTemplate> _productTemplates = new();
-
-    public object Clone() { return this.MemberwiseClone(); }
 }
