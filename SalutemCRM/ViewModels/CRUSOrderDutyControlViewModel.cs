@@ -41,11 +41,9 @@ public partial class CRUSOrderDutyControlViewModelSource : ReactiveControlSource
     }
 }
 
-public class CRUSOrderDutyControlViewModel : ViewModelBase<OrderDuty>
+public class CRUSOrderDutyControlViewModel : ViewModelBase<OrderDuty, CRUSOrderDutyControlViewModelSource>
 {
-    public CRUSOrderDutyControlViewModelSource Source { get; } = new() { PagesCount = 2 };
-
-    public CRUSOrderDutyControlViewModel()
+    public CRUSOrderDutyControlViewModel() : base(new() { PagesCount = 2 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,

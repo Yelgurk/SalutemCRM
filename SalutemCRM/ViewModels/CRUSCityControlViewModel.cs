@@ -48,11 +48,9 @@ public partial class CRUSCityControlViewModelSource : ReactiveControlSource<City
     }
 }
 
-public class CRUSCityControlViewModel : ViewModelBase<City>
+public class CRUSCityControlViewModel : ViewModelBase<City, CRUSCityControlViewModelSource>
 {
-    public CRUSCityControlViewModelSource Source { get; } = new() { PagesCount = 3 };
-
-    public CRUSCityControlViewModel()
+    public CRUSCityControlViewModel() : base(new() { PagesCount = 3 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,

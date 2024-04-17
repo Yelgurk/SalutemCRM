@@ -40,11 +40,9 @@ public partial class CRUSCountryControlViewModelSource : ReactiveControlSource<C
     }
 }
 
-public class CRUSCountryControlViewModel : ViewModelBase<Country>
+public class CRUSCountryControlViewModel : ViewModelBase<Country, CRUSCountryControlViewModelSource>
 {
-    public CRUSCountryControlViewModelSource Source { get; } = new() { PagesCount = 3 };
-
-    public CRUSCountryControlViewModel()
+    public CRUSCountryControlViewModel() : base(new() { PagesCount = 3 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,

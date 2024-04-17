@@ -15,7 +15,22 @@
 		<Grid Height="800"
 			  Width="700">
 			<StackPanel VerticalAlignment="Center">
-				<ListBox Classes="custom marked"
+				<ListBox Margin="0 0 0 10">
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="1"/>
+						<TextBlock Text="Первый" Margin="100 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="2"/>
+						<TextBlock Text="Второй" Margin="100 0 0 0"/>
+					</DockPanel>
+					<DockPanel Classes="DemoSpacing">
+						<TextBlock Text="3"/>
+						<TextBlock Text="Третий" Margin="100 0 0 0"/>
+					</DockPanel>
+					</ListBox>
+
+					<ListBox Classes="custom marked"
 						 Margin="0 0 0 10">
 					<DockPanel Classes="DemoSpacing">
 						<TextBlock Text="1"/>

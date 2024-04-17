@@ -40,11 +40,9 @@ public partial class CRUSCurrencyUnitControlViewModelSource : ReactiveControlSou
     }
 }
 
-public class CRUSCurrencyUnitControlViewModel : ViewModelBase<CurrencyUnit>
+public class CRUSCurrencyUnitControlViewModel : ViewModelBase<CurrencyUnit, CRUSCurrencyUnitControlViewModelSource>
 {
-    public CRUSCurrencyUnitControlViewModelSource Source { get; } = new() { PagesCount = 3 };
-
-    public CRUSCurrencyUnitControlViewModel()
+    public CRUSCurrencyUnitControlViewModel() : base(new() { PagesCount = 3 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,

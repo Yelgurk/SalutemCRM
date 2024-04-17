@@ -22,6 +22,8 @@ using DynamicData;
 using System.Threading;
 using Avalonia.Threading;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.DependencyInjection;
+using SalutemCRM.Services;
 
 namespace SalutemCRM.ViewModels;
 
@@ -93,13 +95,11 @@ public partial class CRUSWarehouseCategoryControlViewModelSource : ReactiveContr
     }
 }
 
-public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCategory>
+public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCategory, CRUSWarehouseCategoryControlViewModelSource>
 {
-    public CRUSWarehouseCategoryControlViewModelSource Source { get; } = new() { PagesCount = 3, IsResponsiveControl = true };
-
     public ReactiveCommand<Unit, Unit>? RemoveCategoryInheritanceCommand { get; set; }
 
-    public CRUSWarehouseCategoryControlViewModel()
+    public CRUSWarehouseCategoryControlViewModel() : base(new() { PagesCount = 3, IsResponsiveControl = true })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,
@@ -136,6 +136,8 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
                 .Do(s => s.SearchByInput(""))
                 .DoInst(x => x.TempItem = new())
                 .Do(x => x.SetActivePage(1));
+
+            //App.Host!.Services.GetService<ViewModelSourceNotifyService>()!.Execute(x => x.SearchInputStr = "тест динамики");
         });
 
         GoEditCommand = ReactiveCommand.Create<WarehouseCategory>(x => {

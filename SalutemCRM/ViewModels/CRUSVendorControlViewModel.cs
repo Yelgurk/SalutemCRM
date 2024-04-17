@@ -92,14 +92,12 @@ public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Ve
     }
 }
 
-public class CRUSVendorControlViewModel : ViewModelBase<Vendor>
+public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorControlViewModelSource>
 {
-    public CRUSVendorControlViewModelSource Source { get; } = new() { PagesCount = 3 };
-
     public ReactiveCommand<Unit, Unit> NewVednorAddContactCommand { get; }
     public ReactiveCommand<string, Unit> NewVednorDeleteContactCommand { get; }
 
-    public CRUSVendorControlViewModel()
+    public CRUSVendorControlViewModel() : base(new() { PagesCount = 3 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,

@@ -4,7 +4,10 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SalutemCRM.Reactive;
+using SalutemCRM.Services;
 using SalutemCRM.Views;
+using System.Collections.Generic;
 
 namespace SalutemCRM;
 
@@ -23,6 +26,7 @@ public partial class App : Application
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
             .ConfigureServices(services => {
                 services.AddSingleton<MainWindow>();
+                services.AddSingleton<ViewModelSourceNotifyService>();
             })
             .Build();
 

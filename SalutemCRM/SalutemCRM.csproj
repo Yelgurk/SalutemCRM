@@ -33,6 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Control\CRUSProductCategoryControl.axaml.cs">
+	    <DependentUpon>CRUSProductCategoryControl.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Control\CRUSWarehouseCategoryControl.axaml.cs">
 	    <DependentUpon>CRUSWarehouseCategoryControl.axaml</DependentUpon>
 	  </Compile>

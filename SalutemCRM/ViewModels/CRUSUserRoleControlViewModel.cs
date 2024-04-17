@@ -41,11 +41,9 @@ public partial class CRUSUserRoleControlViewModelSource : ReactiveControlSource<
     }
 }
 
-public class CRUSUserRoleControlViewModel : ViewModelBase<UserRole>
+public class CRUSUserRoleControlViewModel : ViewModelBase<UserRole, CRUSUserRoleControlViewModelSource>
 {
-    public CRUSUserRoleControlViewModelSource Source { get; } = new() { PagesCount = 1 };
-
-    public CRUSUserRoleControlViewModel()
+    public CRUSUserRoleControlViewModel() : base(new() { PagesCount = 1 })
     {
         IfSearchStrNotNull = this.WhenAnyValue(
             x => x.Source.SearchInputStr,
