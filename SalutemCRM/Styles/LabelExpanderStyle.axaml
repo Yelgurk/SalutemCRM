@@ -1,0 +1,84 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://SalutemCRM/Assets/Color.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+
+	<Design.PreviewWith>
+		<Grid Height="800"
+			  Width="300"
+			  Background="Gray">
+			<ListBox Classes="custom">
+				<ListBoxItem>
+					<Label Classes="expander">
+						<Label.Tag>
+							<Label Content="Предмет 1"/>
+						</Label.Tag>
+						<Label.Content>
+							<ScrollViewer MaxHeight="150">
+								<StackPanel>
+									<Label Content="подпредмет _1"/>
+									<Label Content="подпредмет _2"/>
+									<Label Content="подпредмет _3"/>
+									<Label Content="подпредмет _4"/>
+									<Label Content="подпредмет _5"/>
+									<Label Content="подпредмет _6"/>
+									<Label Content="подпредмет _7"/>
+									<Label Content="подпредмет _8"/>
+									<Label Content="подпредмет _9"/>
+									<Label Content="подпредмет _10"/>
+									<Label Content="подпредмет _11"/>
+								</StackPanel>
+							</ScrollViewer>
+						</Label.Content>
+					</Label>
+				</ListBoxItem>
+			</ListBox>
+		</Grid>
+	</Design.PreviewWith>
+
+	<Style Selector="Label.expander">
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid ColumnDefinitions="*, auto, auto"
+					  RowDefinitions="auto, auto">
+					<Label Name="PART_ExpanderHeader"
+						   Content="{TemplateBinding Tag}"/>
+					
+					<ToggleButton Name="PART_ExpanderToggleButton"
+								  Classes="custom iconed blue rounded sys"
+								  Classes.collapse_down="{Binding !$self.IsChecked}"
+								  Classes.collapse_up="{Binding $self.IsChecked}"/>
+
+					<ContentPresenter Name="PART_ExpanderContent"
+									  Content="{TemplateBinding Content}"
+									  IsVisible="{Binding #PART_ExpanderToggleButton.IsChecked}"/>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="Label.expander Label#PART_ExpanderHeader">
+		
+	</Style>
+
+	<Style Selector="Label.expander ToggleButton#PART_ExpanderToggleButton">
+		<Setter Property="Grid.Column" Value="1"/>
+		<Setter Property="Margin" Value="0 0 5 0"/>
+	</Style>
+
+	<Style Selector="Label.expander ContentPresenter#PART_ExpanderContent">
+		<Setter Property="Grid.ColumnSpan" Value="2"/>
+		<Setter Property="Grid.Row" Value="1"/>
+		<Setter Property="Margin" Value="30 5 0 5"/>
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="BorderThickness" Value="0 1 0 0"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_DarkBlue}"/>
+	</Style>
+</Styles>

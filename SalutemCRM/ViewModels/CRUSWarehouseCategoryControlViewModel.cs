@@ -99,7 +99,7 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
 {
     public ReactiveCommand<Unit, Unit>? RemoveCategoryInheritanceCommand { get; set; }
 
-    public CRUSWarehouseCategoryControlViewModel() : base(new() { PagesCount = 3, IsResponsiveControl = true })
+    public CRUSWarehouseCategoryControlViewModel() : base(new() { PagesCount = 3 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,

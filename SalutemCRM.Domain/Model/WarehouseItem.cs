@@ -18,7 +18,7 @@ public partial class WarehouseItem : ClonableObservableObject<WarehouseItem>
 
     [NotMapped]
     [ObservableProperty]
-    private string _name = null!;
+    private string _innerName = null!;
 
     [NotMapped]
     [ObservableProperty]

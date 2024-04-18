@@ -163,6 +163,14 @@
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Account.png"/>
 	</Style>
 
+	<Style Selector="Button.collapse_up /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Collapse_up.png"/>
+	</Style>
+
+	<Style Selector="Button.collapse_down /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Collapse_down.png"/>
+	</Style>
+
 	<Style Selector="Button.orange">
 		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
 	</Style>

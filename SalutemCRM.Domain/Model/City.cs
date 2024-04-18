@@ -29,11 +29,11 @@ public partial class City : ClonableObservableObject<City>
     [ObservableProperty]
     private Country? _country;
 
-
-
     [NotMapped]
     [ObservableProperty]
-    private ObservableCollection<RegionMonitoring> _regionsMonitoring = new();
+    private RegionMonitoring? _regionMonitoring;
+
+
 
     [NotMapped]
     [ObservableProperty]

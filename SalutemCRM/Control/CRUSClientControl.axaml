@@ -6,13 +6,13 @@
 			 xmlns:controls="using:SalutemCRM.Control"
 			 xmlns:conv="using:SalutemCRM.Converter"
 			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
-			 x:DataType="vm:CRUSCityControlViewModel"
-             x:Class="SalutemCRM.Control.CRUSCityControl"
+			 x:DataType="vm:CRUSClientControlViewModel"
+             x:Class="SalutemCRM.Control.CRUSClientControl"
 			 Design.Width="600"
 			 Design.Height="400"
 			 Background="{Binding $self.DataContext.Source.DynamicColor}">
 	<UserControl.DataContext>
-		<vm:CRUSCityControlViewModel/>
+		<vm:CRUSClientControlViewModel/>
 	</UserControl.DataContext>
 
 	<Grid Classes="pages_container"
@@ -22,7 +22,7 @@
 			  RowDefinitions="auto, *">
 			
 			<TextBlock Classes="text_header"
-					   Text="Список городов"/>
+					   Text="Клиенты"/>
 
 			<Grid RowDefinitions="auto, *"
 				  ColumnDefinitions="*, auto, auto">
@@ -50,7 +50,7 @@
 				<ListBox Classes="custom"
 						 Grid.Row="1"
 						 Grid.ColumnSpan="3"
-						 ItemsSource="{Binding Source.Cities}"
+						 ItemsSource="{Binding Source.Clients}"
 						 SelectedItem="{Binding Source.SelectedItem}"
 						 ClipToBounds="True">
 					<ListBox.ItemTemplate>
@@ -63,18 +63,20 @@
 									<DockPanel Grid.Row="0"
 											   Margin="0 0 0 -3">
 										<TextBlock FontSize="15" Text="{Binding Name}" FontWeight="SemiBold"/>
-										<TextBlock FontSize="15" Text=", " FontWeight="SemiBold"/>
-										<TextBlock FontSize="15" Text="{Binding Country.Name}" FontWeight="SemiBold"/>
+										<TextBlock FontSize="15" Text=", "/>
+										<TextBlock FontSize="15" Text="{Binding City.Name}"/>
+										<TextBlock FontSize="15" Text=", "/>
+										<TextBlock FontSize="15" Text="{Binding City.Country.Name}"/>
 									</DockPanel>
 									<DockPanel Grid.Row="1">
-										<TextBlock FontSize="12" Text="Клиенты: "/>
-										<TextBlock FontSize="12" Text="{Binding Clients.Count}"/>
-										<TextBlock FontSize="12" Text=" ед."/>
+										<TextBlock FontSize="13" Text="Ответственный: " FontWeight="SemiBold"/>
+										<TextBlock FontSize="13" Text="{Binding City.RegionMonitoring.Employee.FullNameWithLogin}"/>
 									</DockPanel>
-									<DockPanel Grid.Row="2">
-										<TextBlock FontSize="12" Text="Поставщики: "/>
-										<TextBlock FontSize="12" Text="{Binding Vendors.Count}"/>
-										<TextBlock FontSize="12" Text=" ед."/>
+									<DockPanel Grid.Row="2" Margin="0 2">
+										<TextBlock FontSize="12" Text="Вытсавленные счета: "/>
+										<TextBlock FontSize="12" Text="{Binding Orders.Count}"/>
+										<TextBlock FontSize="12" Text=", последний: "/>
+										<TextBlock FontSize="12" Text="{Binding LastOrderDT}"/>
 									</DockPanel>
 								</Grid>
 								<Button Grid.Column="7"
@@ -101,30 +103,85 @@
 						Command="{Binding GoBackCommand}"/>
 
 				<TextBlock Classes="text_header"
-						   Text=" &gt; Новый город"/>
+						   Text=" &gt; Новый поставщик"/>
 			</DockPanel>
 
 			<Grid>
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Classes="background">
 						<TextBox Classes="custom header new_input"
-								 Watermark="Название"
+								 Watermark="Название организации"
 								 Text="{Binding Source.TempItem.Name}"/>
 
-						<StackPanel Classes="background">
-							<TextBlock Classes="new_input" Text="Страна"
-									   Foreground="{Binding #Control_SelectCountry.BorderBrush}"/>
-							<ComboBox Classes="custom new_input"
-									  x:Name="Control_SelectCountry"
-									  ItemsSource="{Binding Source.Countries}"
-									  SelectedItem="{Binding Source.TempItem.Country}">
-								<ComboBox.ItemTemplate>
+						<Grid Classes="background"
+							  ColumnDefinitions="*, auto"
+							  RowDefinitions="auto, auto">
+							<ItemsControl Classes="new_input"
+										  ItemsSource="{Binding Source.ContactsSplitted}">
+								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding Name}"/>
+										<Button Classes="custom iconed orange close rounded"
+												Content="{Binding}"
+												Command="{Binding $parent[UserControl].DataContext.NewClientDeleteContactCommand}"
+												CommandParameter="{Binding}"
+												Margin="3 0 3 6"/>
 									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-						</StackPanel>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+							<TextBox Classes="custom header new_input"
+									 Grid.Row="1"
+									 Watermark="Телефон, почта, сайт"
+									 Text="{Binding Source.NewClientsContactInputStr}"/>
+							<Button Classes="custom iconed orange plus rounded new_input"
+									Grid.Column="1" Grid.Row="1"
+									Width="{Binding $self.Bounds.Height}"
+									IsDefault="True"
+									Command="{Binding NewClientAddContactCommand}"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, *">
+							<StackPanel Classes="background">
+								<TextBlock Classes="new_input" Text="Страна"
+										   Foreground="{Binding #Control_SelectCountry.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCountry"
+										  ItemsSource="{Binding Source.Countries}"
+										  SelectedItem="{Binding Source.SelectedCountry}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+
+							<StackPanel Classes="background" Grid.Column="1">
+								<TextBlock Classes="new_input" Text="Город"
+										   Foreground="{Binding #Control_SelectCity.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCity"
+										  ItemsSource="{Binding Source.Cities}"
+										  SelectedItem="{Binding Source.SelectedCity}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+						</Grid>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Адрес"
+								 Text="{Binding Source.TempItem.Address}"/>
+						
+						<TextBox Classes="custom header new_input"
+								 Watermark="Дополнительная инфомрация"
+								 Text="{Binding Source.TempItem.AdditionalInfo}"
+								 Height="100"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"/>
 						
 						<Button Classes="custom orange whiteText"
 								Height="40"
@@ -160,24 +217,79 @@
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Classes="background">
 						<TextBox Classes="custom header new_input"
-								 Watermark="Название"
+								 Watermark="Название организации"
 								 Text="{Binding Source.TempItem.Name}"/>
 
-						<StackPanel Classes="background">
-							<TextBlock Classes="new_input" Text="Страна"
-									   Foreground="{Binding #Control_SelectCountry2.BorderBrush}"/>
-							<ComboBox Classes="custom new_input"
-									  x:Name="Control_SelectCountry2"
-									  ItemsSource="{Binding Source.Countries}"
-									  SelectedItem="{Binding Source.TempItem.Country}">
-								<ComboBox.ItemTemplate>
+						<Grid Classes="background"
+							  ColumnDefinitions="*, auto"
+							  RowDefinitions="auto, auto">
+							<ItemsControl Classes="new_input"
+										  ItemsSource="{Binding Source.ContactsSplitted}">
+								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding Name}"/>
+										<Button Classes="custom iconed orange close rounded"
+												Content="{Binding}"
+												Command="{Binding $parent[UserControl].DataContext.NewClientDeleteContactCommand}"
+												CommandParameter="{Binding}"
+												Margin="3 0 3 6"/>
 									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-						</StackPanel>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
 
+							<TextBox Classes="custom header new_input"
+									 Grid.Row="1"
+									 Watermark="Телефон, почта, сайт"
+									 Text="{Binding Source.NewClientsContactInputStr}"/>
+							<Button Classes="custom iconed orange plus rounded new_input"
+									Grid.Column="1" Grid.Row="1"
+									Width="{Binding $self.Bounds.Height}"
+									IsDefault="True"
+									Command="{Binding NewClientAddContactCommand}"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, *">
+							<StackPanel Classes="background">
+								<TextBlock Classes="new_input" Text="Страна"
+										   Foreground="{Binding #Control_SelectCountry_2.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCountry_2"
+										  ItemsSource="{Binding Source.Countries}"
+										  SelectedItem="{Binding Source.SelectedCountry}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+
+							<StackPanel Classes="background" Grid.Column="1">
+								<TextBlock Classes="new_input" Text="Город"
+										   Foreground="{Binding #Control_SelectCity_2.BorderBrush}"/>
+								<ComboBox Classes="custom new_input"
+										  x:Name="Control_SelectCity_2"
+										  ItemsSource="{Binding Source.Cities}"
+										  SelectedItem="{Binding Source.SelectedCity}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
+						</Grid>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Адрес"
+								 Text="{Binding Source.TempItem.Address}"/>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Дополнительная инфомрация"
+								 Text="{Binding Source.TempItem.AdditionalInfo}"
+								 Height="100"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"/>
+						
 						<Button Classes="custom orange whiteText"
 								Height="40"
 								Margin="10 5"

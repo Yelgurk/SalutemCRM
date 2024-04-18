@@ -161,7 +161,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
 		<Setter Property="MinHeight" Value="40"/>
-		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Padding" Value="0 0"/>
 	</Style>
 
 	<Style Selector="ListBox.custom > ListBoxItem:selected:nth-last-child(1), ListBox > ListBoxItem:pointerover:nth-last-child(1)">
@@ -195,21 +195,19 @@
 
 	<Style Selector="ListBox.custom ListBoxItem /template/ ContentPresenter">
 		<Setter Property="BorderThickness" Value="0"/>
-		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Padding" Value="0 5"/>
 	</Style>
 
 	<Style Selector="ListBox.custom ListBoxItem:pointerover /template/ ContentPresenter">
 		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource Primary_Gray}"/>
 		<Setter Property="BorderThickness" Value="0 0 10 0"/>
-		<Setter Property="Padding" Value="0 0 -10 0"/>
 	</Style>
 
 	<Style Selector="ListBox.custom ListBoxItem:selected /template/ ContentPresenter">
 		<Setter Property="Background" Value="{DynamicResource Basic_Orange}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource Primary_Yellow}"/>
 		<Setter Property="BorderThickness" Value="0"/>
-		<Setter Property="Padding" Value="0"/>
 	</Style>
 
 	<Style Selector="ListBox.custom ListBoxItem:selected:pointerover /template/ ContentPresenter">
@@ -224,7 +222,7 @@
 
 	<Style Selector="ListBox.custom.marked ListBoxItem:selected /template/ ContentPresenter">
 		<Setter Property="BorderThickness" Value="0 0 10 0"/>
-		<Setter Property="Padding" Value="0 0 -10 0"/>
+		<Setter Property="Padding" Value="0 5 -10 5"/>
 	</Style>
 
 	<!-- ListBox - colorized -->
@@ -232,18 +230,15 @@
 	<Style Selector="ListBox.custom ListBoxItem.green /template/ ContentPresenter">
 		<Setter Property="Background" Value="{DynamicResource Sys_Green}"/>
 		<Setter Property="BorderThickness" Value="0"/>
-		<Setter Property="Padding" Value="0"/>
 	</Style>
 
 	<Style Selector="ListBox.custom ListBoxItem.blue /template/ ContentPresenter">
 		<Setter Property="Background" Value="{DynamicResource Alt_SkyBlue}"/>
 		<Setter Property="BorderThickness" Value="0"/>
-		<Setter Property="Padding" Value="0"/>
 	</Style>
 
 	<Style Selector="ListBox.custom ListBoxItem.red /template/ ContentPresenter">
 		<Setter Property="Background" Value="{DynamicResource Alt_Pink}"/>
 		<Setter Property="BorderThickness" Value="0"/>
-		<Setter Property="Padding" Value="0"/>
 	</Style>
 </Styles>

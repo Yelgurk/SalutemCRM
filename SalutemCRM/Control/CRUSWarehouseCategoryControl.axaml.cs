@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.ViewModels;
 using System.Diagnostics;
@@ -31,13 +32,17 @@ namespace SalutemCRM.Control
 
         private async Task GetSelectedFromTreeDataGrid(TreeDataGrid x, CRUSWarehouseCategoryControlViewModel vm) => await Task.Run(() =>
         {
-            while (!_isReselected)
-                try
-                {
-                    while ((x.RowSelection!.SelectedItem as WarehouseCategory)?.Name == _reselect?.Name) ;
-                    vm.Source.SelectedItem = _reselect = x.RowSelection!.SelectedItem as WarehouseCategory;
-                    _isReselected = true;
-                } catch { }
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                while (!_isReselected)
+                    try
+                    {
+                        while ((x.RowSelection!.SelectedItem as WarehouseCategory)?.Name == _reselect?.Name) ;
+                        vm.Source.SelectedItem = _reselect = x.RowSelection!.SelectedItem as WarehouseCategory;
+                        _isReselected = true;
+                    }
+                    catch { }
+            });
         });
     }
 }

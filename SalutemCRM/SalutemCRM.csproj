@@ -36,6 +36,12 @@
 	  <Compile Update="Control\CRUSProductCategoryControl.axaml.cs">
 	    <DependentUpon>CRUSProductCategoryControl.axaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Control\CRUSClientControl.axaml.cs">
+	    <DependentUpon>CRUSClientControl.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Control\CRUSWarehouseItemControl.axaml.cs">
+	    <DependentUpon>CRUSWarehouseItemControl.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Control\CRUSWarehouseCategoryControl.axaml.cs">
 	    <DependentUpon>CRUSWarehouseCategoryControl.axaml</DependentUpon>
 	  </Compile>

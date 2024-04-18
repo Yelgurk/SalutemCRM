@@ -74,8 +74,7 @@
 										Margin="0 2 15 2"
 										Classes="custom iconed blue rounded sys edit"
 										Command="{Binding $parent[UserControl].DataContext.GoEditCommand}"
-										CommandParameter="{Binding}"
-										IsVisible="{Binding $parent[UserControl].DataContext.Source.IsFuncEditAvailable}"/>
+										CommandParameter="{Binding}"/>
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>

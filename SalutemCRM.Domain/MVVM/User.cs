@@ -15,5 +15,10 @@ namespace SalutemCRM.Domain.Model;
 
 public partial class User
 {
-    
+    [NotMapped]
+    public string FullName => $"{this.FirstName} {this.LastName}";
+
+
+    [NotMapped]
+    public string FullNameWithLogin => $"{this.FirstName} {this.LastName} [{this.Login}]";
 }

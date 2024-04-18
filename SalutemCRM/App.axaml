@@ -16,6 +16,8 @@
         <FluentTheme />
 		<StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
 		<StyleInclude Source="/Styles/ButtonStyle.axaml"/>
+		<StyleInclude Source="/Styles/ToggleButtonStyle.axaml"/>
+		<StyleInclude Source="/Styles/LabelExpanderStyle.axaml"/>
 		<StyleInclude Source="/Styles/ListStyle.axaml"/>
 		<StyleInclude Source="/Styles/TextBoxStyle.axaml"/>
 		<StyleInclude Source="/Styles/ProgressBarStyle.axaml"/>

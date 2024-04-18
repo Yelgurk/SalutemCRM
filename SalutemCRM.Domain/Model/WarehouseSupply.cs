@@ -27,7 +27,11 @@ public partial class WarehouseSupply : ClonableObservableObject<WarehouseSupply>
 
     [NotMapped]
     [ObservableProperty]
-    private string? _vendorCode;
+    private string _vendorName = null!;
+
+    [NotMapped]
+    [ObservableProperty]
+    private string _vendorCode = null!;
 
     [NotMapped]
     [ObservableProperty]

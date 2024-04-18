@@ -12,7 +12,7 @@ public class ViewModelBase : ReactiveObject
 {
 }
 
-public abstract class ViewModelBase<T1, T2> where T1 : class
+public abstract class ViewModelBase<T1, T2> : ReactiveObject
 {
     public ViewModelBase(T2 Source)
     {

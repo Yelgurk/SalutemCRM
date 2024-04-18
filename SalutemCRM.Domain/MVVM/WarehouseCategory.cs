@@ -23,7 +23,12 @@ public partial class WarehouseCategory
     public List<WarehouseCategory> ObjHierarchyToZeroDeepParent =>
         new List<WarehouseCategory>()
         .Do(x => x.Add(this))
-        .DoInst(x => x.DoIf(y => y.AddRange(this.ParentCategory!.Clone().Do(z => { z.SubCategories.Clear(); z.SubCategories.Add(this); }).ObjHierarchyToZeroDeepParent), y => this.ParentCategory is not null));
+        .DoInst(x => x.DoIf(
+            y => y.AddRange(this.ParentCategory!.Clone().Do(z => { z.SubCategories.Clear(); z.SubCategories.Add(this); }).ObjHierarchyToZeroDeepParent),
+            y => this.ParentCategory is not null)
+        );
+
+    public List<int> ObjHierarchyToZeroDeepParentIdList => ObjHierarchyToZeroDeepParent.Select(x => x.Id).ToList();
 
     public void ObjHierarchyToLastChild(List<WarehouseCategory> list)
     {

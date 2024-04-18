@@ -9,8 +9,8 @@ namespace SalutemCRM.Domain.Model;
 public partial class Vendor
 {
     [NotMapped]
-    public Order? LastOrder => this.Orders.OrderBy(o => o.RecordDT).FirstOrDefault();
+    public Order? LastOrder => this.Orders.OrderBy(o => o.RecordDT).LastOrDefault();
 
     [NotMapped]
-    public string LastOrderDT => LastOrder?.RecordDT.ToString("dd.MM.yyyy HH:mm:ss") ?? "{ нет }";
+    public string LastOrderDT => this.LastOrder?.RecordDT.ToString("dd.MM.yyyy HH:mm:ss") ?? "{ нет }";
 }

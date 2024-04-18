@@ -29,6 +29,7 @@ public partial class User : ClonableObservableObject<User>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FullNameWithLogin))]
     private string _login = null!;
 
     [NotMapped]
@@ -37,10 +38,14 @@ public partial class User : ClonableObservableObject<User>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FullName))]
+    [NotifyPropertyChangedFor(nameof(FullNameWithLogin))]
     private string _firstName = null!;
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FullName))]
+    [NotifyPropertyChangedFor(nameof(FullNameWithLogin))]
     private string _lastName = null!;
 
 

@@ -89,17 +89,26 @@ public partial class ReactiveControlSource<T> : ObservableObject, IReactiveContr
 
     [ObservableProperty]
     private string _searchInputStr = "";
-
     partial void OnSearchInputStrChanged(string? oldValue, string newValue) => SearchByInput(SearchInputStr);
-
     public virtual void SearchByInput(string keyword) { }
 
 
 
     /* Block of external influence processing on all view model sources with possibility of logic overriding */
-    public void ServerResponse(List<object> models) => models.DoForEach(x => this.ServerResponse(x));
+    public void ServerResponse(List<object> models) => models.DoForEach(this.ServerResponse);
 
     public void ServerResponse(object model) => model.DoIf(x => HandleServerResponse((T)x), x => x.GetType() == typeof(T));
 
     public virtual void HandleServerResponse(T model) => Debug.WriteLine($"{typeof(T)} proceed");
+
+
+
+
+    /* Selected item bridge through delegate */
+
+    partial void OnSelectedItemChanged(T? value) => SelectedItemChangedTrigger?.Invoke(value!);
+
+    public SelectedItemChangedCommandDelegate? SelectedItemChangedTrigger { get; set; }
+
+    public delegate void SelectedItemChangedCommandDelegate(T item);
 }

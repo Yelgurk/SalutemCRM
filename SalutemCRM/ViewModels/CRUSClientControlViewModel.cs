@@ -23,21 +23,21 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SalutemCRM.ViewModels;
 
-public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Vendor>
+public partial class CRUSClientControlViewModelSource : ReactiveControlSource<Client>
 {
     [ObservableProperty]
-    private ObservableCollection<Vendor> _vendors = new() {
-        new Vendor() { Name = "Test 1", Address = "*** address ***" },
-        new Vendor() { Name = "Test 2", Address = "*** address ***" },
-        new Vendor() { Name = "Test 3", Address = "*** address ***" },
-        new Vendor() { Name = "Test 4", Address = "*** address ***" },
-        new Vendor() { Name = "Test 5", Address = "*** address ***" }
+    private ObservableCollection<Client> _clients = new() {
+        new Client() { Name = "Test 1", Address = "*** address ***" },
+        new Client() { Name = "Test 2", Address = "*** address ***" },
+        new Client() { Name = "Test 3", Address = "*** address ***" },
+        new Client() { Name = "Test 4", Address = "*** address ***" },
+        new Client() { Name = "Test 5", Address = "*** address ***" }
     };
 
 
     
     [ObservableProperty]
-    private string _newVendorContactInputStr = "";
+    private string _newClientsContactInputStr = "";
 
     [ObservableProperty]
     private ObservableCollection<string> _contactsSplitted = new();
@@ -78,10 +78,12 @@ public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Ve
         keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
 
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-            Vendors = new(
-                from v in db.Vendors
+            Clients = new(
+                from v in db.Clients
                     .Include(z => z.City)
-                    .ThenInclude(z => z!.Country)
+                        .ThenInclude(z => z!.Country)
+                    .Include(z => z.City!.RegionMonitoring)
+                            .ThenInclude(z => z!.Employee)
                     .Include(z => z!.Orders)
                     .AsEnumerable()
                 where keyword.Split(" ").Any(s =>
@@ -96,12 +98,12 @@ public partial class CRUSVendorControlViewModelSource : ReactiveControlSource<Ve
     }
 }
 
-public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorControlViewModelSource>
+public class CRUSClientControlViewModel : ViewModelBase<Client, CRUSClientControlViewModelSource>
 {
-    public ReactiveCommand<Unit, Unit> NewVednorAddContactCommand { get; }
-    public ReactiveCommand<string, Unit> NewVednorDeleteContactCommand { get; }
+    public ReactiveCommand<Unit, Unit> NewClientAddContactCommand { get; }
+    public ReactiveCommand<string, Unit> NewClientDeleteContactCommand { get; }
 
-    public CRUSVendorControlViewModel() : base(new() { PagesCount = 3 })
+    public CRUSClientControlViewModel() : base(new() { PagesCount = 3 })
     {
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,
@@ -145,8 +147,8 @@ public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorContro
                 s.Length > 0
         );
 
-        IObservable<bool> _ifNewVendorAddContactStrNotNull = this.WhenAnyValue(
-            x => x.Source.NewVendorContactInputStr,
+        IObservable<bool> _ifNewClientsAddContactStrNotNull = this.WhenAnyValue(
+            x => x.Source.NewClientsContactInputStr,
             (s) =>
                 !string.IsNullOrWhiteSpace(s) &&
                 s.Length > 0
@@ -170,7 +172,7 @@ public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorContro
                 .Do(x => x.SetActivePage(1));
         });
 
-        GoEditCommand = ReactiveCommand.Create<Vendor>(x => {
+        GoEditCommand = ReactiveCommand.Create<Client>(x => {
             Source
                 .DoInst(s => s.EditItem = x.Clone())
                 .DoInst(s => s.TempItem = x.Clone())
@@ -196,7 +198,7 @@ public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorContro
                 {
                     x.TempItem!.City = db.Cities.Single(z => z.Id == x.SelectedCity!.Id);
                     x.TempItem!.Contacts = string.Join("|", x.ContactsSplitted); 
-                    db.Vendors.Add(x.TempItem!);
+                    db.Clients.Add(x.TempItem!);
                     db.SaveChanges();
                 };
             }, x =>
@@ -213,7 +215,7 @@ public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorContro
             .Do(x => {
                 using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
                 {
-                    Vendor? vendor = db.Vendors
+                    Client? vendor = db.Clients
                         .Where(v => v.Id == x.EditItem!.Id)
                         .Include(v => v.City)
                         .ThenInclude(x => x!.Country)
@@ -239,18 +241,18 @@ public class CRUSVendorControlViewModel : ViewModelBase<Vendor, CRUSVendorContro
             Source.SearchInputStr = "";
         }, IfSearchStrNotNull);
         
-        NewVednorAddContactCommand = ReactiveCommand.Create(() =>
+        NewClientAddContactCommand = ReactiveCommand.Create(() =>
         {
             Source.ContactsSplitted = Source.ContactsSplitted.DoIf(x =>
             {
-                x.Add(Source.NewVendorContactInputStr);
-                Source.NewVendorContactInputStr = "";
+                x.Add(Source.NewClientsContactInputStr);
+                Source.NewClientsContactInputStr = "";
             },
-            x => !x.Contains(Source.NewVendorContactInputStr)) ?? Source.ContactsSplitted;
-        },_ifNewVendorAddContactStrNotNull);
+            x => !x.Contains(Source.NewClientsContactInputStr)) ?? Source.ContactsSplitted;
+        },_ifNewClientsAddContactStrNotNull);
 
 
-        NewVednorDeleteContactCommand = ReactiveCommand.Create<string>(x => {
+        NewClientDeleteContactCommand = ReactiveCommand.Create<string>(x => {
             Source.ContactsSplitted = Source.ContactsSplitted.DoInst(c => c.Remove(x))!;
         });
 
