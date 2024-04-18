@@ -2,10 +2,12 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,8 +15,18 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Reactive;
 
-public partial class ReactiveControlSource<T> : ObservableObject
+public interface IReactiveControlSource
 {
+    public void SearchByInput(string keyword);
+
+    public void ServerResponse(object model);
+
+    public void ServerResponse(List<object> models);
+}
+
+public partial class ReactiveControlSource<T> : ObservableObject, IReactiveControlSource
+{
+    /* UI behavior of the control */
     [ObservableProperty]
     private bool _isFuncAddNewAvailable = true;
 
@@ -55,6 +67,7 @@ public partial class ReactiveControlSource<T> : ObservableObject
 
 
 
+    /* Initialization of common source parameters of a control */
     public bool IsItemSelected => SelectedItem != null;
 
     [ObservableProperty]
@@ -80,4 +93,13 @@ public partial class ReactiveControlSource<T> : ObservableObject
     partial void OnSearchInputStrChanged(string? oldValue, string newValue) => SearchByInput(SearchInputStr);
 
     public virtual void SearchByInput(string keyword) { }
+
+
+
+    /* Block of external influence processing on all view model sources with possibility of logic overriding */
+    public void ServerResponse(List<object> models) => models.DoForEach(x => this.ServerResponse(x));
+
+    public void ServerResponse(object model) => model.DoIf(x => HandleServerResponse((T)x), x => x.GetType() == typeof(T));
+
+    public virtual void HandleServerResponse(T model) => Debug.WriteLine($"{typeof(T)} proceed");
 }

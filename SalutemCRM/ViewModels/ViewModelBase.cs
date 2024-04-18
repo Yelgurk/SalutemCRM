@@ -12,12 +12,14 @@ public class ViewModelBase : ReactiveObject
 {
 }
 
-public abstract class ViewModelBase<T1, T2>
+public abstract class ViewModelBase<T1, T2> where T1 : class
 {
     public ViewModelBase(T2 Source)
     {
         this.Source = Source;
-        App.Host!.Services.GetService<ViewModelSourceNotifyService>()!.AddVMSource(this.Source!);
+        App.Host!.Services
+            .GetService<ViewModelSourceNotifyService>()!
+            .AddVMSource((this.Source as IReactiveControlSource)!);
     }
 
     public required T2 Source { get; init; }

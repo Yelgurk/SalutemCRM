@@ -136,8 +136,6 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
                 .Do(s => s.SearchByInput(""))
                 .DoInst(x => x.TempItem = new())
                 .Do(x => x.SetActivePage(1));
-
-            //App.Host!.Services.GetService<ViewModelSourceNotifyService>()!.Execute(x => x.SearchInputStr = "тест динамики");
         });
 
         GoEditCommand = ReactiveCommand.Create<WarehouseCategory>(x => {
