@@ -20,4 +20,6 @@ public partial class WarehouseItem
         get => _qRBitmap;
         set => SetProperty(ref _qRBitmap, value);
     }
+
+    partial void OnCountRequiredChanged(double value) => CountRequired = Double.IsNaN(value) ? 0 : value;
 }

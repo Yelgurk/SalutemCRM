@@ -139,6 +139,18 @@
 								 Watermark="Внутренний код"
 								 Text="{Binding Source.InnerCodeNew}"/>
 
+						<Grid ColumnDefinitions="2*, 3*"
+							  Classes="background">
+							<TextBox Classes="custom header new_input"
+									 Watermark="Ед. измерения"
+									 Text="{Binding Source.TempItem.MesurementUnit}"/>
+							
+							<TextBox Classes="custom header new_input"
+									 Watermark="Лимит, уведомления"
+									 Text="{Binding Source.TempItem.CountRequired}"
+									 Grid.Column="1"/>
+						</Grid>
+
 						<Grid ColumnDefinitions="*, *"
 							  RowDefinitions="auto, auto, auto">
 							<TextBlock Text="Категория позиции"
@@ -196,7 +208,6 @@
 			<Grid>
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Classes="background">
-
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.InnerName}"/>
@@ -205,6 +216,18 @@
 								 Watermark="Внутренний код [заблокирован]"
 								 Text="{Binding Source.TempItem.InnerCode}"
 								 IsReadOnly="True"/>
+
+						<Grid ColumnDefinitions="2*, 3*"
+							  Classes="background">
+							<TextBox Classes="custom header new_input"
+									 Watermark="Ед. измерения"
+									 Text="{Binding Source.TempItem.MesurementUnit}"/>
+
+							<TextBox Classes="custom header new_input"
+									 Watermark="Лимит, уведомления"
+									 Text="{Binding Source.TempItem.CountRequired}"
+									 Grid.Column="1"/>
+						</Grid>
 
 						<Grid ColumnDefinitions="*, *"
 							  RowDefinitions="auto, auto, auto">

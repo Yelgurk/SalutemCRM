@@ -29,6 +29,13 @@ namespace SalutemCRM.ViewModels;
 
 public partial class CRUSWarehouseItemControlViewModelSource : ReactiveControlSource<WarehouseItem>
 {
+    public const int CodeTemplate = 1000000;
+
+    [ObservableProperty]
+    private string _innerCodeNew = "";
+
+
+
     [ObservableProperty]
     private ObservableCollection<WarehouseItem> _warehouseItems = new() {
         new WarehouseItem() { InnerName = "Test 1" },
@@ -37,11 +44,6 @@ public partial class CRUSWarehouseItemControlViewModelSource : ReactiveControlSo
         new WarehouseItem() { InnerName = "Test 4" },
         new WarehouseItem() { InnerName = "Test 5" }
     };
-
-    public const int CodeTemplate = 1000000;
-
-    [ObservableProperty]
-    private string _innerCodeNew = "";
 
     public override void SearchByInput(string keyword)
     {
@@ -93,12 +95,14 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
             x => x.Source.TempItem!.InnerName,
             x => x.Source.WarehouseCategory,
             x => x.Source.InnerCodeNew,
-            (obj, name, cat, code) =>
+            x => x.Source.TempItem!.MesurementUnit,
+            (obj, name, cat, code, mu) =>
                 obj != null &&
                 cat != null &&
                 !string.IsNullOrWhiteSpace(name) &&
                 !string.IsNullOrWhiteSpace(code) &&
-                name.Length >= 2 && code.Length > 0
+                !string.IsNullOrWhiteSpace(mu) &&
+                name.Length >= 2 && code.Length > 0 && mu.Length > 0
         );
 
         IfEditFilled = this.WhenAnyValue(
@@ -106,12 +110,20 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
             x => x.Source.TempItem!.InnerName,
             x => x.Source.TempItem!.Category,
             x => x.Source.WarehouseCategory,
-            (old_name, new_name, cat_old, cat_new) =>
+            x => x.Source.EditItem!.MesurementUnit,
+            x => x.Source.EditItem!.CountRequired,
+            x => x.Source.TempItem!.MesurementUnit,
+            x => x.Source.TempItem!.CountRequired,
+            (old_name, new_name, cat_old, cat_new, mu_old, cr_old, mu_new, cr_new) =>
                 cat_new is not null &&
                 cat_old is not null &&
                 !string.IsNullOrWhiteSpace(new_name) &&
+                !string.IsNullOrWhiteSpace(mu_new) &&
                 new_name.Length >= 2 &&
-                (old_name != new_name || cat_old.Name != cat_new.Name)
+                (old_name != new_name ||
+                 cat_old.Name != cat_new.Name ||
+                 mu_old != mu_new ||
+                 cr_old != cr_new)
         );
 
         IfSearchStrNotNull = this.WhenAnyValue(
@@ -161,6 +173,8 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
                 db.WarehouseItems.Single(x => x.Id == Source!.EditItem!.Id)
                 .DoInst(x => x.InnerName = Source!.TempItem!.InnerName)
+                .DoInst(x => x.MesurementUnit = Source!.TempItem!.MesurementUnit)
+                .DoInst(x => x.CountRequired = Source!.TempItem!.CountRequired)
                 .DoInst(x => x.WarehouseCategoryForeignKey = Source!.WarehouseCategory!.Id)
                 .DoInst(x => db.SaveChanges())
                 .Do(x => Source!.SearchInputStr = x.InnerName)
