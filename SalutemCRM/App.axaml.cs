@@ -19,9 +19,7 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        //if (!Design.IsDesignMode)
-        //    using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
-        //        db.DatabaseInit();
+        //DatabaseContext.ReCreateDatabase(!Design.IsDesignMode);
 
         AvaloniaXamlLoader.Load(this);
         Host =

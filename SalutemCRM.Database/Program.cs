@@ -8,9 +8,5 @@ public class Program
 {
     static void Main(string[] args)
     {
-        using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
-        {
-
-        }
     }
 }

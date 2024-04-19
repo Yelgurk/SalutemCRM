@@ -43,6 +43,7 @@ public partial class DatabaseContext : DbContext
     public DbSet<Country> Countries { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<RegionMonitoring> RegionMonitorings { get; set; }
+    public DbSet<MesurementUnit> MesurementUnits { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
@@ -114,10 +115,23 @@ public partial class DatabaseContext : DbContext
         );
 
         modelBuilder.Entity<CurrencyUnit>().HasData(
-            new CurrencyUnit { Name = "BYN" },    
+            new CurrencyUnit { Name = "BYN" },
             new CurrencyUnit { Name = "USD" },
             new CurrencyUnit { Name = "RUB" },
             new CurrencyUnit { Name = "CNY" }
+        );
+
+        modelBuilder.Entity<MesurementUnit>().HasData(
+            new MesurementUnit { Name = "шт." },
+            new MesurementUnit { Name = "м." },
+            new MesurementUnit { Name = "см." },
+            new MesurementUnit { Name = "кг." },
+            new MesurementUnit { Name = "гр." },
+            new MesurementUnit { Name = "л." },
+            new MesurementUnit { Name = "мл." },
+            new MesurementUnit { Name = "погон/м." },
+            new MesurementUnit { Name = "погое/см." },
+            new MesurementUnit { Name = "упак." }
         );
 
         modelBuilder.Entity<UserRole>().HasData(

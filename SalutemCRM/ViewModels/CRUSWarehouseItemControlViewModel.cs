@@ -34,7 +34,8 @@ public partial class CRUSWarehouseItemControlViewModelSource : ReactiveControlSo
     [ObservableProperty]
     private string _innerCodeNew = "";
 
-
+    [ObservableProperty]
+    private ObservableCollection<string> _mesureUnits = new();
 
     [ObservableProperty]
     private ObservableCollection<WarehouseItem> _warehouseItems = new() {
@@ -116,12 +117,11 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
             x => x.Source.TempItem!.CountRequired,
             (old_name, new_name, cat_old, cat_new, mu_old, cr_old, mu_new, cr_new) =>
                 cat_new is not null &&
-                cat_old is not null &&
                 !string.IsNullOrWhiteSpace(new_name) &&
                 !string.IsNullOrWhiteSpace(mu_new) &&
                 new_name.Length >= 2 &&
                 (old_name != new_name ||
-                 cat_old.Name != cat_new.Name ||
+                 (cat_old?.Name ?? "-none") != cat_new.Name ||
                  mu_old != mu_new ||
                  cr_old != cr_new)
         );
@@ -139,14 +139,19 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
 
         GoAddCommand = ReactiveCommand.Create(() => {
             if (!Design.IsDesignMode)
-            using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
-                Source!.InnerCodeNew = $"{db.WarehouseItems.Count() + 1 + CRUSWarehouseItemControlViewModelSource.CodeTemplate}";
-
+                using (DatabaseContext db = new(DatabaseContext.ConnectionInit())) db
+                    .DoInst(x => Source!.InnerCodeNew = $"{x.WarehouseItems.Count() + 1 + CRUSWarehouseItemControlViewModelSource.CodeTemplate}")
+                    .DoInst(x => Source!.MesureUnits = new(x.MesurementUnits.Where(s => s.Name.Length > 0).Select(s => s.Name)));
+                 
             Source!.TempItem = new();
             Source!.SetActivePage(1);
         });
 
         GoEditCommand = ReactiveCommand.Create<WarehouseItem>(x => {
+            if (!Design.IsDesignMode)
+                using (DatabaseContext db = new(DatabaseContext.ConnectionInit())) 
+                    Source!.MesureUnits = new(db.MesurementUnits.Where(s => s.Name.Length > 0).Select(s => s.Name));
+
             Source!
                 .DoInst(s => s.EditItem = x.Clone())
                 .DoInst(s => s.TempItem = s.EditItem!.Clone())

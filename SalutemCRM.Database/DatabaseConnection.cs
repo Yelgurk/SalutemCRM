@@ -33,4 +33,12 @@ public partial class DatabaseContext
 
         return options = optionsBuilder.UseSqlServer(connectionString).Options;
     }
+
+    public static void ReCreateDatabase(bool run) => run.DoIf(x => ReCreateDatabase(), x => x);
+
+    public static void ReCreateDatabase()
+    {
+        using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+            db.DatabaseInit();
+    }
 }
