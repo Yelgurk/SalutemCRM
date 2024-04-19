@@ -30,7 +30,7 @@
 					</DockPanel>
 					</ListBox>
 
-					<ListBox Classes="custom marked"
+					<ListBox Classes="custom zebra marked"
 						 Margin="0 0 0 10">
 					<DockPanel Classes="DemoSpacing">
 						<TextBlock Text="1"/>
@@ -149,7 +149,7 @@
 	</Style>
 	
 	<!-- ListBox - general -->
-
+	
 	<Style Selector="ListBox.custom">
 		<Setter Property="Padding" Value="0"/>
 		<Setter Property="ClipToBounds" Value="False"/>
@@ -166,6 +166,10 @@
 
 	<Style Selector="ListBox.custom > ListBoxItem:selected:nth-last-child(1), ListBox > ListBoxItem:pointerover:nth-last-child(1)">
 		<Setter Property="ZIndex" Value="-1"/>		
+	</Style>
+
+	<Style Selector="ListBox.custom.zebra > ListBoxItem:nth-child(2n+1)">
+		<Setter Property="Background" Value="WhiteSmoke"/>
 	</Style>
 
 	<Style Selector="ListBox.custom /template/ ScrollViewer#PART_ScrollViewer">

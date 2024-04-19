@@ -44,6 +44,7 @@ public partial class WarehouseItem : ClonableObservableObject<WarehouseItem>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TotalInStockCount))]
     private ObservableCollection<WarehouseSupply> _warehouseSupplying = new();
 
     [NotMapped]

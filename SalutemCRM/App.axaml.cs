@@ -29,6 +29,7 @@ public partial class App : Application
             .ConfigureServices(services => {
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<ViewModelSourceNotifyService>();
+                services.AddSingleton<QRCodeGeneratorService>();
             })
             .Build();
 

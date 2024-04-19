@@ -70,7 +70,7 @@ public partial class CRUSWarehouseItemControlViewModelSource : ReactiveControlSo
                 );
         }
 
-        WarehouseItems.DoForEach(x => x.WarehouseSupplying.Do(ws => ws.RemoveMany(ws.Where(s => s.InStockCount > 0.0))));
+        WarehouseItems.DoForEach(x => x.WarehouseSupplying.Do(ws => ws.RemoveMany(ws.Where(s => s.InStockCount == 0.0))));
     }
 
     [ObservableProperty]
@@ -146,6 +146,7 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
         ClearSearchCommand = ReactiveCommand.Create(() => {
             Source.SearchInputStr = "";
         }, IfSearchStrNotNull);
+
 
 
         if (!Design.IsDesignMode)

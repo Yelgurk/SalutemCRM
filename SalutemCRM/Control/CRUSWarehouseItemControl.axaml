@@ -49,7 +49,7 @@
 						IsVisible="{Binding Source.IsFuncAddNewAvailable}"
 						Command="{Binding GoAddCommand}"/>
 
-				<ListBox Classes="custom"
+				<ListBox Classes="custom zebra"
 						 Grid.Row="1"
 						 Grid.ColumnSpan="3"
 						 ItemsSource="{Binding Source.WarehouseItems}"
@@ -60,23 +60,29 @@
 							<Label Classes="expander">
 								<Label.Tag>
 									<Grid>
-										<Grid ColumnDefinitions="auto, *"
-											  RowDefinitions="auto, auto"
+										<Grid ColumnDefinitions="auto, auto, *"
+											  RowDefinitions="*, *"
 											  VerticalAlignment="Center"
 											  Margin="10 0 0 0">
-											<DockPanel Grid.Row="0"
-													   Margin="0 0 0 -3">
+											<DockPanel Grid.Column="1" Grid.Row="0"
+													   Margin="0 0 0 -3" VerticalAlignment="Center">
 												<TextBlock FontSize="15" Text="{Binding InnerName}" FontWeight="SemiBold"/>
 												<TextBlock FontSize="15" Text=", код: "/>
 												<TextBlock FontSize="15" Text="{Binding InnerCode}"/>
 											</DockPanel>
-											<DockPanel Grid.Row="1">
-												<TextBlock FontSize="12" Text="Кол-во поставок: "/>
-												<TextBlock FontSize="12" Text="{Binding WarehouseSupplying.Count}"/>
+											<DockPanel Grid.Column="1" Grid.Row="1"
+													   VerticalAlignment="Center">
+												<TextBlock FontSize="12" Text="Всего на складе: "/>
+												<TextBlock FontSize="12" Text="{Binding TotalInStockCount, FallbackValue=0}"/>
+												<TextBlock FontSize="12" Text="{Binding MesurementUnit}"/>
 											</DockPanel>
+											
+											<Image Tag="{Binding}" Source="{Binding QRBitmap}" Loaded="Image_Loaded"
+												   Grid.Column="0" Grid.RowSpan="2" Margin="-10 -10 0 -10"
+												   Width="80"
+												   IsVisible="{Binding $parent[ListBoxItem].IsSelected}"/>
 										</Grid>
-										<Button Grid.Column="7"
-												HorizontalAlignment="Right"
+										<Button HorizontalAlignment="Right"
 												Margin="0 2 0 2"
 												Classes="custom iconed blue rounded sys edit"
 												Command="{Binding $parent[UserControl].DataContext.GoEditCommand}"
@@ -85,20 +91,21 @@
 									</Grid>
 								</Label.Tag>
 								<Label.Content>
-									<StackPanel>
-										<TextBlock Text="На складе: " FontSize="12"/>
-										<ItemsControl ItemsSource="{Binding WarehouseSupplying}">
-											<ItemsControl.ItemTemplate>
-												<DataTemplate>
-													<DockPanel>
-														<TextBlock FontSize="14" Text="{Binding VendorName}"/>
-														<TextBlock FontSize="14" Text=", код: "/>
-														<TextBlock FontSize="14" Text="{Binding VendorCode}"/>
-													</DockPanel>
-												</DataTemplate>
-											</ItemsControl.ItemTemplate>
-										</ItemsControl>
-									</StackPanel>
+									<ItemsControl ItemsSource="{Binding WarehouseSupplying}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<DockPanel>
+													<TextBlock FontSize="14" Text="{Binding InStockCount}"/>
+													<TextBlock FontSize="14" Text=" "/>
+													<TextBlock FontSize="14" Text="{Binding $parent[Label].DataContext.MesurementUnit}"/>
+													<TextBlock FontSize="14" Text=". "/>
+													<TextBlock FontSize="14" Text="{Binding VendorName}"/>
+													<TextBlock FontSize="14" Text=", код: "/>
+													<TextBlock FontSize="14" Text="{Binding VendorCode}"/>
+												</DockPanel>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
 								</Label.Content>
 							</Label>
 						</DataTemplate>
