@@ -24,7 +24,7 @@
 			  RowDefinitions="auto, *">
 
 			<TextBlock Classes="text_header"
-					   Text="Список категорий, склад"/>
+					   Text="Склад"/>
 
 			<Grid RowDefinitions="auto, *"
 				  ColumnDefinitions="*, auto, auto">
@@ -95,10 +95,9 @@
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
 												<DockPanel>
-													<TextBlock FontSize="14" Text="{Binding InStockCount}"/>
-													<TextBlock FontSize="14" Text=" "/>
-													<TextBlock FontSize="14" Text="{Binding $parent[Label].DataContext.MesurementUnit}"/>
-													<TextBlock FontSize="14" Text=". "/>
+													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding InStockCount}"/>
+													<TextBlock FontSize="14" FontWeight="SemiBold" Text=" "/>
+													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding $parent[Label].DataContext.MesurementUnit}"/>
 													<TextBlock FontSize="14" Text="{Binding VendorName}"/>
 													<TextBlock FontSize="14" Text=", код: "/>
 													<TextBlock FontSize="14" Text="{Binding VendorCode}"/>
@@ -125,7 +124,7 @@
 						Command="{Binding GoBackCommand}"/>
 
 				<TextBlock Classes="text_header"
-						   Text=" &gt; Новая категория"/>
+						   Text=" &gt; Новая позиция"/>
 			</DockPanel>
 
 			<Grid>
@@ -136,7 +135,34 @@
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.InnerName}"/>
 
+						<TextBox Classes="custom header new_input"
+								 Watermark="Внутренний код"
+								 Text="{Binding Source.InnerCodeNew}"/>
 
+						<Grid ColumnDefinitions="*, *"
+							  RowDefinitions="auto, auto, auto">
+							<TextBlock Text="Категория позиции"
+									   FontWeight="SemiBold"
+									   Grid.ColumnSpan="2"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Старая"
+									   Grid.Row="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Новая"
+									   Grid.Row="1"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="{Binding Source.TempItem.Category.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+							<TextBlock Text="{Binding Source.WarehouseCategory.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+						</Grid>
+						
 						<Button Classes="custom orange whiteText"
 								Height="40"
 								Margin="10 5"
@@ -174,6 +200,35 @@
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.InnerName}"/>
+
+						<TextBox Classes="custom header new_input"
+								 Watermark="Внутренний код [заблокирован]"
+								 Text="{Binding Source.TempItem.InnerCode}"
+								 IsReadOnly="True"/>
+
+						<Grid ColumnDefinitions="*, *"
+							  RowDefinitions="auto, auto, auto">
+							<TextBlock Text="Категория позиции"
+									   FontWeight="SemiBold"
+									   Grid.ColumnSpan="2"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Старая"
+									   Grid.Row="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Новая"
+									   Grid.Row="1"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="{Binding Source.EditItem.Category.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+							<TextBlock Text="{Binding Source.WarehouseCategory.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+						</Grid>
 
 						<Button Classes="custom orange whiteText"
 								Height="40"

@@ -188,14 +188,14 @@ public partial class DatabaseContext : DbContext
         );
 
         modelBuilder.Entity<WarehouseItem>().HasData(
-            new WarehouseItem { Id = 1, InnerName = "Кнопка поворотная", InnerCode = "a0001", CountRequired = 0, WarehouseCategoryForeignKey = null },
+            new WarehouseItem { Id = 1, InnerName = "Кнопка поворотная", InnerCode = "a0001", CountRequired = 0, WarehouseCategoryForeignKey = 1 },
             new WarehouseItem { Id = 2, InnerName = "Кнопка рычажная", InnerCode = "a0002", CountRequired = 0, WarehouseCategoryForeignKey = 8 },
             new WarehouseItem { Id = 3, InnerName = "Кнопка тактовая", InnerCode = "a0003", CountRequired = 0, WarehouseCategoryForeignKey = 8 },
             new WarehouseItem { Id = 4, InnerName = "Насос 35лм", InnerCode = "a0004", CountRequired = 0, WarehouseCategoryForeignKey = 6 },
             new WarehouseItem { Id = 5, InnerName = "Насос мембранный 45лм", InnerCode = "a0005", CountRequired = 0, WarehouseCategoryForeignKey = 6 },
             new WarehouseItem { Id = 6, InnerName = "Привод одноколесный", InnerCode = "a0006", CountRequired = 0, WarehouseCategoryForeignKey = 5 },
             new WarehouseItem { Id = 7, InnerName = "Привод двухколесный", InnerCode = "a0007", CountRequired = 0, WarehouseCategoryForeignKey = 5 },
-            new WarehouseItem { Id = 8, InnerName = "Клемма обжимная 1.5мм", InnerCode = "a0008", CountRequired = 0, WarehouseCategoryForeignKey = null },
+            new WarehouseItem { Id = 8, InnerName = "Клемма обжимная 1.5мм", InnerCode = "a0008", CountRequired = 0, WarehouseCategoryForeignKey = 1 },
             new WarehouseItem { Id = 9, InnerName = "Клемма обжимная 2.0мм", InnerCode = "a0009", CountRequired = 0, WarehouseCategoryForeignKey = 7 },
             new WarehouseItem { Id = 10, InnerName = "Клемма 5.08 EDG", InnerCode = "a0010", CountRequired = 0, WarehouseCategoryForeignKey = 2 },
             new WarehouseItem { Id = 11, InnerName = "Реле рейловое 220В", InnerCode = "a0011", CountRequired = 0, WarehouseCategoryForeignKey = 9 },
@@ -206,7 +206,7 @@ public partial class DatabaseContext : DbContext
             new WarehouseItem { Id = 16, InnerName = "Обичевка пс100", InnerCode = "a0016", CountRequired = 0, WarehouseCategoryForeignKey = 10 },
             new WarehouseItem { Id = 17, InnerName = "Обичевка пс200", InnerCode = "a0017", CountRequired = 0, WarehouseCategoryForeignKey = 10 },
             new WarehouseItem { Id = 18, InnerName = "Обичевка пс300", InnerCode = "a0018", CountRequired = 0, WarehouseCategoryForeignKey = 3 },
-            new WarehouseItem { Id = 19, InnerName = "Обичевка рм25", InnerCode = "a0019", CountRequired = 0, WarehouseCategoryForeignKey = null },
+            new WarehouseItem { Id = 19, InnerName = "Обичевка рм25", InnerCode = "a0019", CountRequired = 0, WarehouseCategoryForeignKey = 1 },
             new WarehouseItem { Id = 20, InnerName = "Обичевка рм45", InnerCode = "a0020", CountRequired = 0, WarehouseCategoryForeignKey = 11 },
             new WarehouseItem { Id = 21, InnerName = "Обичевка рм-lite", InnerCode = "a0021", CountRequired = 0, WarehouseCategoryForeignKey = 3 },
             new WarehouseItem { Id = 22, InnerName = "Обичевка тм100", InnerCode = "a0022", CountRequired = 0, WarehouseCategoryForeignKey = 12 },

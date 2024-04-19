@@ -38,6 +38,11 @@ public partial class CRUSWarehouseItemControlViewModelSource : ReactiveControlSo
         new WarehouseItem() { InnerName = "Test 5" }
     };
 
+    public const int CodeTemplate = 1000000;
+
+    [ObservableProperty]
+    private string _innerCodeNew = "";
+
     public override void SearchByInput(string keyword)
     {
         keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
@@ -76,11 +81,7 @@ public partial class CRUSWarehouseItemControlViewModelSource : ReactiveControlSo
     [ObservableProperty]
     private WarehouseCategory? _warehouseCategory = null;
 
-    partial void OnWarehouseCategoryChanged(WarehouseCategory? value)
-    {
-        SearchByInput(SearchInputStr);
-        TempItem.DoIf(x => x!.Category = value, x => x is not null);
-    }
+    partial void OnWarehouseCategoryChanged(WarehouseCategory? value) => SearchByInput(SearchInputStr);
 }
 
 public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CRUSWarehouseItemControlViewModelSource>
@@ -91,11 +92,13 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
             x => x.Source.TempItem,
             x => x.Source.TempItem!.InnerName,
             x => x.Source.WarehouseCategory,
-            (obj, name, cat) =>
+            x => x.Source.InnerCodeNew,
+            (obj, name, cat, code) =>
                 obj != null &&
                 cat != null &&
                 !string.IsNullOrWhiteSpace(name) &&
-                name.Length >= 2
+                !string.IsNullOrWhiteSpace(code) &&
+                name.Length >= 2 && code.Length > 0
         );
 
         IfEditFilled = this.WhenAnyValue(
@@ -104,12 +107,11 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
             x => x.Source.TempItem!.Category,
             x => x.Source.WarehouseCategory,
             (old_name, new_name, cat_old, cat_new) =>
-                !string.IsNullOrWhiteSpace(new_name) &&
-                new_name.Length >= 2 &&
-                old_name != new_name &&
                 cat_new is not null &&
                 cat_old is not null &&
-                cat_old.Name != cat_new.Name
+                !string.IsNullOrWhiteSpace(new_name) &&
+                new_name.Length >= 2 &&
+                (old_name != new_name || cat_old.Name != cat_new.Name)
         );
 
         IfSearchStrNotNull = this.WhenAnyValue(
@@ -124,6 +126,10 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
         });
 
         GoAddCommand = ReactiveCommand.Create(() => {
+            if (!Design.IsDesignMode)
+            using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                Source!.InnerCodeNew = $"{db.WarehouseItems.Count() + 1 + CRUSWarehouseItemControlViewModelSource.CodeTemplate}";
+
             Source!.TempItem = new();
             Source!.SetActivePage(1);
         });
@@ -136,11 +142,31 @@ public class CRUSWarehouseItemControlViewModel : ViewModelBase<WarehouseItem, CR
         });
 
         AddNewCommand = ReactiveCommand.Create(() => {
-            
+            Source!.TempItem?
+                .DoInst(x => x.InnerCode = Source.InnerCodeNew)
+                .DoInst(x => x.WarehouseCategoryForeignKey = Source.WarehouseCategory!.Id)
+                .Do(x =>
+                {
+                    using (DatabaseContext db = new(DatabaseContext.ConnectionInit())) db
+                        .DoInst(y => x.Category = y.WarehouseCategories.Single(s => s.Id == Source.WarehouseCategory!.Id))
+                        .DoInst(y => y.WarehouseItems.Add(x))
+                        .Do(y => y.SaveChanges());
+                })
+                .Do(x => Source.SearchInputStr = x.InnerName)
+                .Do(x => Source.SetActivePage(0))
+                .Do(x => Source.TempItem = new());
         }, IfNewFilled);
 
         EditCommand = ReactiveCommand.Create(() => {
-            
+            using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                db.WarehouseItems.Single(x => x.Id == Source!.EditItem!.Id)
+                .DoInst(x => x.InnerName = Source!.TempItem!.InnerName)
+                .DoInst(x => x.WarehouseCategoryForeignKey = Source!.WarehouseCategory!.Id)
+                .DoInst(x => db.SaveChanges())
+                .Do(x => Source!.SearchInputStr = x.InnerName)
+                .Do(x => Source!.SetActivePage(0))
+                .Do(x => Source!.TempItem = new())
+                .Do(x => Source!.EditItem = new());
         }, IfEditFilled);
 
         ClearSearchCommand = ReactiveCommand.Create(() => {
