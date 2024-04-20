@@ -16,5 +16,5 @@ public partial class WarehouseSupply
     public double OrderPriceSingleBYN { get => OrderPriceTotalBYN / OrderCount; }
 
     [NotMapped]
-    public double InStockPriceTotalBYN { get => OrderPriceTotalBYN / OrderCount * InStockCount; }
+    public double InStockPriceTotalBYN { get => OrderPriceSingleBYN * InStockCount; }
 }

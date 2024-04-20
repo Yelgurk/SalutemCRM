@@ -12,6 +12,12 @@ public partial class WarehouseItem
     public double TotalInStockCount { get => WarehouseSupplying.Select(x => x.InStockCount).Sum(); }
 
     [NotMapped]
+    public double BYNPriceForSingleInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum() / TotalInStockCount; }
+
+    [NotMapped]
+    public double BYNPriceForTotalInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum(); }
+
+    [NotMapped]
     private object? _qRBitmap;
 
     [NotMapped]

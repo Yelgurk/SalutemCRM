@@ -126,6 +126,29 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
+
+				<DataGrid Grid.Row="1" Grid.ColumnSpan="3"
+						  ClipToBounds="True"
+						  ItemsSource="{Binding Source.WarehouseItems}"
+						  SelectedItem="{Binding Source.SelectedItem}"
+						  IsVisible="{Binding !Source.IsListPreview}"
+						  IsReadOnly="True"
+						  GridLinesVisibility="All"
+						  BorderThickness="0 1 0 0"
+						  BorderBrush="LightGray"
+						  Margin="0 5 0 0">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Название" Binding="{Binding InnerName}"/>
+						<DataGridTextColumn Header="Код" Binding="{Binding InnerCode}"/>
+						<DataGridTextColumn Header="Ед. изм." Binding="{Binding MesurementUnit}"/>
+						<DataGridTextColumn Header="На складе" Binding="{Binding TotalInStockCount, StringFormat={}{0:0.###}}"/>
+						<DataGridTextColumn Header="Лимит" Binding="{Binding CountRequired, StringFormat={}{0:0.###}}"/>
+						<DataGridTextColumn Header="~BYN ед." Binding="{Binding BYNPriceForSingleInStock, StringFormat='{}{0:0.###} руб'}"
+											IsVisible="{Binding $parent[UserControl].DataContext.Source.IsMoneyStatVisible}" />
+						<DataGridTextColumn Header="~BYN итого" Binding="{Binding BYNPriceForTotalInStock, StringFormat='{}{0:0.###} руб'}"
+											IsVisible="{Binding $parent[UserControl].DataContext.Source.IsMoneyStatVisible}"/>
+					</DataGrid.Columns>
+				</DataGrid>
 			</Grid>
 		</Grid>
 
