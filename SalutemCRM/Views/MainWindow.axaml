@@ -13,7 +13,10 @@
 	<Grid>
 		<!--views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsVisible="False"/-->
 
-		<ScrollViewer HorizontalScrollBarVisibility="Visible">
+		<f_control:ProductTemplateBuilder/>
+
+		<ScrollViewer HorizontalScrollBarVisibility="Visible"
+					  IsVisible="False">
 			<DockPanel HorizontalAlignment="Center"
 					   Margin="10 20">
 
@@ -25,7 +28,7 @@
 					<control:CRUSProductCategoryControl/>
 				</Label>
 
-				<Label IsVisible="True" Width="400" Classes="card rounded tag" Tag="1." Margin="10 0">
+				<Label IsVisible="False" Width="400" Classes="card rounded tag" Tag="1." Margin="10 0">
 					<control:CRUSVendorControl x:Name="SVC"/>
 				</Label>
 
@@ -64,13 +67,21 @@
 						IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
 				</Label>
 
-				<Label Width="400" Classes="card rounded tag shadow" Tag="7." Margin="10 0">
+				<Label IsVisible="False" Width="400" Classes="card rounded tag shadow" Tag="7." Margin="10 0">
 					<control:CRUSWarehouseItemControl
 						IsEnabled="{Binding #SVC.DataContext.Source.IsItemSelected}"/>
 				</Label>
 
-				<Label Width="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
+				<Label IsVisible="False" Width="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
 					<f_control:WarehouseGeneral/>
+				</Label>
+
+				<Label IsVisible="False" Width="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
+					<f_control:ProductTemplateControl/>
+				</Label>
+
+				<Label IsVisible="True" Width="1100" Height="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
+					<f_control:ProductTemplateBuilder/>
 				</Label>
 			</DockPanel>
 		</ScrollViewer>

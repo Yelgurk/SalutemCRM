@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="Assets\Icon\arrow.png" />
+    <None Remove="Assets\Icon\Trash.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,9 @@
 	  <Compile Update="Control\CRUSClientControl.axaml.cs">
 	    <DependentUpon>CRUSClientControl.axaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Control\CRUSProductTemplateControl.axaml.cs">
+	    <DependentUpon>CRUSProductTemplateControl.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Control\CRUSWarehouseItemControl.axaml.cs">
 	    <DependentUpon>CRUSWarehouseItemControl.axaml</DependentUpon>
 	  </Compile>
@@ -63,6 +67,9 @@
 	  </Compile>
 	  <Compile Update="Control\CRUSVendorControl.axaml.cs">
 	    <DependentUpon>CRUSVendorControl.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="FunctionalControl\ProductTemplateControl.axaml.cs">
+	    <DependentUpon>ProductTemplateControl.axaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 

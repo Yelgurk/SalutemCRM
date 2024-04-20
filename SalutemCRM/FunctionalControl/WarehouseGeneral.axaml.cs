@@ -7,7 +7,7 @@ namespace SalutemCRM.FunctionalControl
 {
     public partial class WarehouseGeneral : UserControl
     {
-        private CRUSWarehouseItemControlViewModel? WarehouseItemVM;
+        public CRUSWarehouseItemControlViewModel? WarehouseItemVM;
 
         public WarehouseGeneral()
         {

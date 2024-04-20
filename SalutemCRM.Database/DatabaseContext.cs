@@ -308,30 +308,30 @@ public partial class DatabaseContext : DbContext
         );
 
         modelBuilder.Entity<ProductTemplate>().HasData(
-            new ProductTemplate { Id = 1, Name = "ПС", Model = "100", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 2, Name = "ПС", Model = "200", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 3, Name = "ПС", Model = "300", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 4, Name = "ПС", Model = "400", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 5, Name = "ПС", Model = "500", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 6, Name = "ТМ", Model = "100", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 7, Name = "ТМ", Model = "200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 8, Name = "ТМ", Model = "300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 9, Name = "ТМ", Model = "400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 10, Name = "ТМП", Model = "200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 11, Name = "ТМП", Model = "300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 12, Name = "ТМП", Model = "400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 13, Name = "ТМПЭ", Model = "200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 14, Name = "ТМПЭ", Model = "300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 15, Name = "ТМПЭ", Model = "400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 16, Name = "РМ", Model = "25", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 17, Name = "РМ", Model = "45", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 18, Name = "РМ-lite", Model = "lite", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 19, Name = "СМОМ", Model = "1000", ManufactureCategoryForeignKey = 4, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 20, Name = "СМОМ", Model = "2000", ManufactureCategoryForeignKey = 4, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 21, Name = "Бокс", Model = "2м*3м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 22, Name = "Бокс", Model = "2м*3.5м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 23, Name = "Бокс", Model = "3м*3.5м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
-            new ProductTemplate { Id = 24, Name = "Бокс", Model = "3.5м*4м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" }    
+            new ProductTemplate { Id = 1, Name = "ПС 100", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 2, Name = "ПС 200", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 3, Name = "ПС 300", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 4, Name = "ПС 400", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 5, Name = "ПС 500", ManufactureCategoryForeignKey = 1, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 6, Name = "ТМ 100", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 7, Name = "ТМ 200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 8, Name = "ТМ 300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 9, Name = "ТМ 400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 10, Name = "ТМП 200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 11, Name = "ТМП 300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 12, Name = "ТМП 400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 13, Name = "ТМПЭ 200", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 14, Name = "ТМПЭ 300", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 15, Name = "ТМПЭ 400", ManufactureCategoryForeignKey = 2, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 16, Name = "РМ 25", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 17, Name = "РМ 45", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 18, Name = "РМ-lite lite", ManufactureCategoryForeignKey = 3, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 19, Name = "СМОМ 1000", ManufactureCategoryForeignKey = 4, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 20, Name = "СМОМ 2000", ManufactureCategoryForeignKey = 4, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 21, Name = "Бокс 2м*3м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 22, Name = "Бокс 2м*3.5м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 23, Name = "Бокс 3м*3.5м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" },    
+            new ProductTemplate { Id = 24, Name = "Бокс 3.5м*4м", ManufactureCategoryForeignKey = 5, AdditionalInfo = "" }    
         );
 
         modelBuilder.Entity<ProductSchema>().HasData(
@@ -626,9 +626,6 @@ public partial class DatabaseContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
         builder
             .Property(pt => pt.Name)
-            .HasMaxLength(200);
-        builder
-            .Property(pt => pt.Model)
             .HasMaxLength(200);
     }
 

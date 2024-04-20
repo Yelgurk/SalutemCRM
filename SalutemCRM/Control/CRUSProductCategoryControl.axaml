@@ -22,7 +22,7 @@
 			  RowDefinitions="auto, *">
 			
 			<TextBlock Classes="text_header"
-					   Text="Список категорий, производство"/>
+					   Text="Категории"/>
 
 			<Grid RowDefinitions="auto, *"
 				  ColumnDefinitions="*, auto, auto">

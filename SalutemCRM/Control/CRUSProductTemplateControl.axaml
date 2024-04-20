@@ -6,23 +6,25 @@
 			 xmlns:controls="using:SalutemCRM.Control"
 			 xmlns:conv="using:SalutemCRM.Converter"
 			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
-			 x:DataType="vm:CRUSWarehouseCategoryControlViewModel"
-             x:Class="SalutemCRM.Control.CRUSWarehouseCategoryControl"
+			 x:DataType="vm:CRUSProductTemplateControlViewModel"
+             x:Class="SalutemCRM.Control.CRUSProductTemplateControl"
 			 Design.Width="600"
 			 Design.Height="400"
 			 Background="{Binding $self.DataContext.Source.DynamicColor}">
 	<UserControl.DataContext>
-		<vm:CRUSWarehouseCategoryControlViewModel/>
+		<vm:CRUSProductTemplateControlViewModel/>
 	</UserControl.DataContext>
 
+
 	<Grid Classes="pages_container"
-		  Classes.is_disabled="{Binding !$parent[UserControl].IsEnabled}">
-		
+		  Classes.is_disabled="{Binding !$parent[UserControl].IsEnabled}"
+		  Grid.Column="1">
+
 		<Grid Classes.selected_page="{Binding Source.ActivePage[0]}"
 			  RowDefinitions="auto, *">
-			
+
 			<TextBlock Classes="text_header"
-					   Text="Категории"/>
+					   Text="Производство"/>
 
 			<Grid RowDefinitions="auto, *"
 				  ColumnDefinitions="*, auto, auto">
@@ -38,7 +40,7 @@
 						CornerRadius="5"
 						Margin="0 5 10 5"
 						Command="{Binding ClearSearchCommand}"/>
-				
+
 				<Button Classes="custom iconed orange plus rounded"
 						Grid.Column="2"
 						Width="{Binding $self.Bounds.Height}"
@@ -47,13 +49,41 @@
 						IsVisible="{Binding Source.IsFuncAddNewAvailable}"
 						Command="{Binding GoAddCommand}"/>
 
-				<TreeDataGrid x:Name="TreeDataGridControl_1"
-							  Classes="custom editable"
-							  Classes.search_result="{Binding Source.IsSearchMatch}"
-							  Grid.Row="1"
-							  Grid.ColumnSpan="3"
-							  Source="{Binding Source.CategoriesTree}"
-							  ShowColumnHeaders="False"/>
+				<ListBox Classes="custom zebra"
+						 Grid.Row="1"
+						 Grid.ColumnSpan="3"
+						 ItemsSource="{Binding Source.ProductTemplates}"
+						 SelectedItem="{Binding Source.SelectedItem}"
+						 ClipToBounds="True">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid ColumnDefinitions="auto, *"
+								  RowDefinitions="*, *"
+								  VerticalAlignment="Center"
+								  Margin="10 0 5 0">
+								<DockPanel Grid.Column="0" Grid.Row="0"
+										   Margin="0 0 0 -3" VerticalAlignment="Center">
+									<TextBlock FontSize="15" Text="{Binding Category.Name, FallbackValue=[без категории]}"/>
+									<TextBlock FontSize="15" Text=", "/>
+									<TextBlock FontSize="15" Text="{Binding Name}" FontWeight="SemiBold"/>
+								</DockPanel>
+								<DockPanel Grid.Column="0" Grid.Row="1">
+									<TextBlock FontSize="13" Text="Позиций: "/>
+									<TextBlock FontSize="13" Text="{Binding ProductSchemas.Count}"/>
+								</DockPanel>
+
+								<Button HorizontalAlignment="Right"
+									Grid.Column="1"
+									Grid.RowSpan="2"
+									Margin="0 2 0 2"
+									Classes="custom iconed blue rounded sys edit"
+									Command="{Binding $parent[UserControl].DataContext.GoEditCommand}"
+									CommandParameter="{Binding}"
+									IsVisible="{Binding $parent[UserControl].DataContext.Source.IsFuncEditAvailable}"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
 			</Grid>
 		</Grid>
 
@@ -68,7 +98,7 @@
 						Command="{Binding GoBackCommand}"/>
 
 				<TextBlock Classes="text_header"
-						   Text=" &gt; Новая категория"/>
+						   Text=" &gt; Новая позиция"/>
 			</DockPanel>
 
 			<Grid>
@@ -79,39 +109,34 @@
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.Name}"/>
 
-						<Grid ColumnDefinitions="auto, auto, auto, *"
-							  Classes="background">
-							<Image Source="avares://SalutemCRM/Assets/Icon/Arrow.png"
-								   Height="24"
-								   Margin="10 -4 0 4"
-								   ClipToBounds="False">
-								<Image.RenderTransform>
-									<RotateTransform Angle="180" CenterX="0.5" CenterY="0.5"/>
-								</Image.RenderTransform>
-							</Image>
-							
-							<TextBlock  Text="{
-											Binding Source.SelectedItem.Name,
-											StringFormat='в категорию [{0}]',
-											FallbackValue=[в корень каталога]
-										}"
-										Grid.Column="1"
-										Margin="10"
-										FontSize="14"
-										FontWeight="SemiBold"/>
-							
-							<Button Classes="iconed close pink rounded"
-									Command="{Binding RemoveCategoryInheritanceCommand}"
-									IsVisible="{Binding Source.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
-									Grid.Column="2"
-									Width="36"
-									Height="36"/>
-						</Grid>
+						<TextBox Classes="custom header new_input"
+								 Watermark="Доп. информация"
+								 Text="{Binding Source.TempItem.AdditionalInfo}"/>
 
-						<TreeDataGrid x:Name="TreeDataGridControl_2"
-							  Classes="custom"
-							  Source="{Binding Source.CategoriesTree}"
-							  ShowColumnHeaders="False"/>
+						<Grid ColumnDefinitions="*, *"
+							  RowDefinitions="auto, auto, auto"
+							  Margin="0 20 0 10">
+							<TextBlock Text="Категория шаблона"
+									   FontWeight="SemiBold"
+									   Grid.ColumnSpan="2"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Старая"
+									   Grid.Row="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Новая"
+									   Grid.Row="1"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="{Binding Source.TempItem.Category.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+							<TextBlock Text="{Binding Source.ProductCategory.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+						</Grid>
 						
 						<Button Classes="custom orange whiteText"
 								Height="40"
@@ -151,39 +176,34 @@
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.Name}"/>
 
-						<Grid ColumnDefinitions="auto, auto, auto, *"
-							  Classes="background">
-							<Image Source="avares://SalutemCRM/Assets/Icon/Arrow.png"
-								   Height="24"
-								   Margin="10 -4 0 4"
-								   ClipToBounds="False">
-								<Image.RenderTransform>
-									<RotateTransform Angle="180" CenterX="0.5" CenterY="0.5"/>
-								</Image.RenderTransform>
-							</Image>
+						<TextBox Classes="custom header new_input"
+								 Watermark="Доп. информация"
+								 Text="{Binding Source.TempItem.AdditionalInfo}"/>
 
-							<TextBlock  Text="{
-											Binding Source.SelectedItem.Name,
-											StringFormat='в категорию [{0}]',
-											FallbackValue=[в корень каталога]
-										}"
-										Grid.Column="1"
-										Margin="10"
-										FontSize="14"
-										FontWeight="SemiBold"/>
-
-							<Button Classes="iconed close pink rounded"
-									Command="{Binding RemoveCategoryInheritanceCommand}"
-									IsVisible="{Binding Source.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
-									Grid.Column="2"
-									Width="36"
-									Height="36"/>
+						<Grid ColumnDefinitions="*, *"
+							  RowDefinitions="auto, auto, auto"
+							  Margin="0 20 0 10">
+							<TextBlock Text="Категория шаблона"
+									   FontWeight="SemiBold"
+									   Grid.ColumnSpan="2"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Старая"
+									   Grid.Row="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="Новая"
+									   Grid.Row="1"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"/>
+							<TextBlock Text="{Binding Source.EditItem.Category.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
+							<TextBlock Text="{Binding Source.ProductCategory.Name, FallbackValue=[не присвоена]}"
+									   Grid.Row="2"
+									   Grid.Column="1"
+									   HorizontalAlignment="Center"
+									   FontWeight="SemiBold"/>
 						</Grid>
-
-						<TreeDataGrid x:Name="TreeDataGridControl_3"
-							  Classes="custom"
-							  Source="{Binding Source.CategoriesTree}"
-							  ShowColumnHeaders="False"/>
 
 						<Button Classes="custom orange whiteText"
 								Height="40"
@@ -252,44 +272,6 @@
 
 		<Style Selector="ComboBox.custom.new_input">
 			<Setter Property="Margin" Value="10 12 10 0"/>
-		</Style>
-
-		<Style Selector="TreeDataGrid.custom">
-			
-		</Style>
-
-		<Style Selector="TreeDataGrid.custom ToggleButton">
-			<Setter Property="IsChecked" Value="False"/>
-		</Style>
-
-		<Style Selector="TreeDataGrid.custom.search_result ToggleButton">
-			<Setter Property="IsChecked" Value="True"/>
-		</Style>
-
-		<Style Selector="TreeDataGrid.custom.editable Border#CellBorder > DockPanel > Decorator > TreeDataGridTextCell">
-			<Setter Property="Template">
-				<ControlTemplate>
-					<Border Name="CellBorder">
-						<DockPanel>
-							<TextBlock Text="{Binding $self.DataContext.Name}"
-									   VerticalAlignment="Center"/>
-							<Button Classes="iconed sys orange edit rounded"
-									Name="TreeDataGridEditItemButton"
-									Height="24"
-									Width="32"
-									Margin="10 2"
-									HorizontalAlignment="Left"
-									Command="{Binding $parent[UserControl].DataContext.GoEditCommand}"
-									CommandParameter="{Binding $self.DataContext}"
-									IsVisible="False"/>
-						</DockPanel>
-					</Border>
-				</ControlTemplate>
-			</Setter>
-		</Style>
-
-		<Style Selector="TreeDataGrid.custom.editable TreeDataGridRow:selected Button#TreeDataGridEditItemButton">
-			<Setter Property="IsVisible" Value="True"/>
 		</Style>
 	</UserControl.Styles>
 </UserControl>

@@ -170,6 +170,10 @@
 	<Style Selector="Button.collapse_down /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Collapse_down.png"/>
 	</Style>
+	
+	<Style Selector="Button.trashbin /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Trash.png"/>
+	</Style>
 
 	<Style Selector="Button.orange">
 		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>

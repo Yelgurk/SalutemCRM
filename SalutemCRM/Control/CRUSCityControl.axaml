@@ -189,46 +189,9 @@
 				</ScrollViewer>
 			</Grid>
 		</Grid>
-
 	</Grid>
 
 	<UserControl.Styles>
-		<Style Selector="Grid.pages_container.is_disabled">
-			<Setter Property="Opacity" Value="0.5"/>
-		</Style>
-		
-		<Style Selector="Grid.pages_container.is_disabled TextBlock#PART_FloatingWatermark">
-			<Setter Property="Opacity" Value="0"/>
-		</Style>
-			
-		<Style Selector="Grid.pages_container > Grid > Grid">
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
-		</Style>
-
-		<Style Selector=" Grid.pages_container > Grid">
-			<Setter Property="IsVisible" Value="False"/>
-		</Style>
-		
-		<Style Selector=" Grid.pages_container > Grid.selected_page">
-			<Setter Property="IsVisible" Value="True"/>
-		</Style>
-
-		<Style Selector="Grid.pages_container > Grid > Grid">
-			<Setter Property="Grid.Row" Value="1"/>
-		</Style>
-
-		<Style Selector="Grid.pages_container TextBlock.text_header">
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="FontSize" Value="16"/>
-			<Setter Property="Margin" Value="0 10"/>
-		</Style>
-
-		<Style Selector="StackPanel.background, Grid.background">
-			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
-		</Style>
-
 		<Style Selector="TextBlock.new_input">
 			<Setter Property="Margin" Value="25 6 10 -12"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>

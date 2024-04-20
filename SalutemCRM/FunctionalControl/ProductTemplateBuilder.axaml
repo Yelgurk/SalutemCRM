@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemCRM.FunctionalControl.ProductTemplateBuilder"
+		     xmlns:f_control="clr-namespace:SalutemCRM.FunctionalControl"
+			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
+			 x:DataType="vm:ProductSchemaBuilderViewModel"
+			 Background="White"
+			 Design.Width="1000"
+			 Design.Height="800">
+	<UserControl.DataContext>
+		<vm:ProductSchemaBuilderViewModel/>
+	</UserControl.DataContext>
+	
+	<Grid ColumnDefinitions="10*, 50, 6*"
+		  RowDefinitions="2*, 3*">
+		<Label Grid.Column="0" Grid.Row="1" Classes="card rounded tag"
+			   Tag="Выбрать деталь" Margin="5">
+			<f_control:WarehouseGeneral Name="FC_WHG"/>
+		</Label>
+
+		<Label Grid.Column="0" Grid.Row="0" Classes="card rounded tag"
+			   Tag="Выбрать шаблон" Margin="5 5 5 0">
+			<f_control:ProductTemplateControl Name="FC_PTC"/>
+		</Label>
+		
+		<Image Grid.Column="1" Grid.Row="0" Classes="custom"/>
+		<Image Grid.Column="1" Grid.Row="1" Classes="custom"/>
+
+		<Label Grid.Column="2" Grid.RowSpan="2" Classes="card rounded tag"
+			   Tag="Настройка шаблона" Margin="5">
+			<Grid RowDefinitions="auto, auto, *, auto" Classes="background">
+				<StackPanel Classes="background"
+							Grid.Row="0"
+							Margin="0 40 0 0">
+					<DockPanel HorizontalAlignment="Center">
+						<TextBlock FontSize="15" Text="Шаблон: "/>
+						<TextBlock FontSize="15" Text="{Binding Source.ProductTemplate.Category.Name, FallbackValue=[не выбрано]}"/>
+						<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding Source.ProductTemplate.Name, StringFormat=', {0}', FallbackValue={}}"/>
+					</DockPanel>
+
+					<Button Classes="custom orange whiteText"
+							Height="40"
+							Margin="10 5"
+							HorizontalAlignment="Stretch"
+							FontWeight="SemiBold"
+							Command="{Binding AddSelectedItemCommand}">
+						<DockPanel HorizontalAlignment="Center">
+							<TextBlock FontSize="15" Text="{Binding Source.WarehouseItem.InnerName, StringFormat='+ Добавить: {0}', FallbackValue=[не выбрано]}"/>
+							<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding Source.WarehouseItem.InnerCode, StringFormat=', [{0}]', FallbackValue={}}"/>
+						</DockPanel>
+					</Button>
+				</StackPanel>
+
+				<TextBlock Text="Детали исп. в производстве:"
+						   Margin="10 10 0 5"
+						   FontSize="15"
+						   Grid.Row="1"
+						   HorizontalAlignment="Left"/>
+				
+				<ScrollViewer VerticalScrollBarVisibility="Auto"
+							  Grid.Row="2">
+					<ListBox Classes="custom zebra"
+							 ItemsSource="{Binding Source.ProductSchemas}"
+							 SelectedItem="{Binding Source.SelectedItem}"
+							 BorderThickness="0 1"
+							 BorderBrush="{DynamicResource Primary_DarkBlue}">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid ColumnDefinitions="auto, *, auto, auto"
+									  Margin="10 0 0 0">
+									<DockPanel VerticalAlignment="Center">
+										<TextBlock FontSize="15" Text="{Binding WarehouseItem.Category.Name, StringFormat='{}{0} - '}"/>
+										<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding WarehouseItem.InnerName}"/>
+										<TextBlock FontSize="14" Text="{Binding WarehouseItem.InnerCode, StringFormat=', [{0}]'}"/>
+									</DockPanel>
+
+									<DockPanel Grid.Column="2">
+										<TextBlock FontSize="15" Text="{Binding WarehouseItem.MesurementUnit}"
+												   Margin="0 0 5 0"
+												   VerticalAlignment="Center"/>
+										<TextBox Classes="custom"
+												 Margin="0 0 5 0"
+												 HorizontalAlignment="Right"
+												 HorizontalContentAlignment="Center"
+												 Text="{Binding Count}"/>
+										<Button HorizontalAlignment="Right"
+												Margin="0 0 5 0"
+												Classes="custom iconed pink rounded sys close"
+												Command="{Binding $parent[UserControl].DataContext.RemoveItemCommand}"
+												CommandParameter="{Binding}"
+												IsVisible="{Binding $parent[UserControl].DataContext.Source.IsFuncEditAvailable}"/>
+									</DockPanel>
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</ScrollViewer>
+
+				<TextBlock Text="Шаблон пуст!"
+						   FontSize="18"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   Grid.Row="2"
+						   IsVisible="{Binding !Source.ProductSchemas.Count}"/>
+
+				<Button Grid.Row="3"
+						Margin="10 5" Height="40"
+						Content="+ Сохранить шаблон"
+						HorizontalAlignment="Stretch"
+						Classes="custom orange whiteText"
+						Command="{Binding $parent[UserControl].DataContext.AcceptProductTemplateCommand}"
+						IsVisible="{Binding $parent[UserControl].DataContext.Source.IsFuncEditAvailable}"/>
+			</Grid>
+		</Label>
+	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="Image.custom">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Collapse_up.png"/>
+			<Setter Property="RenderTransformOrigin" Value="0.5 0.5"/>
+			<Setter Property="Height" Value="48"/>
+			<Setter Property="Width" Value="48"/>
+			<Setter Property="RenderTransform">
+				<RotateTransform Angle="90" CenterX="24" CenterY="24"/>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
+</UserControl>

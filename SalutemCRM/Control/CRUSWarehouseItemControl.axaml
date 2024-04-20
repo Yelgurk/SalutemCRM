@@ -24,7 +24,7 @@
 			  RowDefinitions="auto, *">
 
 			<TextBlock Classes="text_header"
-					   Text="Склад"/>
+					   Text="Детали"/>
 
 			<Grid RowDefinitions="auto, *"
 				  ColumnDefinitions="*, auto, auto">

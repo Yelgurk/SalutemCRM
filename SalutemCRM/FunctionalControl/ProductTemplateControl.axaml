@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemCRM.FunctionalControl.ProductTemplateControl"
+			 xmlns:controls="clr-namespace:SalutemCRM.Control"
+			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
+			 Design.Height="700"
+			 Design.Width="1200"
+			 Background="White">
+
+	<Grid ColumnDefinitions="*, auto, *">
+		<controls:CRUSProductCategoryControl
+			Name="CRUS_PCC"
+			Grid.Column="0"/>
+
+		<Border
+			BorderThickness="0 0 1 0"
+			BorderBrush="{DynamicResource Primary_DarkBlue}"
+			Grid.Column="1"/>
+
+		<controls:CRUSProductTemplateControl
+			Name="CRUS_PTC"
+			Grid.Column="2"/>
+	</Grid>
+</UserControl>

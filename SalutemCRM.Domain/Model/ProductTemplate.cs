@@ -21,10 +21,6 @@ public partial class ProductTemplate : ClonableObservableObject<ProductTemplate>
 
     [NotMapped]
     [ObservableProperty]
-    private string _model = null!;
-
-    [NotMapped]
-    [ObservableProperty]
     private string? _additionalInfo;
 
 
