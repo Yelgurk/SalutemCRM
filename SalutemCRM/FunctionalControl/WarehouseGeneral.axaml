@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SalutemCRM.FunctionalControl.WarehouseGeneral"
-			 xmlns:controls="clr-namespace:SalutemCRM.Control">
-	<Grid ColumnDefinitions="*, auto, *">
+			 xmlns:controls="clr-namespace:SalutemCRM.Control"
+			 Background="White">
+	<Grid ColumnDefinitions="2*, auto, 5*">
 		<controls:CRUSWarehouseCategoryControl
 			Name="CRUS_WCC"
 			Grid.Column="0"/>
@@ -19,4 +20,10 @@
 			Name="CRUS_WIC"
 			Grid.Column="2"/>
 	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="Label.card.tag controls|CRUSWarehouseCategoryControl">
+			<Setter Property="Margin" Value="0 32 0 0"/>
+		</Style>
+	</UserControl.Styles>
 </UserControl>

@@ -65,15 +65,15 @@ public partial class ProductSchemaBuilderViewModelSource : ReactiveControlSource
 
     public bool AcceptTemplateChanges()
     {
-        if (ProductSchemas is null)
+        if (ProductSchemas is null || ProductTemplate is null)
             return false;
 
         using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
-            (from ps in db.ProductSchemas where !ProductSchemas.Select(x => x.Id).Contains(ps.Id) select ps)
+            (from ps in db.ProductSchemas where !ProductSchemas.Select(x => x.Id).Contains(ps.Id) && ps.ProductTemplateForeignKey == ProductTemplate.Id select ps)
             .DoForEach(x => db.ProductSchemas.Remove(x))
             .Do(x => db.SaveChanges())
 
-            .Do(x => from ps in db.ProductSchemas where ProductSchemas.Select(x => x.Id).Contains(ps.Id) select ps)
+            .Do(x => from ps in db.ProductSchemas where ProductSchemas.Select(x => x.Id).Contains(ps.Id) && ps.ProductTemplateForeignKey == ProductTemplate.Id select ps)
             .DoForEach(x => x.Count = ProductSchemas.Single(ps => ps.Id == x.Id).Count)
             .DoForEach(x => ProductSchemas.Remove(ProductSchemas.Single(y => y.Id == x.Id)))
             .Do(x => db.SaveChanges())

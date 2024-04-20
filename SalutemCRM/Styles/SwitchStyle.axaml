@@ -18,7 +18,6 @@
 						<TextBlock Text="Второй"/>
 						<TextBlock Text="Третий"/>
 					</ListBox>
-					
 				</Grid>
 
 				<ListBox Classes="switch" Margin="0 0 0 10">
@@ -28,17 +27,24 @@
 					<TextBlock Text="Четвёртый"/>
 				</ListBox>
 
-				<ListBox Classes="switch">
+				<ListBox Classes="switch" Margin="0 0 0 10">
 					<TextBlock Text="Первый"/>
 					<TextBlock Text="Второй"/>
 					<TextBlock Text="Третий"/>
 					<TextBlock Text="Четвёртый"/>
 					<TextBlock Text="Пятый"/>
 				</ListBox>
+
+				<ItemsControl Classes="custom inline">
+					<RadioButton GroupName="A" Content="Первый"/>
+					<RadioButton GroupName="A" Content="Второй"/>
+					<RadioButton GroupName="A" Content="Третий"/>
+				</ItemsControl>
 			</StackPanel>
 		</Grid>
     </Design.PreviewWith>
 
+	<!-- LISTBOX -->
 	<Style Selector="ListBox.switch">
 		<Setter Property="ListBox.ItemsPanel">
 			<ItemsPanelTemplate>
@@ -91,13 +97,95 @@
 		<Setter Property="BorderThickness" Value="2 0"/>
 		<Setter Property="Margin" Value="-2 0"/>
 	</Style>
-	
+
 	<Style Selector="ListBox.switch ListBoxItem:nth-child(1):selected">
 		<Setter Property="BorderThickness" Value="0 0 2 0"/>
 		<Setter Property="Margin" Value="0 0 -2 0"/>
 	</Style>
 
 	<Style Selector="ListBox.switch ListBoxItem:nth-last-child(1):selected">
+		<Setter Property="BorderThickness" Value="2 0 0 0"/>
+		<Setter Property="Margin" Value="-2 0 0 0"/>
+	</Style>
+
+	<!-- RADIOBUTTON -->
+	<Style Selector="ItemsControl.custom.inline">
+		<Setter Property="ItemsControl.ItemsPanel">
+			<ItemsPanelTemplate>
+				<StackPanel Orientation="Horizontal"/>
+			</ItemsPanelTemplate>
+		</Setter>
+		<Setter Property="CornerRadius" Value="5"/>
+		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="Effect">
+			<DropShadowEffect
+				OffsetX="0"
+				OffsetY="0"
+				BlurRadius="15"
+				Opacity="0.10"/>
+		</Setter>
+		<Setter Property="ClipToBounds" Value="False"/>
+	</Style>
+
+	<Style Selector="ItemsControl.custom RadioButton">
+		<Setter Property="ClipToBounds" Value="False"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border>
+					<ContentPresenter Content="{TemplateBinding Content}"/>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	
+	<Style Selector="ItemsControl.custom RadioButton /template/ ContentPresenter">
+		<Setter Property="MinHeight" Value="40"/>
+		<Setter Property="MinWidth" Value="40"/>
+		<Setter Property="Padding" Value="10 10 10 5"/>
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_DarkBlue}"/>
+		<Setter Property="CornerRadius" Value="5"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Foreground" Value="{DynamicResource Primary_DarkBlue}"/>
+		<Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
+	</Style>
+
+	<Style Selector="ItemsControl.custom RadioButton /template/ Border">
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="CornerRadius" Value="5"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource Primary_DarkBlue}"/>
+	</Style>
+
+	<Style Selector="ItemsControl.custom RadioButton:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_Grey}"/>
+	</Style>
+
+	<Style Selector="ItemsControl.custom RadioButton:checked /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Alt_Yellow}"/>
+	</Style>
+
+	<Style Selector="ItemsControl.custom RadioButton:checked:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
+	</Style>
+
+	<!-- Selected item border style -->
+
+	<Style Selector="ItemsControl.custom RadioButton:checked /template/ Border">
+		<Setter Property="BorderThickness" Value="2 0"/>
+		<Setter Property="Margin" Value="-2 0"/>
+	</Style>
+	
+	<Style Selector="ItemsControl.custom RadioButton:nth-child(1):checked /template/ Border">
+		<Setter Property="BorderThickness" Value="0 0 2 0"/>
+		<Setter Property="Margin" Value="0 0 -2 0"/>
+	</Style>
+
+	<Style Selector="ItemsControl.custom RadioButton:nth-last-child(1):checked /template/ Border">
 		<Setter Property="BorderThickness" Value="2 0 0 0"/>
 		<Setter Property="Margin" Value="-2 0 0 0"/>
 	</Style>

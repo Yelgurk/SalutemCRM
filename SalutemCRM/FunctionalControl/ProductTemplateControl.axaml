@@ -10,7 +10,7 @@
 			 Design.Width="1200"
 			 Background="White">
 
-	<Grid ColumnDefinitions="*, auto, *">
+	<Grid ColumnDefinitions="2*, auto, 5*">
 		<controls:CRUSProductCategoryControl
 			Name="CRUS_PCC"
 			Grid.Column="0"/>
@@ -24,4 +24,10 @@
 			Name="CRUS_PTC"
 			Grid.Column="2"/>
 	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="Label.card.tag controls|CRUSProductCategoryControl">
+			<Setter Property="Margin" Value="0 32 0 0"/>
+		</Style>
+	</UserControl.Styles>
 </UserControl>

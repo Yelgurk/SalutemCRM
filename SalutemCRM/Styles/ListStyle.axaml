@@ -46,7 +46,7 @@
 					</DockPanel>
 				</ListBox>
 
-				<ListBox Classes="custom"
+				<ListBox Classes="custom unmarked"
 						 Margin="0 0 0 10">
 					<DockPanel Classes="DemoSpacing">
 						<TextBlock Text="1"/>
@@ -206,6 +206,10 @@
 		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource Primary_Gray}"/>
 		<Setter Property="BorderThickness" Value="0 0 10 0"/>
+	</Style>
+
+	<Style Selector="ListBox.custom.unmarked ListBoxItem:pointerover /template/ ContentPresenter">
+		<Setter Property="BorderThickness" Value="0 0 0 0"/>
 	</Style>
 
 	<Style Selector="ListBox.custom ListBoxItem:selected /template/ ContentPresenter">

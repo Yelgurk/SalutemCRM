@@ -14,16 +14,17 @@
 		<vm:ProductSchemaBuilderViewModel/>
 	</UserControl.DataContext>
 	
-	<Grid ColumnDefinitions="10*, 50, 6*"
+	<Grid ColumnDefinitions="70*, 50, 30*"
 		  RowDefinitions="2*, 3*">
-		<Label Grid.Column="0" Grid.Row="1" Classes="card rounded tag"
-			   Tag="Выбрать деталь" Margin="5">
-			<f_control:WarehouseGeneral Name="FC_WHG"/>
-		</Label>
-
+		
 		<Label Grid.Column="0" Grid.Row="0" Classes="card rounded tag"
 			   Tag="Выбрать шаблон" Margin="5 5 5 0">
 			<f_control:ProductTemplateControl Name="FC_PTC"/>
+		</Label>
+		
+		<Label Grid.Column="0" Grid.Row="1" Classes="card rounded tag"
+			   Tag="Выбрать деталь" Margin="5">
+			<f_control:WarehouseGeneral Name="FC_WHG"/>
 		</Label>
 		
 		<Image Grid.Column="1" Grid.Row="0" Classes="custom"/>
@@ -69,7 +70,7 @@
 							 BorderBrush="{DynamicResource Primary_DarkBlue}">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
-								<Grid ColumnDefinitions="auto, *, auto, auto"
+								<Grid ColumnDefinitions="auto, *"
 									  Margin="10 0 0 0">
 									<DockPanel VerticalAlignment="Center">
 										<TextBlock FontSize="15" Text="{Binding WarehouseItem.Category.Name, StringFormat='{}{0} - '}"/>
@@ -77,7 +78,8 @@
 										<TextBlock FontSize="14" Text="{Binding WarehouseItem.InnerCode, StringFormat=', [{0}]'}"/>
 									</DockPanel>
 
-									<DockPanel Grid.Column="2">
+									<DockPanel Grid.ColumnSpan="2"
+											   HorizontalAlignment="Right">
 										<TextBlock FontSize="15" Text="{Binding WarehouseItem.MesurementUnit}"
 												   Margin="0 0 5 0"
 												   VerticalAlignment="Center"/>
