@@ -14,7 +14,7 @@ namespace SalutemCRM.Converter;
 /// This is as converter which will convert parent control (container) size into
 /// Uniform Grid columns count (child control)
 /// </summary>
-public class NumberInversionConverter : IValueConverter
+public class NumberInversionConverterxxx : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

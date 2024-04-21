@@ -14,6 +14,9 @@
 	<UserControl.DataContext>
 		<vm:CRUSWarehouseItemControlViewModel/>
 	</UserControl.DataContext>
+	<UserControl.Resources>
+		<conv:RowStatusConverter x:Key="RowStatusConverter"/>
+	</UserControl.Resources>
 
 
 	<Grid Classes="pages_container"
@@ -127,22 +130,18 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 
-				<DataGrid Grid.Row="1" Grid.ColumnSpan="3"
-						  ClipToBounds="True"
+				<DataGrid Grid.Row="1" Grid.ColumnSpan="3" Margin="0 5 0 0"
+						  Classes="custom bind_to_warehouseItem"
 						  ItemsSource="{Binding Source.WarehouseItems}"
 						  SelectedItem="{Binding Source.SelectedItem}"
-						  IsVisible="{Binding !Source.IsListPreview}"
-						  IsReadOnly="True"
-						  GridLinesVisibility="All"
-						  BorderThickness="0 1 0 0"
-						  BorderBrush="LightGray"
-						  Margin="0 5 0 0">
+						  IsVisible="{Binding !Source.IsListPreview}">
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Название" Binding="{Binding InnerName}"/>
 						<DataGridTextColumn Header="Код" Binding="{Binding InnerCode}"/>
 						<DataGridTextColumn Header="Ед. изм." Binding="{Binding MesurementUnit}"/>
 						<DataGridTextColumn Header="На складе" Binding="{Binding TotalInStockCount, StringFormat={}{0:0.###}}"/>
 						<DataGridTextColumn Header="Лимит" Binding="{Binding CountRequired, StringFormat={}{0:0.###}}"/>
+						<DataGridTextColumn Header="Статус" Binding="{Binding CountInStockStateToString}"/>
 						<DataGridTextColumn Header="~BYN ед." Binding="{Binding BYNPriceForSingleInStock, StringFormat='{}{0:0.###} руб'}"
 											IsVisible="{Binding $parent[UserControl].DataContext.Source.IsMoneyStatVisible}" />
 						<DataGridTextColumn Header="~BYN итого" Binding="{Binding BYNPriceForTotalInStock, StringFormat='{}{0:0.###} руб'}"
@@ -387,6 +386,10 @@
 
 		<Style Selector="ComboBox.custom.new_input">
 			<Setter Property="Margin" Value="10 12 10 0"/>
+		</Style>
+
+		<Style Selector="DataGrid.custom.bind_to_warehouseItem DataGridRow">
+			<Setter Property="Background" Value="{Binding CountInStockState, Converter={StaticResource RowStatusConverter}}"/>
 		</Style>
 	</UserControl.Styles>
 </UserControl>

@@ -24,7 +24,6 @@
 		<StyleInclude Source="/Styles/ProgressBarStyle.axaml"/>
 		<StyleInclude Source="/Styles/SwitchStyle.axaml"/>
 		<StyleInclude Source="/Styles/ComboBoxStyle.axaml"/>
-		<StyleInclude Source="/Control/ManufactureOrderControl.axaml"/>
 
 		<Style Selector="StackPanel.background, Grid.background">
 			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>
@@ -122,6 +121,14 @@
 				<DropShadowEffect BlurRadius="10"
 								  Opacity="0.2"/>
 			</Setter>
+		</Style>
+
+		<Style Selector="DataGrid.custom">
+			<Setter Property="ClipToBounds" Value="True"/>
+			<Setter Property="IsReadOnly" Value="True"/>
+			<Setter Property="GridLinesVisibility" Value="All"/>
+			<Setter Property="BorderThickness" Value="0 1 0 0"/>
+			<Setter Property="BorderBrush" Value="LightGray"/>
 		</Style>
     </Application.Styles>
 </Application>

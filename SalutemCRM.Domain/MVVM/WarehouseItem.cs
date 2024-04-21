@@ -12,6 +12,27 @@ public partial class WarehouseItem
     public double TotalInStockCount { get => WarehouseSupplying.Select(x => x.InStockCount).Sum(); }
 
     [NotMapped]
+    public Stock_Status CountInStockState { get => TotalInStockCount switch
+        {
+            var x when x >= CountRequired * 1.5         => Stock_Status.Enough,
+            var x when x >= CountRequired               => Stock_Status.CloseToLimit,
+            var x when x >= 1.0 && x < CountRequired    => Stock_Status.NotEnough,
+            _                                           => Stock_Status.ZeroWarning
+        };
+    }
+
+    [NotMapped]
+    public string CountInStockStateToString { get => CountInStockState switch
+        {
+            Stock_Status.Enough         => "1. достаток",
+            Stock_Status.CloseToLimit   => "2. около лимита",
+            Stock_Status.NotEnough      => "3. мало",
+            Stock_Status.ZeroWarning    => "4. нет или < 1.0",
+            _                           => "неизв. ошибка"
+        };
+    }
+
+    [NotMapped]
     public double BYNPriceForSingleInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum() / TotalInStockCount; }
 
     [NotMapped]

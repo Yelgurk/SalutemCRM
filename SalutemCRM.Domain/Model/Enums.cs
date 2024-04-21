@@ -36,3 +36,10 @@ public enum Order_Type {
     CustomerService,
     WarehouseRestocking
 };
+
+public enum Stock_Status {
+    Enough,
+    CloseToLimit,
+    NotEnough,
+    ZeroWarning
+};

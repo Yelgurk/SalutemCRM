@@ -11,9 +11,8 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM">
 	<Grid>
-		<!--views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsVisible="False"/-->
-
-		<f_control:ProductTemplateBuilder/>
+		<f_control:ProductTemplateBuilder
+			IsVisible="True"/>
 
 		<ScrollViewer HorizontalScrollBarVisibility="Visible"
 					  IsVisible="False">
