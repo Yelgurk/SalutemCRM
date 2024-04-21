@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:SalutemCRM.ControlTemplated"
+		xmlns:vm="using:SalutemCRM.ViewModels">
+	<Design.PreviewWith>
+		<Grid Width="800" Height="800">
+			<controls:OrderEditorControl />
+		</Grid>
+	</Design.PreviewWith>
+
+	<Style Selector="controls|OrderEditorControl">
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<StackPanel DataContext="{TemplateBinding VM}">
+					<TextBlock DataContext="{TemplateBinding OrderSource}" Text="{Binding AdditionalInfo}"/>
+					<TextBlock Text="{Binding OrderSource.Currency, RelativeSource={RelativeSource TemplatedParent}}"/>
+					<Button Command="{Binding GoEditCommand}"
+							CommandParameter="{TemplateBinding OrderSource}"/>
+				</StackPanel>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+</Styles>

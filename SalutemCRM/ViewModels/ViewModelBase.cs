@@ -18,11 +18,11 @@ public abstract class ViewModelBase<T1, T2> : ReactiveObject
     {
         this.Source = Source;
         App.Host!.Services
-            .GetService<ViewModelSourceNotifyService>()!
+            .GetService<ViewModelSourceNotifyService>()?
             .AddVMSource((this.Source as IReactiveControlSource)!);
     }
 
-    public required T2 Source { get; init; }
+    public T2 Source { get; protected set; }
 
     public IObservable<bool>? IfNewFilled { get; protected set; }
     public IObservable<bool>? IfEditFilled { get; protected set; }

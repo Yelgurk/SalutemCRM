@@ -24,6 +24,8 @@
 		<StyleInclude Source="/Styles/ProgressBarStyle.axaml"/>
 		<StyleInclude Source="/Styles/SwitchStyle.axaml"/>
 		<StyleInclude Source="/Styles/ComboBoxStyle.axaml"/>
+		<StyleInclude Source="/Styles/ComboBoxStyle.axaml"/>
+		<StyleInclude Source="/ControlTemplated/OrderEditorControl.axaml"/>
 
 		<Style Selector="StackPanel.background, Grid.background">
 			<Setter Property="Background" Value="{Binding $parent[UserControl].Background}"/>

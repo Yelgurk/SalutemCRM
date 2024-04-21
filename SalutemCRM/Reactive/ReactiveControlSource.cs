@@ -7,6 +7,7 @@ using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -93,6 +94,12 @@ public partial class ReactiveControlSource<T> : ObservableObject, IReactiveContr
 
     [ObservableProperty]
     private T? _editItem = default(T?);
+
+    [ObservableProperty]
+    private ObservableCollection<T> _itemsCollection = new();
+
+    [ObservableProperty]
+    private ObservableCollection<T> _tempCollection = new();
 
 
 
