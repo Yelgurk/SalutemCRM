@@ -1,6 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:SalutemCRM.ControlTemplated"
+		xmlns:crus="using:SalutemCRM.Control"
+		xmlns:enums="using:SalutemCRM.Domain.Model"
 		xmlns:vm="using:SalutemCRM.ViewModels">
 	<Design.PreviewWith>
 		<Grid Width="800" Height="800">
@@ -13,13 +15,71 @@
 		<Setter Property="VerticalAlignment" Value="Stretch"/>
 		<Setter Property="Template">
 			<ControlTemplate>
-				<StackPanel DataContext="{TemplateBinding VM}">
-					<TextBlock DataContext="{TemplateBinding OrderSource}" Text="{Binding AdditionalInfo}"/>
-					<TextBlock Text="{Binding OrderSource.Currency, RelativeSource={RelativeSource TemplatedParent}}"/>
-					<Button Command="{Binding GoEditCommand}"
-							CommandParameter="{TemplateBinding OrderSource}"/>
-				</StackPanel>
+				<!--ComboBox ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
+							  SelectedIndex="{Binding OrderSource.OrderType, RelativeSource={RelativeSource TemplatedParent}}"/-->
+
+				<Grid DataContext="{TemplateBinding VM}">
+					<ScrollViewer>
+						<StackPanel>
+							<ItemsControl Classes="horizontal"
+								  Grid.Row="0">
+								<Label Classes="card tag"
+									   Tag="1. Тип счёта"
+									   Background="White"
+									   Margin="5">
+									<ComboBox Classes="custom"
+											  ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
+											  SelectedIndex="{Binding OrderSource.OrderType, RelativeSource={RelativeSource TemplatedParent}}"
+											  Margin="5 40 5 5"/>
+								</Label>
+
+								<Label Classes="card tag"
+									   Tag="2. Условия предоплаты"
+									   Background="White"
+									   Margin="5">
+									<ComboBox Classes="custom"
+											  ItemsSource="{x:Static enums:EnumToString.PaymentStatusToString}"
+											  SelectedIndex="{Binding OrderSource.PaymentAgreement, RelativeSource={RelativeSource TemplatedParent}}"
+											  Margin="5 40 5 5"/>
+								</Label>
+							</ItemsControl>
+
+							<Grid Grid.Row="1"
+								  Height="400">
+								<Label Classes="card tag"
+								   Tag="3. Выбор клиента"
+								   Background="White"
+								   Margin="5"
+								   IsVisible="{Binding OrderSource.IsCustomerOrder, RelativeSource={RelativeSource TemplatedParent}}">
+									<crus:CRUSClientControl DataContext="{TemplateBinding ControlInjection, Mode=OneWayToSource}"/>
+								</Label>
+
+								<Label Classes="card tag"
+									   Tag="3. Выбор поставщика"
+									   Background="White"
+									   Margin="5"
+									   IsVisible="{Binding !OrderSource.IsCustomerOrder, RelativeSource={RelativeSource TemplatedParent}}">
+									<crus:CRUSVendorControl DataContext="{TemplateBinding ControlInjection, Mode=OneWayToSource}"/>
+								</Label>
+							</Grid>
+							
+							
+						</StackPanel>
+					</ScrollViewer>
+				</Grid>
 			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="controls|OrderEditorControl ItemsControl.horizontal">
+		<Setter Property="ItemsPanel">
+			<ItemsPanelTemplate>
+				<UniformGrid Columns="{
+							 Binding $self.Bounds.Width,
+							 Converter={StaticResource SizeToColumnsConv},
+							 ConverterParameter=2}"
+							 ClipToBounds="False"/>
+			</ItemsPanelTemplate>
 		</Setter>
 	</Style>
 </Styles>

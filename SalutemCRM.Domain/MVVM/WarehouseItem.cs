@@ -22,15 +22,10 @@ public partial class WarehouseItem
     }
 
     [NotMapped]
-    public string CountInStockStateToString { get => CountInStockState switch
-        {
-            Stock_Status.Enough         => "1. достаток",
-            Stock_Status.CloseToLimit   => "2. около лимита",
-            Stock_Status.NotEnough      => "3. мало",
-            Stock_Status.ZeroWarning    => "4. нет или < 1.0",
-            _                           => "неизв. ошибка"
-        };
-    }
+    public string CountInStockStateToString =>
+        (int)CountInStockState < EnumToString.StockStatusToString.Count ?
+        EnumToString.StockStatusToString[(int)CountInStockState] :
+        "неизвестная ошибка";
 
     [NotMapped]
     public double BYNPriceForSingleInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum() / TotalInStockCount; }

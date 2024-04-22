@@ -11,13 +11,6 @@ namespace SalutemCRM.Views;
 
 public partial class MainWindow : Window
 {
-    public Order OrIt { get; } = new() {
-        AdditionalInfo = "Тест доп инфа xxxxx",
-        Currency = "бел руб",
-        PriceRequired = 1550.0,
-        PriceTotal = 3100.0
-    };
-
     public MainWindow()
     {
         DataContext = this;

@@ -17,7 +17,7 @@ public class OrderEditorControl : TemplatedControl
         o => o.OrderSource,
         (o, v) => o.OrderSource = v);
 
-    private Order? _orderSource = null;
+    private Order? _orderSource = Order.Default;
 
     public Order? OrderSource
     {
@@ -35,4 +35,14 @@ public class OrderEditorControl : TemplatedControl
     private OrderEditorControlViewModel _vm = new();
 
     public OrderEditorControlViewModel VM => _vm;
+
+
+
+    public static readonly DirectProperty<OrderEditorControl, dynamic?> ControlInjectionProperty =
+    AvaloniaProperty.RegisterDirect<OrderEditorControl, dynamic?>(
+       nameof(ControlInjection),
+       o => null,
+       (o, v) => o.ControlInjection = v!);
+
+    public dynamic ControlInjection { set => value.Source.IsResponsiveControl = true; }
 }
