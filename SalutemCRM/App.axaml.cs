@@ -28,6 +28,7 @@ public partial class App : Application
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<ViewModelSourceNotifyService>();
                 services.AddSingleton<QRCodeGeneratorService>();
+                services.AddSingleton<QRCodeBleScanService>();
             })
             .Build();
 

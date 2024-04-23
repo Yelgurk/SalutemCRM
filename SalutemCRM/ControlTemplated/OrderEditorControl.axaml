@@ -15,37 +15,63 @@
 		<Setter Property="VerticalAlignment" Value="Stretch"/>
 		<Setter Property="Template">
 			<ControlTemplate>
-				<!--ComboBox ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
-							  SelectedIndex="{Binding OrderSource.OrderType, RelativeSource={RelativeSource TemplatedParent}}"/-->
-
-				<Grid DataContext="{TemplateBinding VM}">
+				<Grid DataContext="{TemplateBinding VM}"
+					  Name="PART_TemplatedControl_OrderEditorContainer"
+					  Background="WhiteSmoke">
 					<ScrollViewer>
 						<StackPanel>
 							<ItemsControl Classes="horizontal"
 								  Grid.Row="0">
 								<Label Classes="card tag"
-									   Tag="1. Тип счёта"
-									   Background="White"
+									   Tag="1. Форма"
 									   Margin="5">
-									<ComboBox Classes="custom"
-											  ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
-											  SelectedIndex="{Binding OrderSource.OrderType, RelativeSource={RelativeSource TemplatedParent}}"
-											  Margin="5 40 5 5"/>
+									<Grid Background="White">
+										<ComboBox Classes="custom"
+											ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
+											SelectedIndex="{Binding OrderSource.OrderType, RelativeSource={RelativeSource TemplatedParent}}"
+											Margin="5 40 5 5"/>
+									</Grid>
 								</Label>
 
 								<Label Classes="card tag"
-									   Tag="2. Условия предоплаты"
+									   Tag="2. Условия"
 									   Background="White"
 									   Margin="5">
-									<ComboBox Classes="custom"
-											  ItemsSource="{x:Static enums:EnumToString.PaymentStatusToString}"
-											  SelectedIndex="{Binding OrderSource.PaymentAgreement, RelativeSource={RelativeSource TemplatedParent}}"
-											  Margin="5 40 5 5"/>
+									<StackPanel Background="White">
+										<ComboBox Classes="custom"
+												  ItemsSource="{x:Static enums:EnumToString.PaymentStatusToString}"
+												  SelectedIndex="{Binding OrderSource.PaymentAgreement, RelativeSource={RelativeSource TemplatedParent}}"
+												  Margin="5 40 5 5"/>
+
+										<Grid ColumnDefinitions="*, auto"
+											  RowDefinitions="auto, auto"
+											  Background="White"
+											  Margin="5">
+											<TextBox Classes="custom header"
+													 Text="{Binding OrderSource.PriceTotal, RelativeSource={RelativeSource TemplatedParent}}"
+													 IsVisible="{Binding OrderSource.IsPaymentRequired, RelativeSource={RelativeSource TemplatedParent}}"
+													 Watermark="Полная сумма по счету"
+													 Grid.Row="0"
+													 Margin="0 5 5 0"/>
+											<TextBox Classes="custom header"
+													 Text="{Binding OrderSource.PriceRequired, RelativeSource={RelativeSource TemplatedParent}}"
+													 IsVisible="{Binding OrderSource.IsPaymentPartial, RelativeSource={RelativeSource TemplatedParent}}"
+													 Watermark="Необходимая предоплата"
+													 Grid.Row="1"
+													 Margin="0 15 5 0"/>
+											<ComboBox Classes="custom"
+													  Classes.vertical_stretch="{Binding !OrderSource.IsPaymentPartial, RelativeSource={RelativeSource TemplatedParent}}"
+													  IsVisible="{Binding OrderSource.IsPaymentRequired, RelativeSource={RelativeSource TemplatedParent}}"
+													  Grid.Column="1"
+													  Grid.RowSpan="2"
+													  Margin="0 5 0 0"
+													  VerticalAlignment="Stretch"/>
+										</Grid>
+									</StackPanel>
 								</Label>
 							</ItemsControl>
 
-							<Grid Grid.Row="1"
-								  Height="400">
+							<Grid Height="400">
 								<Label Classes="card tag"
 								   Tag="3. Выбор клиента"
 								   Background="White"
@@ -62,8 +88,130 @@
 									<crus:CRUSVendorControl DataContext="{TemplateBinding ControlInjection, Mode=OneWayToSource}"/>
 								</Label>
 							</Grid>
-							
-							
+
+							<Grid>
+								<Grid ColumnDefinitions="3*, 250">
+									<Label Classes="card tag"
+										   Tag="4. Позиции на закупку"
+										   Background="White"
+										   Margin="5"
+										   Height="400"
+										   IsVisible="True">
+										<StackPanel Background="White"
+													DataContext="{Binding VM.Source, RelativeSource={RelativeSource TemplatedParent}}">
+											<Grid ColumnDefinitions="*, 90, 90, 90, 120, 120, 120, auto, 5"
+												  Background="White"
+												  Margin="0 35 0 0">
+												<TextBox Classes="custom header "
+														 Text="{Binding NewOrderWarehouseSupplyInput.WarehouseItem.InnerName}"
+														 Watermark="Наименование"
+														 Margin="5"
+														 Grid.Column="0"/>
+												<ComboBox Classes="custom header"
+														  Margin="0 5 5 5"
+														  Height="44"
+														  Grid.Column="1"/>
+												<TextBox Classes="custom header "
+														 Text="{Binding NewOrderWarehouseSupplyInput.OrderCount}"
+														 Watermark="Кол-во"
+														 Margin="0 5 5 5"
+														 Grid.Column="2"/>
+												<ComboBox Classes="custom header"
+														  Margin="0 5 5 5"
+														  Height="44"
+														  Grid.Column="3"/>
+												<TextBox Classes="custom header "
+														 Text="{Binding NewOrderWarehouseSupplyInput.UnitToBYNConversion}"
+														 Watermark="Курс BYN"
+														 Margin="0 5 5 5"
+														 Grid.Column="4"/>
+												<TextBox Classes="custom header "
+														 Text="{Binding NewOrderWarehouseSupplyInput.PriceForSingleItemInput}"
+														 Watermark="Цена/ед."
+														 Margin="0 5 5 5"
+														 Grid.Column="5"/>
+												<TextBox Classes="custom header "
+														 Text="{Binding NewOrderWarehouseSupplyInput.PriceTotal}"
+														 Watermark="Цена/итого"
+														 Margin="0 5 5 5"
+														 Grid.Column="6"
+														 IsReadOnly="True"/>
+												<Button Classes="custom iconed orange plus rounded"
+														Grid.Column="7"
+														Height="44"
+														Width="{Binding $self.Bounds.Height}"
+														CornerRadius="5"
+														Margin="0 5 5 5"
+														Command="{Binding VM.AddNewOrderItem, RelativeSource={RelativeSource TemplatedParent}}"/>
+											</Grid>
+
+											<TextBlock Text="Список"
+													   FontSize="16"
+													   HorizontalAlignment="Center"
+													   Margin="10 5"/>
+											<Border BorderThickness="0 0 0 1"
+													BorderBrush="{DynamicResource Primary_DarkBlue}"/>
+
+											<ItemsControl ItemsSource="{Binding VM.Source.OrderWarehouseSupplies, RelativeSource={RelativeSource TemplatedParent}}"
+														  Padding="0 10 0 0">
+												<ItemsControl.ItemTemplate>
+													<DataTemplate>
+														<Grid ColumnDefinitions="auto, *, 90, 90, 90, 120, 120, 120, auto, 5"
+															  Background="White">
+															<TextBlock Text="{Binding Id, StringFormat='{}{0}.'}"
+																	   VerticalAlignment="Center"
+																	   FontSize="16"
+																	   Margin="5 0"/>
+															<TextBox Classes="custom header "
+																	 Text="{Binding WarehouseItem.InnerName}"
+																	 Watermark="Наименование"
+																	 Margin="5"
+																	 Grid.Column="1"/>
+															<ComboBox Classes="custom header"
+																	  Margin="0 5 5 5"
+																	  Height="44"
+																	  Grid.Column="2"/>
+															<TextBox Classes="custom header "
+																	 Text="{Binding OrderCount}"
+																	 Watermark="Кол-во"
+																	 Margin="0 5 5 5"
+																	 Grid.Column="3"/>
+															<ComboBox Classes="custom header"
+																	  Margin="0 5 5 5"
+																	  Height="44"
+																	  Grid.Column="4"/>
+															<TextBox Classes="custom header "
+																	 Text="{Binding UnitToBYNConversion}"
+																	 Watermark="Курс BYN"
+																	 Margin="0 5 5 5"
+																	 Grid.Column="5"/>
+															<TextBox Classes="custom header "
+																	 Text="{Binding PriceForSingleItemInput}"
+																	 Watermark="Цена/ед."
+																	 Margin="0 5 5 5"
+																	 Grid.Column="6"/>
+															<TextBox Classes="custom header "
+																	 Text="{Binding PriceTotal}"
+																	 Watermark="Цена/итого"
+																	 Margin="0 5 5 5"
+																	 Grid.Column="7"
+																	 IsReadOnly="True"/>
+															<Button Classes="custom iconed pink rounded sys close"
+																	Grid.Column="8"
+																	Height="44"
+																	Width="{Binding $self.Bounds.Height}"
+																	CornerRadius="5"
+																	Margin="0 5 5 5"
+																	Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNewOrderItem}"
+																	CommandParameter="{Binding}"/>
+														</Grid>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</StackPanel>
+									</Label>
+								</Grid>
+							</Grid>
 						</StackPanel>
 					</ScrollViewer>
 				</Grid>
@@ -81,5 +229,11 @@
 							 ClipToBounds="False"/>
 			</ItemsPanelTemplate>
 		</Setter>
+	</Style>
+
+	<Style Selector="controls|OrderEditorControl ComboBox.custom.vertical_stretch">
+		<Setter Property="Height" Value="44"/>
+		<Setter Property="Margin" Value="0 5 0 -44"/>
+		<Setter Property="VerticalAlignment" Value="Top"/>
 	</Style>
 </Styles>

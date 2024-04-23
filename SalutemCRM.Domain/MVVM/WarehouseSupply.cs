@@ -17,4 +17,19 @@ public partial class WarehouseSupply
 
     [NotMapped]
     public double InStockPriceTotalBYN { get => OrderPriceSingleBYN * InStockCount; }
+
+    [NotMapped]
+    private double _priceForSingleItemInput = 0.0;
+    [NotMapped]
+    public double PriceForSingleItemInput
+    {
+        get => _priceForSingleItemInput;
+        set
+        {
+            _priceForSingleItemInput = value;
+            PriceTotal = value * OrderCount;
+            OnPropertyChanged(nameof(PriceTotal));
+            OnPropertyChanged(nameof(PriceForSingleItemInput));
+        }
+    }
 }

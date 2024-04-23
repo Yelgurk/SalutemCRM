@@ -31,21 +31,21 @@ public partial class WarehouseSupply : ClonableObservableObject<WarehouseSupply>
 
     [NotMapped]
     [ObservableProperty]
-    private string _vendorCode = null!;
+    private string? _vendorCode;
 
     [NotMapped]
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(OrderPriceTotalBYN))]
     [NotifyPropertyChangedFor(nameof(OrderPriceSingleBYN))]
     [NotifyPropertyChangedFor(nameof(InStockPriceTotalBYN))]
-    private string _currency = null!;
+    private string _currency = "BYN";
 
     [NotMapped]
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(OrderPriceTotalBYN))]
     [NotifyPropertyChangedFor(nameof(OrderPriceSingleBYN))]
     [NotifyPropertyChangedFor(nameof(InStockPriceTotalBYN))]
-    private double _unitToBYNConversion;
+    private double _unitToBYNConversion = 1.0;
 
     [NotMapped]
     [ObservableProperty]

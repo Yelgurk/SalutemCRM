@@ -37,6 +37,8 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsPaymentRequired))]
+    [NotifyPropertyChangedFor(nameof(IsPaymentPartial))]
     private Payment_Status _paymentAgreement;
 
     [NotMapped]

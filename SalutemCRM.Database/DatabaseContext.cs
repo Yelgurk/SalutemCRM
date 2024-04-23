@@ -532,8 +532,12 @@ public partial class DatabaseContext : DbContext
             .Property(ws => ws.VendorCode)
             .HasMaxLength(200);
         builder
+            .Property(ws => ws.UnitToBYNConversion)
+            .HasDefaultValue(1.0);
+        builder
             .Property(ws => ws.Currency)
-            .HasMaxLength(200);
+            .HasMaxLength(200)
+            .HasDefaultValue("BYN");
         builder
             .Property(ws => ws.RecordDT)
             .HasColumnType("datetime2");
