@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +71,13 @@ public class TCPServerService
 
                 ActiveConnections.Add((
                     _socketAwaiter,
-                    new Thread(new ThreadStart(() => new ClientThread(_socketAwaiter))).Do(x => x.Start())
+                    new Thread(new ThreadStart(() => new ClientThread(
+                        _socketAwaiter,
+                        x => {
+                            LogService.Push = $"{DT} disconnect [# {ActiveConnections.Count - 1}] - {x.RemoteEndPoint?.ToString()}";
+                            ActiveConnections.Remove(ActiveConnections.Single(f => f.Item1 == x));
+                        }
+                        ))).Do(x => x.Start())
                 ));
             }
         });
@@ -79,26 +86,56 @@ public class TCPServerService
 
 public class ClientThread
 {
+    private bool _isRunning = true;
     private Socket ClientConnection;
+    private Action<Socket>? WhenConnectionError;
+    private byte[] message = Array.Empty<byte>();
+    private int message_size = 0;
 
-    public ClientThread(Socket ClientConnection)
+    public ClientThread(Socket ClientConnection, Action<Socket>? WhenConnectionError)
     {
         this.ClientConnection = ClientConnection;
-        this.SocketListener();
+        this.WhenConnectionError = WhenConnectionError;
+        _ = this.SocketListener();
     }
 
-    public void SocketListener()
+    private bool CloseConnection()
     {
-        while (true)
+        this.WhenConnectionError?.Invoke(ClientConnection);
+        return _isRunning = false;
+    }
+
+    public async Task<bool> SocketListener()
+    {
+        return  await Task.Run(() =>
         {
-            byte[] message = new byte[1024];
-            int size = ClientConnection.Receive(message);
+            while (_isRunning)
+            {
+                try
+                {
+                    message = new byte[1024];
+                    message_size = ClientConnection.Receive(message);
+                }
+                catch { return CloseConnection(); }
 
-            Dispatcher.UIThread.Invoke(() => {
-                LogService.Push = $"{TCPServerService.DT} receive message from {ClientConnection.RemoteEndPoint?.ToString()}";
-            });
+                string temp = Encoding.ASCII.GetString(message, 0, message_size);
 
-            ClientConnection.Send(message, 0, size, SocketFlags.None);
-        }
+                if (temp == "<CLOSE>")
+                    return CloseConnection();
+
+                if (message_size > 0)
+                {
+                    Dispatcher.UIThread.Invoke(() => {
+                        LogService.Push = $"{TCPServerService.DT} receive message from {ClientConnection.RemoteEndPoint?.ToString()}: \"{temp}\" [{temp.Length}]";
+                    });
+
+                    temp = $"[SERVER:OK] - {temp}";
+                }
+
+                ClientConnection.Send(Encoding.ASCII.GetBytes(temp), 0, temp.Length, SocketFlags.None);
+            }
+
+            return false;
+        });
     }
 }

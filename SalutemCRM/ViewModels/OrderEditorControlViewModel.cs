@@ -1,10 +1,12 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
+using SalutemCRM.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -66,6 +68,8 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
         );
 
         AddNewOrderItem = ReactiveCommand.Create(() => {
+            App.Host!.Services.GetService<TCPClientService>()!.Send(Source.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName);
+
             Source.OrderWarehouseSupplies.Add(Source.NewOrderWarehouseSupplyInput);
             Source.NewOrderWarehouseSupplyInput
                 .DoInst(x => Source.NewOrderWarehouseSupplyInput = new() {

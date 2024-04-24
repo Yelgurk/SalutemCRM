@@ -34,7 +34,8 @@ public partial class App : Application
             })
             .Build();
 
-        Host!.Services.GetService<TCPClientService>();
+        if (!Design.IsDesignMode)
+            Host!.Services.GetService<TCPClientService>();
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -49,6 +50,9 @@ public partial class App : Application
                 Host!
                 .Services
                 .GetRequiredService<MainWindow>();
+
+            desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.Send("<CLOSE>");
+            desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.CloseConnection();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {

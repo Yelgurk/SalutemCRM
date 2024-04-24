@@ -22,9 +22,6 @@ public class TCPClientService
     private Socket _clientConnection;
     private IPEndPoint _clientEndPoint;
 
-    //public ObservableCollection<(Socket, Thread)> ActiveConnections { get; } = new();
-    //private Socket? _socketAwaiter = default(Socket);
-
     public TCPClientService()
     {
         this.ParseJSONConfig();
@@ -45,5 +42,16 @@ public class TCPClientService
         _ipAddress = $"{config.GetSection("TCPConnectionStrings")["ServerIP"]}";
     }
 
-    public void Send(byte[] message) => _clientConnection.Send(message);
+    public void Send(string message) => this.Send(Encoding.ASCII.GetBytes(message));
+
+    public void Send(byte[] message)
+    {
+        _clientConnection.Send(message, 0, message.Length, SocketFlags.None);
+
+        byte[] serverResponse = new byte[1024];
+        int size = _clientConnection.Receive(serverResponse);
+        Debug.WriteLine(Encoding.ASCII.GetString(serverResponse, 0, size));
+    }
+
+    public void CloseConnection() => _clientConnection.Close();
 }
