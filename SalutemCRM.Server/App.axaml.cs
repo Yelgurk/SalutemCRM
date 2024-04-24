@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
@@ -23,11 +24,12 @@ public partial class App : Application
             .ConfigureServices(services => {
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<FilesUploadingService>();
-                services.AddSingleton<TCPConnectionService>();
+                services.AddSingleton<TCPServerService>();
             })
             .Build();
 
-        Host!.Services.GetService<TCPConnectionService>()!.StartAsServer();
+        if (!Design.IsDesignMode)
+            Host!.Services.GetService<TCPServerService>();
     }
 
     public override void OnFrameworkInitializationCompleted()

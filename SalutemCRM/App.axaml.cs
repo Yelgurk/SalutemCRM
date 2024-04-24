@@ -30,11 +30,11 @@ public partial class App : Application
                 services.AddSingleton<QRCodeGeneratorService>();
                 services.AddSingleton<QRCodeBleScanService>();
                 services.AddSingleton<FilesUploadingService>();
-                services.AddSingleton<TCPConnectionService>();
+                services.AddSingleton<TCPClientService>();
             })
             .Build();
 
-        Host!.Services.GetService<TCPConnectionService>()!.StartAsClient();
+        Host!.Services.GetService<TCPClientService>();
     }
 
     public override void OnFrameworkInitializationCompleted()

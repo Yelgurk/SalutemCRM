@@ -4,9 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:SalutemCRM.Server.Views"
+		xmlns:service="using:SalutemCRM.Server.Services"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SalutemCRM.Server.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM.Server">
-        <views:MainView />
+	<ItemsControl ItemsSource="{x:Static service:LogService.Logger}"
+				  HorizontalAlignment="Stretch"
+				  VerticalAlignment="Stretch"
+				  Margin="5 5 5 0">
+		<ItemsControl.ItemTemplate>
+			<DataTemplate>
+				<Grid ColumnDefinitions="auto, *" Classes="logger">
+					<TextBlock TextWrapping="Wrap"
+							   Text="{Binding, StringFormat='{}{0}.'}"/>
+				</Grid>
+			</DataTemplate>
+		</ItemsControl.ItemTemplate>
+	</ItemsControl>
+
+	<Window.Styles>
+		<Style Selector="ContentPresenter:nth-child(2n+1) Grid.logger">
+			<Setter Property="Background" Value="WhiteSmoke"/>
+		</Style>
+	</Window.Styles>
 </Window>
