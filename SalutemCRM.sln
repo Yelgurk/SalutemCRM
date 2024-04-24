@@ -12,9 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalutemCRM.Domain", "SalutemCRM.Domain\SalutemCRM.Domain.csproj", "{FE1A45D7-5D8B-4112-A636-A83A2039B785}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.Domain", "SalutemCRM.Domain\SalutemCRM.Domain.csproj", "{FE1A45D7-5D8B-4112-A636-A83A2039B785}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalutemCRM.Database", "SalutemCRM.Database\SalutemCRM.Database.csproj", "{6BB78DE5-0289-4D34-94A7-A9E3E46801F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.Database", "SalutemCRM.Database\SalutemCRM.Database.csproj", "{6BB78DE5-0289-4D34-94A7-A9E3E46801F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.Server", "SalutemCRM.Server\SalutemCRM.Server.csproj", "{E19A3C48-9C01-41B4-8083-093F827CD5B9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.Server.Desktop", "SalutemCRM.Server.Desktop\SalutemCRM.Server.Desktop.csproj", "{2A2EB697-94F1-4B31-BBD0-049F789CA96B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +42,14 @@ Global
 		{6BB78DE5-0289-4D34-94A7-A9E3E46801F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BB78DE5-0289-4D34-94A7-A9E3E46801F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BB78DE5-0289-4D34-94A7-A9E3E46801F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E19A3C48-9C01-41B4-8083-093F827CD5B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E19A3C48-9C01-41B4-8083-093F827CD5B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E19A3C48-9C01-41B4-8083-093F827CD5B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E19A3C48-9C01-41B4-8083-093F827CD5B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A2EB697-94F1-4B31-BBD0-049F789CA96B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A2EB697-94F1-4B31-BBD0-049F789CA96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A2EB697-94F1-4B31-BBD0-049F789CA96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A2EB697-94F1-4B31-BBD0-049F789CA96B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

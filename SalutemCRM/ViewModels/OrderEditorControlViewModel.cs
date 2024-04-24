@@ -25,6 +25,12 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
     [ObservableProperty]
     private ObservableCollection<WarehouseSupply> _orderWarehouseSupplies = new();
 
+    [ObservableProperty]
+    private ObservableCollection<string> _mesurementUnits = new();
+
+    [ObservableProperty]
+    private ObservableCollection<string> _currencyUnits = new();
+
     partial void OnNewOrderWarehouseSupplyInputChanged(WarehouseSupply value) => value.WarehouseItem = new();
 
     public void CollectionReIndex() => 0.Do(x => OrderWarehouseSupplies.DoForEach(y => y.Id = ++x));
@@ -40,20 +46,33 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
 
     public OrderEditorControlViewModel() : base(new() { PagesCount = 1 })
     {
+        if (!Design.IsDesignMode)
+            using (DatabaseContext db = new(DatabaseContext.ConnectionInit())) db
+                .DoInst(x => Source.MesurementUnits = new(db.MesurementUnits.Select(y => y.Name)))
+                .DoInst(x => Source.CurrencyUnits = new(db.CurrencyUnits.Select(y => y.Name)));
+
         IfNewItemFilled = this.WhenAnyValue(
             x => x.Source!.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName,
+            x => x.Source!.NewOrderWarehouseSupplyInput.Currency,
             x => x.Source!.NewOrderWarehouseSupplyInput.OrderCount,
             x => x.Source!.NewOrderWarehouseSupplyInput.OrderPriceSingleBYN,
-            (name, count, price) =>
+            (name, curr_u, count, price) =>
                 !string.IsNullOrWhiteSpace(name) &&
+                !string.IsNullOrWhiteSpace(curr_u) &&
                 name.Length > 0 &&
+                curr_u.Length > 0 &&
                 count > 0.0 &&
                 price > 0.0
         );
 
         AddNewOrderItem = ReactiveCommand.Create(() => {
             Source.OrderWarehouseSupplies.Add(Source.NewOrderWarehouseSupplyInput);
-            Source.NewOrderWarehouseSupplyInput = new() { WarehouseItem = new() };
+            Source.NewOrderWarehouseSupplyInput
+                .DoInst(x => Source.NewOrderWarehouseSupplyInput = new() {
+                    WarehouseItem = new(),
+                    Currency = x.Currency,
+                    UnitToBYNConversion = x.UnitToBYNConversion
+                });
             Source.CollectionReIndex();
         }, IfNewItemFilled);
 

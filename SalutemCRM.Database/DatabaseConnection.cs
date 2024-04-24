@@ -24,11 +24,12 @@ public partial class DatabaseContext
         builder.AddJsonFile("appsettings.json");
 
         var config = builder.Build();
+
         var connectionString = ""
-            + $"Server={config.GetConnectionString("Server")};"
-            + $"Initial Catalog={config.GetConnectionString("Catalog")};"
-            + $"User Id={config.GetConnectionString("User")};"
-            + $"Password={config.GetConnectionString("Password")};"
+            + $"Server={config.GetSection("DataBaseConnectionStrings")["Server"]};"
+            + $"Initial Catalog={config.GetSection("DataBaseConnectionStrings")["Catalog"]};"
+            + $"User Id={config.GetSection("DataBaseConnectionStrings")["User"]};"
+            + $"Password={config.GetSection("DataBaseConnectionStrings")["Password"]};"
             + $"TrustServerCertificate=true";
 
         return options = optionsBuilder.UseSqlServer(connectionString).Options;

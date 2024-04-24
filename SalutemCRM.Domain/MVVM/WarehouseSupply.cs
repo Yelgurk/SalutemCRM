@@ -32,4 +32,6 @@ public partial class WarehouseSupply
             OnPropertyChanged(nameof(PriceForSingleItemInput));
         }
     }
+
+    partial void OnOrderCountChanged(double value) => PriceTotal = PriceForSingleItemInput * value;
 }

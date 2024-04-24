@@ -30,7 +30,7 @@ public partial class WarehouseItem : ClonableObservableObject<WarehouseItem>
 
     [NotMapped]
     [ObservableProperty]
-    private string _mesurementUnit = null!;
+    private string _mesurementUnit = "";
 
     [NotMapped]
     [ObservableProperty]
