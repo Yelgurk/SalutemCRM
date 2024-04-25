@@ -8,11 +8,19 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Server.Services;
 
+public class LogRecord
+{
+    public string Id { get; set; }
+    public string Date { get; set; }
+    public string Time { get; set; }
+    public string Message { get; set; }
+}
+
 public static class LogService 
 {
-    public static ObservableCollection<string> Logger { get; } = new();
+    public static ObservableCollection<LogRecord> Logger { get; } = new();
 
-    public static string Push { set => Logger.Add($"{Logger.Count + 1}. {value}"); }
+    public static void Push(LogRecord record) => Logger.Add(record.DoInst(x => x.Id = $"{Logger.Count + 1}"));
 
     public static void Clear() => Logger.Clear();
 }
