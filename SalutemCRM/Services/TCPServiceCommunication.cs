@@ -13,17 +13,22 @@ public enum TCPFlags : ushort {
     NONE = 11927,
     AWAIT,
     OK,
-    RESPONSE,
-    ERROR_NOT_TYPE,
-    ERROR_INVALID_SIZE
+    ERROR
 };
 
 public enum TCPMessage : ushort {
     NONE = 21927,
     APP_CLOSE,
+    END_TRANSMITTION,
     STRING,
     JSON_MATERIAL_FLOW
 };
+
+public class TCPResult
+{
+    public TCPMessage type { get; set; } = TCPMessage.NONE;
+    public byte[] message { get; set; } = new byte[0];
+}
 
 public class TCPServiceCommunication
 {
@@ -47,121 +52,123 @@ public class TCPServiceCommunication
     protected int SendFlag<T>(T _flag) => _socket?.Send(FlagToBytes(_flag), 0, 2, SocketFlags.None) ?? 0;
 
 
-    protected void SendMessageType(TCPMessage _messageType)
+    protected bool SendMessageType(TCPMessage _messageType)
     {
-        do
+        SendFlag(_messageType);
+        _socket?.Receive(flag_buf);
+
+        return BytesToFlag<TCPFlags>(flag_buf) == TCPFlags.OK;
+    }
+
+    protected bool SendSizeInfo(byte[] message)
+    {
+        _socket?.Send(BitConverter.GetBytes(message.Length), 0, BitConverter.GetBytes(message.Length).Length, SocketFlags.None);
+        _socket?.Receive(flag_buf);
+
+        return BytesToFlag<TCPFlags>(flag_buf) == TCPFlags.OK;
+    }
+
+    protected bool SendMessage(byte[] message)
+    {
+        _socket?.Send(message, 0, message.Length, SocketFlags.None);
+        _socket?.Receive(flag_buf);
+
+        return BytesToFlag<TCPFlags>(flag_buf) == TCPFlags.OK;
+    }
+
+    protected bool ReceiveMessageType()
+    {
+        type_await = TCPMessage.NONE;
+
+        _socket?.Receive(type_buf);
+
+        if (Enum.IsDefined(typeof(TCPMessage), BytesToFlag<TCPMessage>(type_buf)))
+            SendFlag(flag_listener = TCPFlags.OK);
+        else
+            SendFlag(flag_listener = TCPFlags.ERROR);
+
+        type_await = BytesToFlag<TCPMessage>(type_buf);
+
+        return flag_listener == TCPFlags.OK;
+    }
+
+    protected bool ReceiveSizeInfo()
+    {
+        if ((received_size = _socket?.Receive(message_buf = new byte[message_size = 4]) ?? 0) != 4)
+            SendFlag(TCPFlags.ERROR);
+        else
         {
-            flag_listener = TCPFlags.AWAIT;
-
-            SendFlag(_messageType);
-            _socket?.Receive(flag_buf);
+            message_size = BitConverter.ToInt32(message_buf, 0);
+            SendFlag(TCPFlags.OK);
         }
-        while ((flag_listener = BytesToFlag<TCPFlags>(flag_buf)) != TCPFlags.OK);
+
+        return received_size == 4;
     }
 
-    protected void SendSizeInfo(byte[] message)
+    protected bool ReceiveMessage()
     {
-        do
+        if ((received_size = _socket?.Receive(message_buf = new byte[message_size]) ?? 0) != message_size)
+            SendFlag(TCPFlags.ERROR);
+        else
+            SendFlag(TCPFlags.OK);
+
+        return received_size == message_size;
+    }
+
+    private bool Send(byte[] message, TCPMessage type)
+    {
+        if (!SendMessageType(type))
+            return true;
+
+        if (!SendSizeInfo(message))
+            return true;
+
+        if (!SendMessage(message))
+            return true;
+
+        return false;
+    }
+
+    private bool Receive()
+    {
+        if (!ReceiveMessageType())
+            return true;
+        else
+        if (type_await == TCPMessage.END_TRANSMITTION)
+            return false;
+
+        if (!ReceiveSizeInfo())
+            return true;
+
+        if (!ReceiveMessage())
+            return true;
+
+        return false;
+    }
+
+    public async Task<TCPResult?> SendAsync(string message) => await this.SendAsync(Encoding.UTF8.GetBytes(message), TCPMessage.STRING);
+
+    public async Task<TCPResult?> SendAsync(byte[] message, TCPMessage type)
+    {
+        bool transmitting = true;
+
+        while (transmitting)
+            transmitting = await Task.Run(() => Send(message, type));
+
+        return await ReceiveAsync();
+    }
+
+    public async Task<TCPResult?> ReceiveAsync()
+    {
+        bool transmitting = true;
+
+        while (transmitting)
+            transmitting = await Task.Run(Receive);
+
+        return type_await switch
         {
-            flag_listener = TCPFlags.AWAIT;
-
-            _socket?.Send(BitConverter.GetBytes(message.Length), 0, BitConverter.GetBytes(message.Length).Length, SocketFlags.None);
-            _socket?.Receive(flag_buf);
-        }
-        while ((flag_listener = BytesToFlag<TCPFlags>(flag_buf)) != TCPFlags.OK);
-    }
-
-    protected TCPFlags SendMessage(byte[] message)
-    {
-        do
-        {
-            flag_listener = TCPFlags.AWAIT;
-
-            _socket?.Send(message, 0, message.Length, SocketFlags.None);
-            _socket?.Receive(flag_buf);
-
-            flag_listener = BytesToFlag<TCPFlags>(flag_buf);
-        }
-        while (!(flag_listener == TCPFlags.OK || flag_listener == TCPFlags.RESPONSE));
-
-        return flag_listener;
-    }
-
-    protected TCPMessage ReceiveMessageType()
-    {
-        do
-        {
-            flag_listener = TCPFlags.AWAIT;
-
-            _socket?.Receive(type_buf);
-
-            if (Enum.IsDefined(typeof(TCPMessage), BytesToFlag<TCPMessage>(type_buf)))
-                SendFlag(flag_listener = TCPFlags.OK);
-            else
-                SendFlag(flag_listener = TCPFlags.ERROR_NOT_TYPE);
-        }
-        while (flag_listener != TCPFlags.OK);
-
-        return BytesToFlag<TCPMessage>(type_buf);
-    }
-
-    protected void ReceiveSizeInfo()
-    {
-        received_size = 0;
-        do
-        {
-            received_size = _socket?.Receive(message_buf = new byte[message_size = 4]) ?? 0;
-
-            if (received_size != 4)
-                SendFlag(TCPFlags.ERROR_INVALID_SIZE);
-            else
-            {
-                message_size = BitConverter.ToInt32(message_buf, 0);
-                SendFlag(TCPFlags.OK);
-            }
-        }
-        while (received_size != 4);
-    }
-
-    protected byte[] ReceiveMessage(bool _willBeResponsed = false)
-    {
-        received_size = 0;
-
-        do
-        {
-            received_size = _socket?.Receive(message_buf = new byte[message_size]) ?? 0;
-
-            if (received_size != message_size)
-                SendFlag(TCPFlags.ERROR_INVALID_SIZE);
-            else _ = _willBeResponsed switch
-            {
-                true => SendFlag(TCPFlags.RESPONSE),
-                _ => SendFlag(TCPFlags.OK)
-            };
-        }
-        while (received_size != message_size);
-
-        return message_buf;
-    }
-
-    public void Send(string message) => this.Send(Encoding.UTF8.GetBytes(message), TCPMessage.STRING);
-
-    public void Send(byte[] message, TCPMessage type)
-    {
-        SendMessageType(type);
-        SendSizeInfo(message);
-
-        if (SendMessage(message) == TCPFlags.RESPONSE)
-            Receive();
-    }
-
-    public string ReceiveString() => Receive().Do(x => x.type == TCPMessage.STRING ? Encoding.UTF8.GetString(x.message) : "[ERROR | SERVER SEND OBJECT, NOT STRING]");
-
-    public (TCPMessage type, byte[] message) Receive()
-    {
-        type_await = ReceiveMessageType();
-        ReceiveSizeInfo();
-
-        return (type_await, ReceiveMessage());
+            TCPMessage.END_TRANSMITTION => null,
+            _ => new TCPResult() { type = type_await, message = message_buf }
+        };
     }
 }

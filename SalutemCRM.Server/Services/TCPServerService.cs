@@ -124,24 +124,22 @@ public class ClientThread : TCPServiceCommunication
 
     public async Task<bool> SocketListener()
     {
-        return  await Task.Run(() =>
+        return  await Task.Run(async () =>
         {
             while (_isRunning)
             {
-                try { MessageType = ReceiveMessageType(); }
+                TCPResult? Message;
+
+                try { Message = await ReceiveAsync(); }
                 catch { return CloseConnection(); }
 
-                try { ReceiveSizeInfo(); }
-                catch { return CloseConnection(); }
+                SendFlag(TCPMessage.END_TRANSMITTION);
 
-                try { message_buf = ReceiveMessage(); }
-                catch { return CloseConnection(); }
-
-                _ = MessageType switch
+                _ = Message?.type switch
                 {
-                    TCPMessage.STRING => true.Do(x => Logging(Encoding.UTF8.GetString(message_buf))),
+                    TCPMessage.STRING => true.Do(x => Logging(Encoding.UTF8.GetString(Message.message))),
                     TCPMessage.APP_CLOSE => CloseConnection(),
-                    _ => false.Do(x => Logging("[OBJECT RECEIVED]"))
+                    _ => false.Do(x => Logging("[NULL]"))
                 };
             }
 

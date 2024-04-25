@@ -14,7 +14,7 @@
 		<ItemsControl ItemsSource="{x:Static service:LogService.Logger}">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<Grid ColumnDefinitions="20, 110, 110, *" Classes="logger">
+					<Grid ColumnDefinitions="40, 110, 110, *" Classes="logger">
 						<TextBlock Text="{Binding Id, StringFormat='{}{0}.'}"
 								   Grid.Column="0"/>
 						<TextBlock Text="{Binding Date}"
