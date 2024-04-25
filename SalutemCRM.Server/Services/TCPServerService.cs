@@ -126,40 +126,23 @@ public class ClientThread : TCPServiceCommunication
                 try { CurrentFlag = ReceiveFlag(TCPFlags.SIZE); }
                 catch { return CloseConnection(); }
 
-                Logging($"[FLAG] {Encoding.UTF8.GetString(message_buf)}");
-
-                try { ReceiveSizeInfo(); }
-                catch { return CloseConnection(); }
-
-                Logging($"[SIZE] {Encoding.UTF8.GetString(message_buf)}");
-
-                try { message_buf = ReceiveMessage(); }
-                catch { return CloseConnection(); }
-
-                Logging($"[MESS] {Encoding.UTF8.GetString(message_buf)}");
-
-                /*
-                switch (CurrentFlag)
+                _ = CurrentFlag switch
                 {
-                    case TCPFlags.SIZE:
-                        {
-                            try { ReceiveSizeInfo(); }
-                            catch { return CloseConnection(); }
+                    TCPFlags.SIZE => ((Func<bool>)(() => {
+                        try { ReceiveSizeInfo(); }
+                        catch { return CloseConnection(); }
 
-                            Logging(Encoding.UTF8.GetString(message_buf));
+                        try { message_buf = ReceiveMessage(); }
+                        catch { return CloseConnection(); }
 
-                            try { message_buf = ReceiveMessage(); }
-                            catch { return CloseConnection(); }
+                        Logging(Encoding.UTF8.GetString(message_buf));
 
-                            Logging(Encoding.UTF8.GetString(message_buf));
-                        }; break;
+                        return true;
+                    })).Invoke(),
 
-                    case TCPFlags.APP_CLOSE:
-                        return CloseConnection();
-
-                    default: { }; break;
-                }
-                */
+                    TCPFlags.APP_CLOSE => CloseConnection(),
+                    _ => true
+                };
             }
 
             return false;
