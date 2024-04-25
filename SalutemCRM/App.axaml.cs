@@ -51,7 +51,7 @@ public partial class App : Application
                 .Services
                 .GetRequiredService<MainWindow>();
 
-            desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.Send("<CLOSE>");
+            desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.NotifyClosed();
             desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.CloseConnection();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)

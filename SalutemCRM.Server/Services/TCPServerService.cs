@@ -84,18 +84,20 @@ public class TCPServerService
     }
 }
 
-public class ClientThread
+public class ClientThread : TCPServiceCommunication
 {
-    private bool _isRunning = true;
-    private Socket ClientConnection;
     private Action<Socket>? WhenConnectionError;
-    private byte[] message = Array.Empty<byte>();
-    private int message_size = 0;
+    private TCPFlags CurrentFlag = TCPFlags.NONE;
+    private Socket ClientConnection;
+    private bool _isRunning = true;
+    private byte[] message_buf = new byte[0];
 
     public ClientThread(Socket ClientConnection, Action<Socket>? WhenConnectionError)
     {
         this.ClientConnection = ClientConnection;
         this.WhenConnectionError = WhenConnectionError;
+
+        base.SetSocket(this.ClientConnection);
         _ = this.SocketListener();
     }
 
@@ -105,34 +107,59 @@ public class ClientThread
         return _isRunning = false;
     }
 
+    private void Logging(string message)
+    {
+        if (message.Length > 0)
+        {
+            Dispatcher.UIThread.Invoke(() => {
+                LogService.Push = $"{TCPServerService.DT} receive message from {ClientConnection.RemoteEndPoint?.ToString()}: \"{message}\" [{message.Length}]";
+            });
+        }
+    }
+
     public async Task<bool> SocketListener()
     {
         return  await Task.Run(() =>
         {
             while (_isRunning)
             {
-                try
-                {
-                    message = new byte[1024];
-                    message_size = ClientConnection.Receive(message);
-                }
+                try { CurrentFlag = ReceiveFlag(TCPFlags.SIZE); }
                 catch { return CloseConnection(); }
 
-                string temp = Encoding.ASCII.GetString(message, 0, message_size);
+                Logging($"[FLAG] {Encoding.UTF8.GetString(message_buf)}");
 
-                if (temp == "<CLOSE>")
-                    return CloseConnection();
+                try { ReceiveSizeInfo(); }
+                catch { return CloseConnection(); }
 
-                if (message_size > 0)
+                Logging($"[SIZE] {Encoding.UTF8.GetString(message_buf)}");
+
+                try { message_buf = ReceiveMessage(); }
+                catch { return CloseConnection(); }
+
+                Logging($"[MESS] {Encoding.UTF8.GetString(message_buf)}");
+
+                /*
+                switch (CurrentFlag)
                 {
-                    Dispatcher.UIThread.Invoke(() => {
-                        LogService.Push = $"{TCPServerService.DT} receive message from {ClientConnection.RemoteEndPoint?.ToString()}: \"{temp}\" [{temp.Length}]";
-                    });
+                    case TCPFlags.SIZE:
+                        {
+                            try { ReceiveSizeInfo(); }
+                            catch { return CloseConnection(); }
 
-                    temp = $"[SERVER:OK] - {temp}";
+                            Logging(Encoding.UTF8.GetString(message_buf));
+
+                            try { message_buf = ReceiveMessage(); }
+                            catch { return CloseConnection(); }
+
+                            Logging(Encoding.UTF8.GetString(message_buf));
+                        }; break;
+
+                    case TCPFlags.APP_CLOSE:
+                        return CloseConnection();
+
+                    default: { }; break;
                 }
-
-                ClientConnection.Send(Encoding.ASCII.GetBytes(temp), 0, temp.Length, SocketFlags.None);
+                */
             }
 
             return false;
