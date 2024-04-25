@@ -18,10 +18,20 @@ public enum TCPFlags : ushort {
 
 public enum TCPMessage : ushort {
     NONE = 21927,
+    STRING,
+    JSON_MATERIAL,
     APP_CLOSE,
     END_TRANSMITTION,
-    STRING,
-    JSON_MATERIAL_FLOW
+    SEND_BEGIN,
+    SEND_TYPE,
+    SEND_SIZE,
+    SEND_MESSAGE,
+    SEND_END,
+    GET_BEGIN,
+    GET_TYPE,
+    GET_SIZE,
+    GET_MESSAGE,
+    GET_END
 };
 
 public class TCPResult
@@ -46,8 +56,8 @@ public class TCPServiceCommunication
 
     private int received_size = 0;
 
-
-    private T BytesToFlag<T>(byte[] arr) => ((ushort)((arr[1] << 8) | arr[0])).EnumCast<T>()!;
+    private ushort BytesToUShort(byte[] arr) => (ushort)((arr[1] << 8) | arr[0]);
+    private T BytesToFlag<T>(byte[] arr) => BytesToUShort(arr).EnumCast<T>()!;
     private byte[] FlagToBytes<T>(T _flag) => BitConverter.GetBytes((ushort)(object)_flag!);
     protected int SendFlag<T>(T _flag) => _socket?.Send(FlagToBytes(_flag), 0, 2, SocketFlags.None) ?? 0;
 
@@ -82,7 +92,7 @@ public class TCPServiceCommunication
 
         _socket?.Receive(type_buf);
 
-        if (Enum.IsDefined(typeof(TCPMessage), BytesToFlag<TCPMessage>(type_buf)))
+        if (Enum.IsDefined(typeof(TCPMessage), BytesToUShort(type_buf)))
             SendFlag(flag_listener = TCPFlags.OK);
         else
             SendFlag(flag_listener = TCPFlags.ERROR);
@@ -94,7 +104,7 @@ public class TCPServiceCommunication
 
     protected bool ReceiveSizeInfo()
     {
-        if ((received_size = _socket?.Receive(message_buf = new byte[message_size = 4]) ?? 0) != 4)
+        if ((received_size = _socket?.Receive(message_buf = new byte[4]) ?? 0) != 4)
             SendFlag(TCPFlags.ERROR);
         else
         {
@@ -150,20 +160,14 @@ public class TCPServiceCommunication
 
     public async Task<TCPResult?> SendAsync(byte[] message, TCPMessage type)
     {
-        bool transmitting = true;
-
-        while (transmitting)
-            transmitting = await Task.Run(() => Send(message, type));
+        while (await Task.Run(() => Send(message, type))) ;
 
         return await ReceiveAsync();
     }
 
     public async Task<TCPResult?> ReceiveAsync()
     {
-        bool transmitting = true;
-
-        while (transmitting)
-            transmitting = await Task.Run(Receive);
+        while (await Task.Run(() => Receive())) ;
 
         return type_await switch
         {
