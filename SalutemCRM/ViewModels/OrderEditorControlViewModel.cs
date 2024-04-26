@@ -2,16 +2,19 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ReactiveUI;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
 using SalutemCRM.Services;
+using SalutemCRM.TCP;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reactive;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -68,7 +71,7 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
         );
 
         AddNewOrderItem = ReactiveCommand.Create(() => {
-            _ = App.Host!.Services.GetService<TCPClientService>()!.SendAsync(Source.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName);
+            App.Host!.Services.GetService<TCPChannel>()!.Send(Source.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName);
 
             Source.OrderWarehouseSupplies.Add(Source.NewOrderWarehouseSupplyInput);
             Source.NewOrderWarehouseSupplyInput

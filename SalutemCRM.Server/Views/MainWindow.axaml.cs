@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using SalutemCRM.Services;
 
 namespace SalutemCRM.Server.Views;
 

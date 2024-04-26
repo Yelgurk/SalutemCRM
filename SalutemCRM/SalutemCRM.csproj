@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SalutemCRM.Database\SalutemCRM.Database.csproj" />
+		<ProjectReference Include="..\SalutemCRM.TCP\SalutemCRM.TCP.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

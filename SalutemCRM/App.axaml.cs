@@ -8,8 +8,13 @@ using Microsoft.Extensions.Hosting;
 using SalutemCRM.Database;
 using SalutemCRM.Reactive;
 using SalutemCRM.Services;
+using SalutemCRM.TCP;
 using SalutemCRM.Views;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 
 namespace SalutemCRM;
 
@@ -30,12 +35,21 @@ public partial class App : Application
                 services.AddSingleton<QRCodeGeneratorService>();
                 services.AddSingleton<QRCodeBleScanService>();
                 services.AddSingleton<FilesUploadingService>();
-                services.AddSingleton<TCPClientService>();
+                services.AddSingleton<TCPServer>();
+                services.AddSingleton<TCPChannel>();
+                services.AddSingleton<TcpClient>();
             })
             .Build();
 
         if (!Design.IsDesignMode)
-            Host!.Services.GetService<TCPClientService>();
+        {
+            Host!.Services.GetService<TCPServer>()!
+                .Do(x => Host!.Services.GetService<TcpClient>()!.Connect(IPAddress.Parse(x.IpAddress), x.Port))
+                .Do(x => x.DataReceived += (o, e) => Debug.WriteLine(e.Message));
+
+            Host!.Services.GetService<TCPChannel>()!
+                .Do(x => x.Open(Host!.Services.GetService<TcpClient>()!));
+        }
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -50,9 +64,6 @@ public partial class App : Application
                 Host!
                 .Services
                 .GetRequiredService<MainWindow>();
-
-            desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.NotifyClosed();
-            desktop.Exit += (o, e) => App.Host!.Services.GetService<TCPClientService>()!.CloseConnection();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {

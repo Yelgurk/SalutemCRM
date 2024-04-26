@@ -5,10 +5,11 @@ using Avalonia.Markup.Xaml;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using SalutemCRM.Server.Services;
 using SalutemCRM.Server.ViewModels;
 using SalutemCRM.Server.Views;
-using SalutemCRM.Services;
+using SalutemCRM.TCP;
+using System;
 
 namespace SalutemCRM.Server;
 
@@ -23,13 +24,23 @@ public partial class App : Application
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
             .ConfigureServices(services => {
                 services.AddSingleton<MainWindow>();
-                services.AddSingleton<FilesUploadingService>();
-                services.AddSingleton<TCPServerService>();
+                services.AddSingleton<TCPServer>();
             })
             .Build();
 
         if (!Design.IsDesignMode)
-            Host!.Services.GetService<TCPServerService>();
+            Host!.Services.GetService<TCPServer>()!
+                .DoInst(x => x.LoggingAction = (sysMessage) =>
+                {
+                    LogService.Push(new LogRecord()
+                    {
+                        Date = DateTime.Now.ToShortDateString(),
+                        Time = DateTime.Now.ToLongTimeString(),
+                        Message = sysMessage
+                    });
+                })
+                .Do(x => x.DataReceived += (o, e) => x.Logging($"New message [{e.ConnectionId}]: {e.Message}"))
+                .Do(x => x.Start());
     }
 
     public override void OnFrameworkInitializationCompleted()
