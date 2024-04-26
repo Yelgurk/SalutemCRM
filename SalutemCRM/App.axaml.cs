@@ -35,21 +35,14 @@ public partial class App : Application
                 services.AddSingleton<QRCodeGeneratorService>();
                 services.AddSingleton<QRCodeBleScanService>();
                 services.AddSingleton<FilesUploadingService>();
-                services.AddSingleton<TCPServer>();
                 services.AddSingleton<TCPChannel>();
-                services.AddSingleton<TcpClient>();
             })
             .Build();
 
         if (!Design.IsDesignMode)
-        {
-            Host!.Services.GetService<TCPServer>()!
-                .Do(x => Host!.Services.GetService<TcpClient>()!.Connect(IPAddress.Parse(x.IpAddress), x.Port))
-                .Do(x => x.DataReceived += (o, e) => Debug.WriteLine(e.Message));
-
             Host!.Services.GetService<TCPChannel>()!
-                .Do(x => x.Open(Host!.Services.GetService<TcpClient>()!));
-        }
+                //.Do(x => x.thisServer.DataReceived += (o, e) => Debug.WriteLine(e.Message))
+                .Do(x => x.Open());
     }
 
     public override void OnFrameworkInitializationCompleted()

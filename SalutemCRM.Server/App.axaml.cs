@@ -40,6 +40,7 @@ public partial class App : Application
                     });
                 })
                 .Do(x => x.DataReceived += (o, e) => x.Logging($"New message [{e.ConnectionId}]: {e.Message}"))
+                //.Do(x => x.DataReceived += (o, e) => e.Message.DoIf(s => e.ThisChannel.Send("[RECEIVED LONG MESSAGE]"), s => s.Length > 10))
                 .Do(x => x.Start());
     }
 

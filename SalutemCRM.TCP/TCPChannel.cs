@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -9,7 +11,7 @@ namespace SalutemCRM.TCP
     public class TCPChannel : IDisposable
     {
         public string Id { get; private set; }
-        private TCPServer thisServer;
+        public TCPServer thisServer { get; private set; }
         private TcpClient thisClient;
         private readonly byte[] buffer;
         private NetworkStream stream;
@@ -19,6 +21,14 @@ namespace SalutemCRM.TCP
         public Action? WhenChannelDisposing { get; set; }
         public Action? WhenChannelDisposed { get; set; }
 
+        public TCPChannel()
+        {
+            thisServer = new TCPServer();
+            thisClient = new TcpClient();
+            thisClient.Connect(IPAddress.Parse(thisServer.IpAddress), thisServer.Port);
+            buffer = new byte[256];
+        }
+
         public TCPChannel(TCPServer server)
         {
             thisServer = server;
@@ -27,7 +37,13 @@ namespace SalutemCRM.TCP
 
         public void Open(TcpClient client)
         {
-            Id = (thisClient = client).Client.RemoteEndPoint?.ToString() ?? "[unknown]";
+            thisClient = client;
+            this.Open();
+        }
+
+        public void Open()
+        {
+            Id = thisClient.Client.RemoteEndPoint?.ToString() ?? "[unknown]";
             isOpen = true;
 
             if(!thisServer.ConnectedChannels!.OpenChannels.TryAdd(Id, this))
