@@ -19,11 +19,10 @@ namespace SalutemCRM.TCP
         public Action? WhenChannelDisposing { get; set; }
         public Action? WhenChannelDisposed { get; set; }
 
-        public TCPChannel(TCPServer myServer)
+        public TCPChannel(TCPServer server)
         {
-            thisServer = myServer;
+            thisServer = server;
             buffer = new byte[256];
-            //Id = Guid.NewGuid().ToString();
         }
 
         public void Open(TcpClient client)
