@@ -12,8 +12,12 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM">
 	<Grid>
-		<t_control:OrderEditorControl/>
+		<t_control:OrderEditorControl
+			IsVisible="False"/>
 		
+		<control:FileSelectorControl
+			IsVisible="True"/>
+
 		<f_control:ProductTemplateBuilder
 			IsVisible="False"/>
 

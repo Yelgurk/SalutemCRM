@@ -10,6 +10,7 @@ namespace SalutemCRM.TCP
 {
     public class TCPChannel : IDisposable
     {
+        private const int bufferSize = 4096;
         public string Id { get; private set; }
         public TCPServer thisServer { get; private set; }
         private TcpClient thisClient;
@@ -27,13 +28,13 @@ namespace SalutemCRM.TCP
             thisServer = new TCPServer();
             thisClient = new TcpClient();
             thisClient.Connect(IPAddress.Parse(thisServer.IpAddress), thisServer.Port);
-            buffer = new byte[256];
+            buffer = new byte[bufferSize];
         }
 
         public TCPChannel(TCPServer server)
         {
             thisServer = server;
-            buffer = new byte[256];
+            buffer = new byte[bufferSize];
         }
 
         public void Open(TcpClient client)
@@ -98,7 +99,7 @@ namespace SalutemCRM.TCP
             });
         }
 
-        public void Send(string message, MBEnums type = MBEnums.STRING)
+        public void Send(string message, MBEnums type)
         {
             message = $"{MessageBroker.BeginMessage}{(ushort)type}{message}{MessageBroker.EndMessage}";
 

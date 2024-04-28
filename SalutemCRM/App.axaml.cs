@@ -40,34 +40,42 @@ public partial class App : Application
                 services.AddSingleton<ViewModelSourceNotifyService>();
                 services.AddSingleton<QRCodeGeneratorService>();
                 services.AddSingleton<QRCodeBleScanService>();
-                services.AddSingleton<FilesUploadingService>();
+                services.AddSingleton<FilesContainerService>();
                 services.AddSingleton<TCPChannel>();
             })
             .Build();
 
+        Host!.Services.GetService<FilesContainerService>();
+
         //if (false)
         if (!Design.IsDesignMode)
             Host!.Services.GetService<TCPChannel>()!
-                .Do(x => x.thisServer.DataReceived += (o, e) => Debug.WriteLine(e.Message))
+                .Do(x => x.thisServer.DataReceived += (o, e) =>
+                {
+                    switch (e.MessageType)
+                    {
+                        case MBEnums.FILE_JSON:
+                            {
+                                List<FileAttach>? receivedFiles = JsonSerializer.Deserialize<List<FileAttach>>(e.Message);
+
+                                string NewFilePath = $"{FilesContainerService.ContainerPath}\\{receivedFiles![0].FileName}";
+
+                                if (receivedFiles![0].FileFounded)
+                                    receivedFiles![0]
+                                    .Do(x =>
+                                    {
+                                        using (var fs = new FileStream(NewFilePath, FileMode.Create, FileAccess.Write))
+                                            fs.Write(receivedFiles![0].Bytes!, 0, receivedFiles![0].Bytes!.Length);
+                                    })
+                                    .Do(x => Host!.Services.GetService<FilesContainerService>()!.OpenFile(receivedFiles![0].FileName));
+                                else
+                                    Debug.WriteLine("FILE WAS NOT FOUNDED IN SERVER SIDE");
+                            }; break;
+
+                        default: break;
+                    }
+                })
                 .Do(x => x.Open());
-
-        SendFile();
-    }
-
-    private void SendFile()
-    {
-        FileAttach myFile = new FileAttach()
-        {
-
-            FileName = "Diagramm_28_04_2024.png",
-            FileLocalPath = "C:\\Users\\Xell\\Desktop\\image_2024-04-04_18-56-04.png"
-        };
-
-        new FileStream(myFile.FileLocalPath, FileMode.Open, FileAccess.Read)
-            .DoInst(x => x.Read(myFile.Bytes = new byte[x.Length], 0, Convert.ToInt32(x.Length)))
-            .Do(x => x.Close());
-
-        Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(myFile), MBEnums.FILE_JSON);
     }
 
     public override void OnFrameworkInitializationCompleted()

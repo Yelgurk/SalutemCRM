@@ -33,5 +33,6 @@ public abstract class ViewModelBase<T1, T2> : ReactiveObject
     public ReactiveCommand<T1, Unit>? GoEditCommand { get; protected set; }
     public ReactiveCommand<Unit, Unit>? AddNewCommand { get; protected set; }
     public ReactiveCommand<Unit, Unit>? EditCommand { get; protected set; }
+    public ReactiveCommand<T1, Unit>? RemoveCommand { get; protected set; }
     public ReactiveCommand<Unit, Unit>? ClearSearchCommand { get; protected set; }
 }

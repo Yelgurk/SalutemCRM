@@ -11,6 +11,8 @@ using SalutemCRM.Server.ViewModels;
 using SalutemCRM.Server.Views;
 using SalutemCRM.TCP;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -19,6 +21,8 @@ namespace SalutemCRM.Server;
 public partial class App : Application
 {
     public static IHost? Host { get; private set; }
+
+    private string FilesContainerPath => $"{Directory.GetCurrentDirectory()}\\Uploaded_files";
 
     public override void Initialize()
     {
@@ -49,13 +53,40 @@ public partial class App : Application
                         case MBEnums.STRING: { x.Logging($"New message [{e.ThisChannel.Id}]: {e.Message}"); }; break;
                         case MBEnums.FILE_JSON:
                             {
-                                FileAttach? receivedFile = JsonSerializer.Deserialize<FileAttach>(e.Message);
-                                
-                                using (var fs = new FileStream($"{Directory.GetCurrentDirectory()}\\{receivedFile?.FileName}", FileMode.Create, FileAccess.Write))
-                                    fs.Write(receivedFile!.Bytes!, 0, receivedFile!.Bytes!.Length);
+                                List<FileAttach>? receivedFiles = JsonSerializer.Deserialize<List<FileAttach>>(e.Message);
 
-                                x.Logging($"New file received [{e.ThisChannel.Id}]: {receivedFile!.FileName}\nFile path: {Directory.GetCurrentDirectory()}\\{receivedFile?.FileName}");
+                                receivedFiles?.DoForEach(file =>
+                                {
+                                    Directory.CreateDirectory(FilesContainerPath);
 
+                                    string filePath = $"{FilesContainerPath}\\{file!.FileName}";
+
+                                    filePath =
+                                        !File.Exists(filePath) ?
+                                        filePath :
+                                        $"{FilesContainerPath}\\{file!.FileName = $"{DateTime.Now.ToShortDateString()}_{DateTime.Now.ToLongTimeString().Replace(":", ".")}_{DateTime.Now.Millisecond} {file!.FileName}"}";
+
+                                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                                        fs.Write(file!.Bytes!, 0, file.Bytes!.Length);
+                                    
+                                    x.Logging($"New file received [{e.ThisChannel.Id}]: {file!.FileName}\nFile path: {filePath}");
+                                });
+
+                            }; break;
+                        case MBEnums.GET_FILE_JSON:
+                            {
+                                List<FileAttach> response = new() { new FileAttach() { FileName = e.Message } };
+
+                                if (File.Exists($"{FilesContainerPath}\\{e.Message}"))
+                                    new FileStream($"{FilesContainerPath}\\{e.Message}", FileMode.Open, FileAccess.Read)
+                                    .DoInst(x => x.Read(response[0].Bytes = new byte[x.Length], 0, Convert.ToInt32(x.Length)))
+                                    .Do(x => x.Close());
+                                else
+                                    response[0].FileFounded = false;
+
+                                e.ThisChannel.Send(JsonSerializer.Serialize(response), MBEnums.FILE_JSON);
+
+                                x.Logging($"Client request for file [{e.ThisChannel.Id}]: {e.Message}\nDoes file founded: {response[0].FileFounded}");
                             }; break;
                         default: break;
                     }

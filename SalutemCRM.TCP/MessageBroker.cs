@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.TCP;
 
-public enum MBEnums : ushort { NONE = 10000, STRING, FILE_JSON, USER_JSON };
+public enum MBEnums : ushort
+{
+    NONE = 10000,
+    STRING,
+    FILE_JSON,
+    GET_FILE_JSON,
+    USER_JSON
+};
 
 public class MessageBroker
 {

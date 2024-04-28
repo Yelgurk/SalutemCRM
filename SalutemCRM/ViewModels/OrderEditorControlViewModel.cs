@@ -71,7 +71,7 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
         );
 
         AddNewOrderItem = ReactiveCommand.Create(() => {
-            App.Host!.Services.GetService<TCPChannel>()!.Send(Source.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName);
+            App.Host!.Services.GetService<TCPChannel>()!.Send(Source.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName, MBEnums.STRING);
 
             Source.OrderWarehouseSupplies.Add(Source.NewOrderWarehouseSupplyInput);
             Source.NewOrderWarehouseSupplyInput
