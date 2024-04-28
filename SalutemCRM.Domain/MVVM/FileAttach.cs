@@ -11,5 +11,9 @@ namespace SalutemCRM.Domain.Model;
 
 public partial class FileAttach
 {
-    
+    [NotMapped]
+    public string? FileLocalPath { get; set; }
+
+    [NotMapped]
+    public byte[]? Bytes { get; set; }
 }

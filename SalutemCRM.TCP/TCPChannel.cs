@@ -17,6 +17,7 @@ namespace SalutemCRM.TCP
         private NetworkStream stream;
         private bool isOpen;
         private bool disposed;
+        private MessageBroker messageBroker = new();
 
         public Action? WhenChannelDisposing { get; set; }
         public Action? WhenChannelDisposed { get; set; }
@@ -71,14 +72,22 @@ namespace SalutemCRM.TCP
                                 while ((position = stream.Read(buffer, 0, buffer.Length)) != 0 && isOpen)
                                 {
                                     data = Encoding.UTF8.GetString(buffer, 0, position);
-                                    var args = new DataReceivedArgs()
-                                    {
-                                        Message = data,
-                                        ConnectionId = Id,
-                                        ThisChannel = this
-                                    };
 
-                                    thisServer.OnDataIn(args);
+                                    messageBroker.IncomingPackage(data)?
+                                    .Do(x =>
+                                    {
+                                        var args = new DataReceivedArgs()
+                                        {
+                                            ReceivedBytes = x.MessageContainer.Length,
+                                            Message = x.MessageContainer,
+                                            MessageType = x.MessageType,
+                                            ConnectionId = Id,
+                                            ThisChannel = this
+                                        };
+
+                                        thisServer.OnDataIn(args);
+                                    });
+
                                     if (!isOpen) { break; }
                                 }
                             }
@@ -89,8 +98,10 @@ namespace SalutemCRM.TCP
             });
         }
 
-        public void Send(string message)
+        public void Send(string message, MBEnums type = MBEnums.STRING)
         {
+            message = $"{MessageBroker.BeginMessage}{(ushort)type}{message}{MessageBroker.EndMessage}";
+
             var data = Encoding.UTF8.GetBytes(message);
             stream.Write(data, 0, data.Length);
         }
