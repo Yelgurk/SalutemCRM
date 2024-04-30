@@ -71,7 +71,8 @@ public partial class FileSelectorControlViewModelSource : ReactiveControlSource<
 public partial class FileSelectorControlViewModel : ViewModelBase<FileAttach, FileSelectorControlViewModelSource>
 {
     public ReactiveCommand<Unit, Unit>? RemoveAllFilesCommand { get; protected set; }
-    public ReactiveCommand<Unit, Unit>? UploadFilesToServer { get; protected set; }
+
+    public ReactiveCommand<FileAttach, Unit>? OpenUntracableFile { get; protected set; }
 
     public FileSelectorControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -107,10 +108,8 @@ public partial class FileSelectorControlViewModel : ViewModelBase<FileAttach, Fi
             FileSelectorControlViewModelSource.FilesCollection.Clear();
         });
 
-        UploadFilesToServer = ReactiveCommand.Create(() => {
-            //App.Host!.Services.GetService<TCPChannel>()!.Send("Two_Feet_-_BBY_(basovtut.ru).mp3", MBEnums.GET_FILE_JSON);
-            App.Host!.Services.GetService<FilesContainerService>()!.OpenFile("Two_Feet_-_BBY_(basovtut.ru).mp3");
-            App.Host!.Services.GetService<FilesContainerService>()!.OpenFile("Безымянный.png");
+        OpenUntracableFile = ReactiveCommand.Create<FileAttach>(x => {
+            new ProcessStartInfo(x.FileLocalPath) { UseShellExecute = true }.Do(Process.Start);
         });
     }
 }

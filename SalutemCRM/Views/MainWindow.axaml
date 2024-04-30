@@ -13,10 +13,10 @@
         Title="SalutemCRM">
 	<Grid>
 		<t_control:OrderEditorControl
-			IsVisible="False"/>
+			IsVisible="True"/>
 		
 		<control:FileSelectorControl
-			IsVisible="True"/>
+			IsVisible="False"/>
 
 		<f_control:ProductTemplateBuilder
 			IsVisible="False"/>

@@ -17,38 +17,40 @@ public enum MBEnums : ushort
 
 public class MessageBroker
 {
-    public static string BeginMessage { get; } = "<[BEGIN]>";
     public static string EndMessage { get; } = "<[END]>";
+
+    private static List<string> IncomingMessages { get; } = new List<string>();
     
     public MBEnums MessageType { get; private set; } = MBEnums.NONE;
 
     public string MessageContainer { get; private set; } = "";
 
-    public MessageBroker? IncomingPackage(byte[] bytes) => IncomingPackage(Encoding.UTF8.GetString(bytes));
-
-    public MessageBroker? IncomingPackage(string data)
+    public List<DataReceivedArgs>? IncomingPackage(string data)
     {
         bool IsEnded = false;
 
-        if (data.StartsWith(BeginMessage))
-        {
-            MessageContainer = "";
-            data = data.Remove(0, BeginMessage.Length);
-
-            MessageType = Convert.ToUInt16(data.Substring(0, 5)).EnumCast<MBEnums>();
-            data = data.Remove(0, 5);
-        }
-
-        if (data.EndsWith(EndMessage))
-        {
-            IsEnded = true;
-            data = data.Remove(data.Length - EndMessage.Length);
-        }
-
         MessageContainer += data;
 
+        if (MessageContainer.Contains(EndMessage))
+        {
+            MessageContainer
+                .Split(EndMessage)
+                .SkipLast(1)
+                .DoForEach(IncomingMessages.Add);
+
+            MessageContainer = MessageContainer.Split(EndMessage).Last();
+
+            IsEnded = true;
+        }
+
         if (IsEnded)
-            return this;
+            return new List<DataReceivedArgs>()
+                .DoInst(res => IncomingMessages.DoForEach(x => res.Add(new() {
+                    MessageType = Convert.ToUInt16(x.Substring(0, 5)).EnumCast<MBEnums>(),
+                    ReceivedBytes = x.Length - 5,
+                    Message = x.Remove(0, 5)
+                })))
+                .Do(res => IncomingMessages.Clear());
         else
             return null;
     }
