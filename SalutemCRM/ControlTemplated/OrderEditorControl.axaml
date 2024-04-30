@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:SalutemCRM.ControlTemplated"
 		xmlns:crus="using:SalutemCRM.Control"
+		xmlns:f_contr="using:SalutemCRM.FunctionalControl"
 		xmlns:enums="using:SalutemCRM.Domain.Model"
 		xmlns:vm="using:SalutemCRM.ViewModels">
 	<Design.PreviewWith>
@@ -26,42 +27,67 @@
 								<Grid Background="White">
 									<ComboBox Classes="custom"
 										ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
-										SelectedIndex="{Binding OrderSource.OrderType, RelativeSource={RelativeSource TemplatedParent}}"
+										SelectedIndex="{Binding Source.SelectedItem.OrderType}"
 										Margin="5 40 5 5"/>
 								</Grid>
 							</Label>
 
 							<Grid Height="400">
 								<Label Classes="card tag"
-								   Tag="Выбор клиента"
-								   Background="White"
-								   Margin="5"
-								   IsVisible="{Binding OrderSource.IsCustomerOrder, RelativeSource={RelativeSource TemplatedParent}}">
-									<crus:CRUSClientControl DataContext="{TemplateBinding ControlInjection, Mode=OneWayToSource}"/>
+									   Tag="Выбор клиента"
+								       Background="White"
+								       Margin="5"
+								       IsVisible="{Binding Source.SelectedItem.IsCustomerOrder}">
+									<crus:CRUSClientControl DataContext="{TemplateBinding ControlInjectionUIResponsive, Mode=OneWayToSource}"/>
 								</Label>
 
 								<Label Classes="card tag"
 									   Tag="Выбор поставщика"
 									   Background="White"
 									   Margin="5"
-									   IsVisible="{Binding !OrderSource.IsCustomerOrder, RelativeSource={RelativeSource TemplatedParent}}">
-									<crus:CRUSVendorControl DataContext="{TemplateBinding ControlInjection, Mode=OneWayToSource}"/>
+									   IsVisible="{Binding !Source.SelectedItem.IsCustomerOrder}">
+									<crus:CRUSVendorControl DataContext="{TemplateBinding ControlInjectionUIResponsive, Mode=OneWayToSource}"/>
 								</Label>
 							</Grid>
 
-							
-							<Grid>
+							<Grid IsVisible="True">
+								<ItemsControl Classes="horizontal">
+									<Label Classes="card tag"
+										   Tag="Продаваемое оборудование [поиск + выбор]"
+										   Background="White"
+										   Margin="5"
+										   Height="400"
+										   IsVisible="True">
+										<f_contr:ProductTemplateControl VerticalAlignment="Stretch"
+																		DataContext="{TemplateBinding ControlInjectionUIAddEditLock, Mode=OneWayToSource}"/>
+									</Label>
+
+									<Label Classes="card tag"
+										   Tag="Продаваемое оборудование [в заявке]"
+										   Background="White"
+										   Margin="5"
+										   Height="400"
+										   IsVisible="True">
+										<TextBlock DataContext="{x:Static vm:CRUSProductTemplateControlViewModelSource.GlobalContainer}"
+												   Text="{Binding SelectedItem.Name, FallbackValue=NONE}"
+												   HorizontalAlignment="Center"
+												   VerticalAlignment="Center"/>
+									</Label>
+								</ItemsControl>
+							</Grid>
+
+							<Grid IsVisible="False">
 								<Label Classes="card tag"
 									   Tag="Позиции на закупку (цены с НДС)"
 									   Background="White"
 									   Margin="5"
 									   IsVisible="True">
 									<Grid Background="White"
-										  DataContext="{Binding VM.Source, RelativeSource={RelativeSource TemplatedParent}}"
 										  RowDefinitions="auto, auto, auto, auto">
 										<Grid ColumnDefinitions="*, 120, 90, 90, 120, 120, auto, 5"
 											  Background="White"
-											  Margin="0 35 0 0">
+											  Margin="0 35 0 0"
+											  DataContext="{Binding Source}">
 											<TextBox Classes="custom header "
 													 Text="{Binding NewOrderWarehouseSupplyInput.WarehouseItem.InnerName}"
 													 Watermark="Наименование"
@@ -115,7 +141,7 @@
 										<DataGrid Grid.Row="3" Height="350"
 												  Classes="custom"
 												  VerticalScrollBarVisibility="Visible"
-												  ItemsSource="{Binding VM.Source.OrderWarehouseSupplies, RelativeSource={RelativeSource TemplatedParent}}">
+												  ItemsSource="{Binding Source.OrderWarehouseSupplies}">
 											<DataGrid.Columns>
 												<DataGridTextColumn Header="№"				Binding="{Binding Id, StringFormat='{}{0}.'}"/>
 												<DataGridTextColumn Header="Наименование"	Binding="{Binding WarehouseItem.InnerName}"/>
@@ -141,16 +167,7 @@
 										</DataGrid>
 									</Grid>
 								</Label>
-
-								<Label Classes="card tag"
-									   Tag="Позиции на закупку"
-									   Background="White"
-									   Margin="5"
-									   IsVisible="True">
-									
-								</Label>
 							</Grid>
-
 
 							<ItemsControl Classes="horizontal">
 								<Label Classes="card tag"
@@ -160,7 +177,7 @@
 									<StackPanel Background="White">
 										<ComboBox Classes="custom"
 												  ItemsSource="{x:Static enums:EnumToString.PaymentStatusToString}"
-												  SelectedIndex="{Binding OrderSource.PaymentAgreement, RelativeSource={RelativeSource TemplatedParent}}"
+												  SelectedIndex="{Binding Source.SelectedItem.PaymentAgreement}"
 												  Margin="5 40 5 5"/>
 
 										<Grid ColumnDefinitions="*, auto"
@@ -168,24 +185,26 @@
 											  Background="White"
 											  Margin="5">
 											<TextBox Classes="custom header"
-													 Text="{Binding OrderSource.PriceTotal, RelativeSource={RelativeSource TemplatedParent}}"
-													 IsVisible="{Binding OrderSource.IsPaymentRequired, RelativeSource={RelativeSource TemplatedParent}}"
+													 Text="{Binding Source.SelectedItem.PriceTotal}"
+													 IsVisible="{Binding Source.SelectedItem.IsPaymentRequired}"
 													 Watermark="Полная сумма по счету"
 													 Grid.Row="0"
 													 Margin="0 5 5 0"/>
 											<TextBox Classes="custom header"
-													 Text="{Binding OrderSource.PriceRequired, RelativeSource={RelativeSource TemplatedParent}}"
-													 IsVisible="{Binding OrderSource.IsPaymentPartial, RelativeSource={RelativeSource TemplatedParent}}"
+													 Text="{Binding Source.SelectedItem.PriceRequired}"
+													 IsVisible="{Binding Source.SelectedItem.IsPaymentPartial}"
 													 Watermark="Необходимая предоплата"
 													 Grid.Row="1"
 													 Margin="0 15 5 0"/>
 											<ComboBox Classes="custom"
-													  Classes.vertical_stretch="{Binding !OrderSource.IsPaymentPartial, RelativeSource={RelativeSource TemplatedParent}}"
-													  IsVisible="{Binding OrderSource.IsPaymentRequired, RelativeSource={RelativeSource TemplatedParent}}"
+													  Classes.vertical_stretch="{Binding !Source.SelectedItem.IsPaymentPartial}"
+													  IsVisible="{Binding Source.SelectedItem.IsPaymentRequired}"
 													  Grid.Column="1"
 													  Grid.RowSpan="2"
 													  Margin="0 5 0 0"
-													  VerticalAlignment="Stretch"/>
+													  VerticalAlignment="Stretch"
+													  ItemsSource="{Binding Source.CurrencyUnits}"
+													  SelectedItem="{Binding Source.SelectedItem.Currency}"/>
 										</Grid>
 									</StackPanel>
 								</Label>

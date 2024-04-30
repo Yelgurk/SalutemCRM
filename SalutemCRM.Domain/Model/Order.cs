@@ -58,7 +58,7 @@ public partial class Order : ClonableObservableObject<Order>
     [NotMapped]
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
-    private string _currency = null!;
+    private string _currency = "BYN";
 
     [NotMapped]
     [ObservableProperty]

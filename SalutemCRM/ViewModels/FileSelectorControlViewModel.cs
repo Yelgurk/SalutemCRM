@@ -40,9 +40,12 @@ public partial class FileSelectorControlViewModelSource : ReactiveControlSource<
 
     public static ObservableCollection<FileAttach> FilesCollection { get; } = new();
 
+    public static ObservableCollection<FileAttach> AttachedFiles { get; } = new();
+
      public static void FillCollection(List<FileAttach> Files) => Files
         .Do(x => FilesCollection.Clear())
-        .Do(x => x.DoForEach(file => FilesCollection.Add(file)));
+        .Do(x => AttachedFiles.Clear())
+        .Do(x => x.DoForEach(file => AttachedFiles.Add(file)));
 
     private static void RemoveNotLocalFiles() => FilesCollection.DoForEach(x => x.DoIf(file => FilesCollection.Remove(file), file => file.FileLocalPath == ""));
 

@@ -86,7 +86,7 @@
 					<f_control:ProductTemplateControl/>
 				</Label>
 
-				<Label IsVisible="True" Width="1100" Height="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
+				<Label IsVisible="False" Width="1100" Height="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
 					<f_control:ProductTemplateBuilder/>
 				</Label>
 			</DockPanel>

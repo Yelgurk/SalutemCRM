@@ -16,6 +16,13 @@ using System.Threading.Tasks;
 
 namespace SalutemCRM.Reactive;
 
+public interface IReactiveControlResponseUI
+{
+    public bool IsFuncAddNewAvailable { get; set; }
+    public bool IsFuncEditAvailable { get; set; }
+    public bool IsResponsiveControl { get; set; }
+}
+
 public interface IReactiveControlSource
 {
     public void SearchByInput(string keyword);
@@ -25,8 +32,16 @@ public interface IReactiveControlSource
     public void ServerResponse(List<object> models);
 }
 
-public partial class ReactiveControlSource<T> : ObservableObject, IReactiveControlSource
+public partial class ReactiveControlGlobalSetterContainer<T> : ObservableObject
 {
+    [ObservableProperty]
+    public T? _selectedItem;
+}
+
+public partial class ReactiveControlSource<T> : ObservableObject, IReactiveControlSource, IReactiveControlResponseUI
+{
+    public static ReactiveControlGlobalSetterContainer<T> GlobalContainer { get; } = new();
+
     /* UI behavior of the control */
     [ObservableProperty]
     private bool _isFuncAddNewAvailable = true;
@@ -121,10 +136,9 @@ public partial class ReactiveControlSource<T> : ObservableObject, IReactiveContr
 
 
     /* Selected item bridge through delegate */
+    partial void OnSelectedItemChanged(T? value) => value
+        .Do(x => SelectedItemChangedTrigger?.Invoke(x!))
+        .Do(x => GlobalContainer.SelectedItem = value);
 
-    partial void OnSelectedItemChanged(T? value) => SelectedItemChangedTrigger?.Invoke(value!);
-
-    public SelectedItemChangedCommandDelegate? SelectedItemChangedTrigger { get; set; }
-
-    public delegate void SelectedItemChangedCommandDelegate(T item);
+    public Action<T>? SelectedItemChangedTrigger { get; set; }
 }

@@ -14,15 +14,13 @@ public class OrderEditorControl : TemplatedControl
     public static readonly DirectProperty<OrderEditorControl, Order?> OrderSourceProperty =
     AvaloniaProperty.RegisterDirect<OrderEditorControl, Order?>(
         nameof(OrderSource),
-        o => o.OrderSource,
+        o => null,
         (o, v) => o.OrderSource = v);
-
-    private Order? _orderSource = Order.Default;
 
     public Order? OrderSource
     {
-        get { return _orderSource; }
-        set { SetAndRaise(OrderSourceProperty, ref _orderSource, value); }
+        get { return VM.Source.SelectedItem; }
+        set { VM.Source.SelectedItem = value; }
     }
 
 
@@ -38,11 +36,28 @@ public class OrderEditorControl : TemplatedControl
 
 
 
-    public static readonly DirectProperty<OrderEditorControl, dynamic?> ControlInjectionProperty =
+    public static readonly DirectProperty<OrderEditorControl, dynamic?> ControlInjectionUIResponsiveProperty =
     AvaloniaProperty.RegisterDirect<OrderEditorControl, dynamic?>(
-       nameof(ControlInjection),
+       nameof(ControlInjectionUIResponsive),
        o => null,
-       (o, v) => o.ControlInjection = v!);
+       (o, v) => o.ControlInjectionUIResponsive = v!);
 
-    public dynamic ControlInjection { set => value.Source.IsResponsiveControl = true; }
+    public dynamic ControlInjectionUIResponsive { set => value.Source.IsResponsiveControl = true; }
+
+
+
+    public static readonly DirectProperty<OrderEditorControl, dynamic?> ControlInjectionUIAddEditLockProperty =
+    AvaloniaProperty.RegisterDirect<OrderEditorControl, dynamic?>(
+       nameof(ControlInjectionUIAddEditLock),
+       o => null,
+       (o, v) => o.ControlInjectionUIAddEditLock = v!);
+
+    public dynamic ControlInjectionUIAddEditLock
+    {
+        set
+        {
+            value.Source.IsFuncAddNewAvailable = false;
+            value.Source.IsFuncEditAvailable = false;
+        }
+    }
 }

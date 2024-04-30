@@ -19,7 +19,7 @@ public class SizeToUniformGridColumnsConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        int block = 400;
+        int block = 600;
 
         if ((double?)value is double size)
         {

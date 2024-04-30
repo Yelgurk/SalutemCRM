@@ -47,7 +47,7 @@ public partial class App : Application
 
         Host!.Services.GetService<FilesContainerService>();
 
-        //if (false)
+        if (false)
         if (!Design.IsDesignMode)
             Host!.Services.GetService<TCPChannel>()!
                 .Do(x => x.thisServer.DataReceived += (o, e) =>

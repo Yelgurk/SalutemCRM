@@ -24,6 +24,8 @@ namespace SalutemCRM.ViewModels;
 
 public partial class OrderEditorControlViewModelSource : ReactiveControlSource<Order>
 {
+    public OrderEditorControlViewModelSource() => SelectedItem = Order.Default;
+
     [ObservableProperty]
     private WarehouseSupply _newOrderWarehouseSupplyInput = new() { WarehouseItem = new() };
 
