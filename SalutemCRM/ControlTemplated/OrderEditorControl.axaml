@@ -64,14 +64,83 @@
 
 									<Label Classes="card tag"
 										   Tag="Продаваемое оборудование [в заявке]"
-										   Background="White"
 										   Margin="5"
 										   Height="400"
 										   IsVisible="True">
-										<TextBlock DataContext="{x:Static vm:CRUSProductTemplateControlViewModelSource.GlobalContainer}"
-												   Text="{Binding SelectedItem.Name, FallbackValue=NONE}"
-												   HorizontalAlignment="Center"
-												   VerticalAlignment="Center"/>
+										<Grid RowDefinitions="auto, auto, *, auto" Background="White">
+											<StackPanel Classes="background"
+														Grid.Row="0"
+														Margin="0 40 0 0">
+												
+												<DockPanel HorizontalAlignment="Center"
+														   DataContext="{x:Static vm:CRUSProductTemplateControlViewModelSource.GlobalContainer}">
+													<TextBlock FontSize="15" Text="Продукт: "/>
+													<TextBlock FontSize="15" Text="{Binding SelectedItem.Category.Name, FallbackValue=[не выбрано]}"/>
+													<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding SelectedItem.Name, StringFormat=', {0}', FallbackValue={}}"/>
+												</DockPanel>
+
+												<Label Padding="10 5">
+													<Button Classes="custom orange whiteText"
+															Height="40"
+															HorizontalAlignment="Stretch"
+															FontWeight="SemiBold"
+															Command="{Binding AddNew_ManagerProductSale}">
+														<TextBlock FontSize="15" FontWeight="SemiBold" Text="Добавить +"
+																   HorizontalAlignment="Center"/>
+													</Button>
+												</Label>
+											</StackPanel>
+
+											<TextBlock Text="Список:"
+													   Margin="10 10 0 5"
+													   FontSize="15"
+													   Grid.Row="1"
+													   HorizontalAlignment="Left"/>
+
+											<ScrollViewer VerticalScrollBarVisibility="Auto"
+														  Grid.Row="2">
+												<ListBox Classes="custom zebra unmarked"
+														 ItemsSource="{Binding Source.OrderManagerProduct}"
+														 BorderThickness="0 1 0 0"
+														 BorderBrush="{DynamicResource Primary_DarkBlue}">
+													<ListBox.ItemTemplate>
+														<DataTemplate>
+															<Grid ColumnDefinitions="auto, *"
+																  Margin="10 0 0 0">
+																<DockPanel VerticalAlignment="Center">
+																	<TextBlock FontSize="15" Text="{Binding Category.Name, StringFormat='{}{0}, '}"/>
+																	<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding Name}"/>
+																</DockPanel>
+
+																<DockPanel Grid.ColumnSpan="2"
+																		   HorizontalAlignment="Right"
+																		   Margin="0 0 5 0">
+																	<TextBlock Text="Кол-во: "
+																			   VerticalAlignment="Center"/>
+																	<TextBox Classes="custom header"
+																			 Margin="0 0 5 0"
+																			 HorizontalAlignment="Right"
+																			 HorizontalContentAlignment="Center"
+																			 Text="{Binding OrderBasketCount}"
+																			 IsReadOnly="{Binding HaveSerialNumber}"/>
+																	<Button HorizontalAlignment="Right"
+																			Classes="custom iconed pink rounded sys close"
+																			Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNew_ManagerProductSale}"
+																			CommandParameter="{Binding}"/>
+																</DockPanel>
+															</Grid>
+														</DataTemplate>
+													</ListBox.ItemTemplate>
+												</ListBox>
+											</ScrollViewer>
+
+											<TextBlock Text="Заявка пуста!"
+													   FontSize="18"
+													   HorizontalAlignment="Center"
+													   VerticalAlignment="Center"
+													   Grid.Row="2"
+													   IsVisible="{Binding !Source.OrderManagerProduct.Count}"/>
+										</Grid>
 									</Label>
 								</ItemsControl>
 							</Grid>
@@ -126,7 +195,7 @@
 													Width="{Binding $self.Bounds.Height}"
 													CornerRadius="5"
 													Margin="0 5 5 5"
-													Command="{Binding VM.AddNewOrderItem, RelativeSource={RelativeSource TemplatedParent}}"/>
+													Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.AddNew_WarehouseSupply}"/>
 										</Grid>
 
 										<TextBlock Text="Список"
@@ -158,7 +227,7 @@
 															<Button Classes="custom iconed pink rounded sys close"
 																	Height="32" Width="{Binding $self.Bounds.Height}"
 																	CornerRadius="5" Margin="0 5 5 5"
-																	Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNewOrderItem}"
+																	Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNew_WarehouseSupply}"
 																	CommandParameter="{Binding}"/>
 														</DataTemplate>
 													</DataGridTemplateColumn.CellTemplate>

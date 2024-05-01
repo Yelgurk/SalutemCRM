@@ -82,7 +82,7 @@
 					<f_control:WarehouseGeneral/>
 				</Label>
 
-				<Label IsVisible="False" Width="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
+				<Label IsVisible="True" Width="800" Classes="card rounded tag shadow" Tag="8." Margin="10 0">
 					<f_control:ProductTemplateControl/>
 				</Label>
 

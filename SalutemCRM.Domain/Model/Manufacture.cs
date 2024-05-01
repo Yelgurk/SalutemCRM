@@ -25,15 +25,20 @@ public partial class Manufacture : ClonableObservableObject<Manufacture>
 
     [NotMapped]
     [ObservableProperty]
-    private string _code = null!;
+    private bool _haveSerialNumber;
+
+    [NotMapped]
+    [ObservableProperty]
+    private string? _code;
 
     [NotMapped]
     [ObservableProperty]
     private string _name = null!;
 
+    /* If (HaveSerialNumber) then Count can be only 1 */
     [NotMapped]
     [ObservableProperty]
-    private string _model = null!;
+    private int _count = 1;
 
     [NotMapped]
     [ObservableProperty]

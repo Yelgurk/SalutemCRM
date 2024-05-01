@@ -9,10 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reactive;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace SalutemCRM.Reactive;
 
@@ -35,7 +37,16 @@ public interface IReactiveControlSource
 public partial class ReactiveControlGlobalSetterContainer<T> : ObservableObject
 {
     [ObservableProperty]
-    public T? _selectedItem;
+    private T? _selectedItem;
+
+    public IObservable<bool> IsSelectedItemNotNull { get; private set; }
+
+    public ReactiveControlGlobalSetterContainer() => IsSelectedItemNotNull = this.WhenAnyValue(
+        x => x.SelectedItem,    
+        x => x.SelectedItem,
+        (item1, item2) =>
+            item1 is not null
+    );
 }
 
 public partial class ReactiveControlSource<T> : ObservableObject, IReactiveControlSource, IReactiveControlResponseUI

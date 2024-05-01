@@ -87,12 +87,14 @@ public class CRUSProductTemplateControlViewModel : ViewModelBase<ProductTemplate
         IfEditFilled = this.WhenAnyValue(
             x => x!.Source!.EditItem!.Name,
             x => x!.Source!.TempItem!.Name,
+            x => x!.Source!.EditItem!.HaveSerialNumber,
+            x => x!.Source!.TempItem!.HaveSerialNumber,
             x => x!.Source!.EditItem!.Category,
             x => x!.Source!.ProductCategory,
-            (name_old, name_new, cat_old, cat_new) =>
+            (name_old, name_new, hsn_old, hsn_new, cat_old, cat_new) =>
                 cat_new is not null &&
                 !string.IsNullOrWhiteSpace(name_new) &&
-                (name_old != name_new || (cat_old?.Name ?? "") != cat_new.Name) &&
+                (name_old != name_new || (cat_old?.Name ?? "") != cat_new.Name || hsn_old != hsn_new) &&
                 name_new.Length > 2
         );
 
@@ -116,6 +118,7 @@ public class CRUSProductTemplateControlViewModel : ViewModelBase<ProductTemplate
             Source!
                 .DoInst(s => s.EditItem = x.Clone())
                 .DoInst(s => s.TempItem = s.EditItem!.Clone())
+                .DoInst(s => s.ProductCategory = s.TempItem!.Category)
                 .Do(s => s.SetActivePage(2));
         });
 
@@ -142,6 +145,7 @@ public class CRUSProductTemplateControlViewModel : ViewModelBase<ProductTemplate
                     .DoInst(y => y.Name = x.Name)
                     .DoInst(y => y.ManufactureCategoryForeignKey = x.ManufactureCategoryForeignKey)
                     .DoInst(y => y.AdditionalInfo = x.AdditionalInfo)
+                    .DoInst(y => y.HaveSerialNumber = x.HaveSerialNumber)
                     .Do(y => db.SaveChanges());
             })
             .DoInst(x => Source!.SearchInputStr = x.Name)

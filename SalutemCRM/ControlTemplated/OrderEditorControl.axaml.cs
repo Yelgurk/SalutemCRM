@@ -42,7 +42,13 @@ public class OrderEditorControl : TemplatedControl
        o => null,
        (o, v) => o.ControlInjectionUIResponsive = v!);
 
-    public dynamic ControlInjectionUIResponsive { set => value.Source.IsResponsiveControl = true; }
+    public dynamic ControlInjectionUIResponsive
+    {
+        set
+        {
+            value.Source.IsResponsiveControl = true;
+        }
+    }
 
 
 

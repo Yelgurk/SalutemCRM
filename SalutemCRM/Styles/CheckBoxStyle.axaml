@@ -1,0 +1,60 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://SalutemCRM/Assets/Color.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+
+	<Design.PreviewWith>
+		<Grid Height="800"
+			  Width="300">
+			<StackPanel VerticalAlignment="Center">
+				<CheckBox IsChecked="true" IsEnabled="False" Classes="custom demo" Margin="0 0 0 5"/>
+				<CheckBox IsChecked="true" Classes="custom"  Margin="0 0 0 5"/>
+				<CheckBox IsChecked="false" IsEnabled="False" Classes="custom" Margin="0 0 0 5"/>
+				<CheckBox IsChecked="false" Classes="custom demo" Margin="0 0 0 5"/>
+			</StackPanel>
+		</Grid>
+	</Design.PreviewWith>
+
+	<Style Selector="CheckBox.demo">
+		<Setter Property="Content" Value="Проверка"/>
+	</Style>
+
+	<Style Selector="CheckBox.custom">
+		<Setter Property="MinHeight" Value="40"/>
+		<Setter Property="FontSize" Value="14"/>
+	</Style>
+
+	<Style Selector="CheckBox.custom ContentPresenter">
+		<Setter Property="Margin" Value="18 0 6 0"/>
+	</Style>
+
+	<Style Selector="CheckBox.custom Grid#RootGrid Viewbox">
+		<Setter Property="Height" Value="28"/>
+		<Setter Property="Width" Value="28"/>
+		<Setter Property="Margin" Value="18 8 0 0"/>
+	</Style>
+	
+	<Style Selector="CheckBox.custom Border#NormalRectangle">
+		<Setter Property="BorderThickness" Value="2"/>
+		<Setter Property="Height" Value="32"/>
+		<Setter Property="Width" Value="32"/>
+		<Setter Property="Margin" Value="18 8 0 0"/>
+	</Style>
+
+	<Style Selector="CheckBox.custom:disabled Border#NormalRectangle">
+		<Setter Property="Background" Value="{DynamicResource Primary_Gray}"/>
+	</Style>
+
+	<Style Selector="CheckBox.custom:checked Border#NormalRectangle">
+		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
+	</Style>
+	
+	<Style Selector="CheckBox.custom:checked:disabled Border#NormalRectangle">
+		<Setter Property="Background" Value="{DynamicResource Alt_Orange}"/>
+	</Style>
+</Styles>

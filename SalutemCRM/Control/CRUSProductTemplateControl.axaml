@@ -108,6 +108,11 @@
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.Name}"/>
+						
+						<CheckBox Classes="custom"
+								  Margin="8"
+								  Content="Имеется серийный номер [при производстве]"
+								  IsChecked="{Binding Source.TempItem.HaveSerialNumber}"/>
 
 						<TextBox Classes="custom header new_input"
 								 Watermark="Доп. информация"
@@ -175,6 +180,11 @@
 						<TextBox Classes="custom header new_input"
 								 Watermark="Название"
 								 Text="{Binding Source.TempItem.Name}"/>
+
+						<CheckBox Classes="custom"
+								  Margin="8"
+								  Content="Имеется серийный номер [при производстве]"
+								  IsChecked="{Binding Source.TempItem.HaveSerialNumber}"/>
 
 						<TextBox Classes="custom header new_input"
 								 Watermark="Доп. информация"

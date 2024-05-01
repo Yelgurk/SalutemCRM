@@ -26,17 +26,26 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 {
     public OrderEditorControlViewModelSource() => SelectedItem = Order.Default;
 
+    /* Warehouse supplying */
     [ObservableProperty]
     private WarehouseSupply _newOrderWarehouseSupplyInput = new() { WarehouseItem = new() };
 
     [ObservableProperty]
     private ObservableCollection<WarehouseSupply> _orderWarehouseSupplies = new();
 
+
+    /* Manager product sale */
+    [ObservableProperty]
+    private ObservableCollection<ProductTemplate> _orderManagerProduct = new();
+
+
+    /* Mesurement unit */
     [ObservableProperty]
     private ObservableCollection<string> _mesurementUnits = new();
 
     [ObservableProperty]
     private ObservableCollection<string> _currencyUnits = new();
+
 
     partial void OnNewOrderWarehouseSupplyInputChanged(WarehouseSupply value) => value.WarehouseItem = new();
 
@@ -47,9 +56,11 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
 {
     public IObservable<bool>? IfNewItemFilled { get; protected set; }
 
-    public ReactiveCommand<Unit, Unit>? AddNewOrderItem { get; protected set; }
+    public ReactiveCommand<Unit, Unit>? AddNew_WarehouseSupply { get; protected set; }
+    public ReactiveCommand<Unit, Unit>? AddNew_ManagerProductSale { get; protected set; }
 
-    public ReactiveCommand<WarehouseSupply, Unit>? RemoveNewOrderItem { get; protected set; }
+    public ReactiveCommand<WarehouseSupply, Unit>? RemoveNew_WarehouseSupply { get; protected set; }
+    public ReactiveCommand<ProductTemplate, Unit>? RemoveNew_ManagerProductSale { get; protected set; }
 
     public OrderEditorControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -72,7 +83,7 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
                 price > 0.0
         );
 
-        AddNewOrderItem = ReactiveCommand.Create(() => {
+        AddNew_WarehouseSupply = ReactiveCommand.Create(() => {
             Source.OrderWarehouseSupplies.Add(Source.NewOrderWarehouseSupplyInput);
             Source.NewOrderWarehouseSupplyInput
                 .DoInst(x => Source.NewOrderWarehouseSupplyInput = new() {
@@ -83,9 +94,17 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
             Source.CollectionReIndex();
         }, IfNewItemFilled);
 
-        RemoveNewOrderItem = ReactiveCommand.Create<WarehouseSupply>(x => {
+        AddNew_ManagerProductSale = ReactiveCommand.Create(() => {
+            Source.OrderManagerProduct.Add(CRUSProductTemplateControlViewModelSource.GlobalContainer.SelectedItem!);
+        }, CRUSProductTemplateControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
+
+        RemoveNew_WarehouseSupply = ReactiveCommand.Create<WarehouseSupply>(x => {
             Source.OrderWarehouseSupplies.Remove(x);
             Source.CollectionReIndex();
+        });
+
+        RemoveNew_ManagerProductSale = ReactiveCommand.Create<ProductTemplate>(x => {
+            Source.OrderManagerProduct.Remove(x);
         });
     }
 }

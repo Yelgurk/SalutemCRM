@@ -21,6 +21,10 @@ public partial class ProductTemplate : ClonableObservableObject<ProductTemplate>
 
     [NotMapped]
     [ObservableProperty]
+    private bool _haveSerialNumber = false;
+
+    [NotMapped]
+    [ObservableProperty]
     private string? _additionalInfo;
 
 
