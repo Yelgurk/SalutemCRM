@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -95,7 +96,24 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
         }, IfNewItemFilled);
 
         AddNew_ManagerProductSale = ReactiveCommand.Create(() => {
-            Source.OrderManagerProduct.Add(CRUSProductTemplateControlViewModelSource.GlobalContainer.SelectedItem!);
+            CRUSProductTemplateControlViewModelSource.GlobalContainer.SelectedItem!
+            .Do(gsi =>
+            {
+                var x = gsi.Clone();
+                x.Category = gsi.Category;
+                return x;
+            })
+            .Do(x =>
+            {
+                try
+                {
+                    if (Source.OrderManagerProduct.Single(s => s.Name == x.Name && s.Category!.Name == x.Category!.Name) is var match && !match.HaveSerialNumber)
+                        ++match.OrderBasketCount;
+                    else
+                        throw new Exception();
+                }
+                catch { Source.OrderManagerProduct.Add(x); }
+            });
         }, CRUSProductTemplateControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
 
         RemoveNew_WarehouseSupply = ReactiveCommand.Create<WarehouseSupply>(x => {

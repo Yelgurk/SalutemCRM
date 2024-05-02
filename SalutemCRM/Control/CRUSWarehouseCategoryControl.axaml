@@ -289,7 +289,7 @@
 		</Style>
 
 		<Style Selector="TreeDataGrid.custom.editable TreeDataGridRow:selected Button#TreeDataGridEditItemButton">
-			<Setter Property="IsVisible" Value="True"/>
+			<Setter Property="IsVisible" Value="{Binding $parent[UserControl].DataContext.Source.IsFuncEditAvailable}"/>
 		</Style>
 	</UserControl.Styles>
 </UserControl>

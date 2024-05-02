@@ -6,6 +6,7 @@
 			 xmlns:controls="using:SalutemCRM.Control"
 			 xmlns:conv="using:SalutemCRM.Converter"
 			 xmlns:vm="clr-namespace:SalutemCRM.ViewModels"
+			 xmlns:root="using:SalutemCRM"
 			 x:DataType="vm:CRUSWarehouseItemControlViewModel"
              x:Class="SalutemCRM.Control.CRUSWarehouseItemControl"
 			 Design.Width="600"
@@ -72,7 +73,8 @@
 						 IsVisible="{Binding Source.IsListPreview}">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<Label Classes="expander">
+							<Label Classes="expander"
+								   Name="PART_WarehouseItemContainer">
 								<Label.Tag>
 									<Grid>
 										<Grid ColumnDefinitions="auto, auto, *"
@@ -90,10 +92,12 @@
 												<TextBlock FontSize="15" Text="{Binding InnerCode}"/>
 											</DockPanel>
 											<DockPanel Grid.Column="1" Grid.Row="2"
-													   VerticalAlignment="Center">
+													   VerticalAlignment="Center"
+													   DataContext="{x:Static root:Account.Current}"
+													   IsVisible="{Binding IsStockCountInfoVisible}">
 												<TextBlock FontSize="12" Text="Всего на складе: "/>
-												<TextBlock FontSize="12" Text="{Binding TotalInStockCount, FallbackValue=0}"/>
-												<TextBlock FontSize="12" Text="{Binding MesurementUnit}"/>
+												<TextBlock FontSize="12" Text="{Binding DataContext.TotalInStockCount, FallbackValue=0, RelativeSource={RelativeSource TemplatedParent}}"/>
+												<TextBlock FontSize="12" Text="{Binding DataContext.MesurementUnit, RelativeSource={RelativeSource TemplatedParent}}"/>
 											</DockPanel>
 											
 											<Image Tag="{Binding}" Source="{Binding QRBitmap}" Loaded="Image_Loaded"
@@ -110,16 +114,16 @@
 									</Grid>
 								</Label.Tag>
 								<Label.Content>
-									<ItemsControl ItemsSource="{Binding WarehouseSupplying}">
+									<ItemsControl DataContext="{x:Static root:Account.Current}"
+												  IsVisible="{Binding IsStockCountInfoVisible}"
+												  ItemsSource="{Binding #PART_WarehouseItemContainer.DataContext.WarehouseSupplying}">
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
 												<DockPanel>
 													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding InStockCount}"/>
-													<TextBlock FontSize="14" FontWeight="SemiBold" Text=" "/>
-													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding $parent[Label].DataContext.MesurementUnit}"/>
-													<TextBlock FontSize="14" Text="{Binding VendorName}"/>
-													<TextBlock FontSize="14" Text=", код: "/>
-													<TextBlock FontSize="14" Text="{Binding VendorCode}"/>
+													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding #PART_WarehouseItemContainer.DataContext.MesurementUnit, StringFormat='{}{0},'}"/>
+													<TextBlock FontSize="14" Text="{Binding VendorName, StringFormat=' поставщик - {0}'}"/>
+													<TextBlock FontSize="14" Text="{Binding VendorCode, StringFormat=', код: {0}'}"/>
 												</DockPanel>
 											</DataTemplate>
 										</ItemsControl.ItemTemplate>
@@ -130,24 +134,42 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 
-				<DataGrid Grid.Row="1" Grid.ColumnSpan="3" Margin="0 5 0 0"
-						  Classes="custom bind_to_warehouseItem"
-						  ItemsSource="{Binding Source.WarehouseItems}"
-						  SelectedItem="{Binding Source.SelectedItem}"
-						  IsVisible="{Binding !Source.IsListPreview}">
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="Название" Binding="{Binding InnerName}"/>
-						<DataGridTextColumn Header="Код" Binding="{Binding InnerCode}"/>
-						<DataGridTextColumn Header="Ед. изм." Binding="{Binding MesurementUnit}"/>
-						<DataGridTextColumn Header="На складе" Binding="{Binding TotalInStockCount, StringFormat={}{0:0.###}}"/>
-						<DataGridTextColumn Header="Лимит" Binding="{Binding CountRequired, StringFormat={}{0:0.###}}"/>
-						<DataGridTextColumn Header="Статус" Binding="{Binding CountInStockStateToString}"/>
-						<DataGridTextColumn Header="~BYN ед." Binding="{Binding BYNPriceForSingleInStock, StringFormat='{}{0:0.###} руб'}"
-											IsVisible="{Binding $parent[UserControl].DataContext.Source.IsMoneyStatVisible}" />
-						<DataGridTextColumn Header="~BYN итого" Binding="{Binding BYNPriceForTotalInStock, StringFormat='{}{0:0.###} руб'}"
-											IsVisible="{Binding $parent[UserControl].DataContext.Source.IsMoneyStatVisible}"/>
-					</DataGrid.Columns>
-				</DataGrid>
+				<ScrollViewer Grid.Row="1" Grid.ColumnSpan="3" Margin="0 5 0 0"
+							  VerticalScrollBarVisibility="Hidden"
+							  HorizontalScrollBarVisibility="Visible"
+							  IsVisible="{Binding !Source.IsListPreview}">
+					<DataGrid Classes="custom"
+							  Name="PART_DataGridWarehouseList"
+							  DataContext="{x:Static root:Account.Current}"
+							  ItemsSource="{Binding $parent[UserControl].DataContext.Source.WarehouseItems}"
+							  SelectedItem="{Binding $parent[UserControl].DataContext.Source.SelectedItem}"
+							  Classes.bind_to_warehouseItem="{Binding IsStockCountInfoVisible}"
+							  HorizontalScrollBarVisibility="Hidden">
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="Название" Binding="{Binding InnerName}"/>
+
+							<DataGridTextColumn Header="Код" Binding="{Binding InnerCode}"/>
+
+							<DataGridTextColumn Header="Ед. изм." Binding="{Binding MesurementUnit}"
+												IsVisible="{Binding #PART_DataGridWarehouseList.DataContext.IsStockCountInfoVisible}"/>
+
+							<DataGridTextColumn Header="На складе" Binding="{Binding TotalInStockCount, StringFormat={}{0:0.###}}"
+												IsVisible="{Binding #PART_DataGridWarehouseList.DataContext.IsStockCountInfoVisible}"/>
+
+							<DataGridTextColumn Header="Лимит" Binding="{Binding CountRequired, StringFormat={}{0:0.###}}"
+												IsVisible="{Binding #PART_DataGridWarehouseList.DataContext.IsStockCountInfoVisible}"/>
+
+							<DataGridTextColumn Header="Статус" Binding="{Binding CountInStockStateToString}"
+												IsVisible="{Binding #PART_DataGridWarehouseList.DataContext.IsStockCountInfoVisible}"/>
+
+							<DataGridTextColumn Header="~BYN ед." Binding="{Binding BYNPriceForSingleInStock, StringFormat='{}{0:0.###} руб'}"
+												IsVisible="{Binding #PART_DataGridWarehouseList.DataContext.IsMoneyStateInfoVisible}"/>
+
+							<DataGridTextColumn Header="~BYN итого" Binding="{Binding BYNPriceForTotalInStock, StringFormat='{}{0:0.###} руб'}"
+												IsVisible="{Binding #PART_DataGridWarehouseList.DataContext.IsMoneyStateInfoVisible}"/>
+						</DataGrid.Columns>
+					</DataGrid>
+				</ScrollViewer>
 			</Grid>
 		</Grid>
 

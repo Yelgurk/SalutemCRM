@@ -66,12 +66,6 @@ public partial class ReactiveControlSource<T> : ObservableObject, IReactiveContr
     [ObservableProperty]
     private bool _isListPreview = true;
 
-    [ObservableProperty]
-    private bool _isMoneyStatVisible = false;
-
-    [ObservableProperty]
-    private bool _isBossStatVisible = true;
-
     public required int PagesCount { set => ResetPages(value, 0); }
 
     private void ResetPages(int _size, int _isActive)

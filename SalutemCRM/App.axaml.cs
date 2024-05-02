@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SalutemCRM.Database;
@@ -46,6 +47,15 @@ public partial class App : Application
             .Build();
 
         Host!.Services.GetService<FilesContainerService>();
+
+        new Thread(() =>
+        {
+            Thread.Sleep(10000);
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                new Account().SetAccount(User.RootOrBoss);
+            });
+        }).Start();
 
         if (false)
         if (!Design.IsDesignMode)

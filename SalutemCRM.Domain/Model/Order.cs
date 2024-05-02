@@ -57,13 +57,17 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
+    private int _daysOnHold = 0;
+
+    [NotMapped]
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
     private string _currency = "BYN";
 
     [NotMapped]
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PriceTotalBYN))]
-    private double _unitToBYNConversion;
+    private double _unitToBYNConversion = 1.00;
 
     [NotMapped]
     [ObservableProperty]

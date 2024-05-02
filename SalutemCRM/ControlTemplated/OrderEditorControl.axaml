@@ -50,7 +50,7 @@
 								</Label>
 							</Grid>
 
-							<Grid IsVisible="True">
+							<Grid IsVisible="False">
 								<ItemsControl Classes="horizontal">
 									<Label Classes="card tag"
 										   Tag="Продаваемое оборудование [поиск + выбор]"
@@ -64,6 +64,101 @@
 
 									<Label Classes="card tag"
 										   Tag="Продаваемое оборудование [в заявке]"
+										   Margin="5"
+										   Height="400"
+										   IsVisible="True">
+										<Grid RowDefinitions="auto, auto, *, auto" Background="White">
+											<StackPanel Classes="background"
+														Grid.Row="0"
+														Margin="0 40 0 0">
+												
+												<DockPanel HorizontalAlignment="Center"
+														   DataContext="{x:Static vm:CRUSProductTemplateControlViewModelSource.GlobalContainer}">
+													<TextBlock FontSize="15" Text="Продукт: "/>
+													<TextBlock FontSize="15" Text="{Binding SelectedItem.Category.Name, FallbackValue=[не выбрано]}"/>
+													<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding SelectedItem.Name, StringFormat=', {0}', FallbackValue={}}"/>
+												</DockPanel>
+
+												<Label Padding="10 5">
+													<Button Classes="custom orange whiteText"
+															Height="40"
+															HorizontalAlignment="Stretch"
+															FontWeight="SemiBold"
+															Command="{Binding AddNew_ManagerProductSale}">
+														<TextBlock FontSize="15" FontWeight="SemiBold" Text="Добавить +"
+																   HorizontalAlignment="Center"/>
+													</Button>
+												</Label>
+											</StackPanel>
+
+											<TextBlock Text="Список:"
+													   Margin="10 10 0 5"
+													   FontSize="15"
+													   Grid.Row="1"
+													   HorizontalAlignment="Left"/>
+
+											<ScrollViewer VerticalScrollBarVisibility="Auto"
+														  Grid.Row="2">
+												<ListBox Classes="custom zebra unmarked"
+														 ItemsSource="{Binding Source.OrderManagerProduct}"
+														 BorderThickness="0 1 0 0"
+														 BorderBrush="{DynamicResource Primary_DarkBlue}">
+													<ListBox.ItemTemplate>
+														<DataTemplate>
+															<Grid ColumnDefinitions="auto, *"
+																  Margin="10 0 0 0">
+																<DockPanel VerticalAlignment="Center">
+																	<TextBlock FontSize="15" Text="{Binding Category.Name, StringFormat='{}{0}, '}"/>
+																	<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding Name}"/>
+																</DockPanel>
+
+																<DockPanel Grid.ColumnSpan="2"
+																		   HorizontalAlignment="Right"
+																		   Margin="0 0 5 0">
+																	<TextBlock Text="Кол-во: "
+																			   VerticalAlignment="Center"/>
+																	<TextBox Classes="custom header"
+																			 Margin="0 0 5 0"
+																			 HorizontalAlignment="Right"
+																			 HorizontalContentAlignment="Center"
+																			 Text="{Binding OrderBasketCount}"
+																			 IsReadOnly="{Binding HaveSerialNumber}"/>
+																	<Button HorizontalAlignment="Right"
+																			Classes="custom iconed pink rounded sys close"
+																			Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNew_ManagerProductSale}"
+																			CommandParameter="{Binding}"/>
+																</DockPanel>
+															</Grid>
+														</DataTemplate>
+													</ListBox.ItemTemplate>
+												</ListBox>
+											</ScrollViewer>
+
+											<TextBlock Text="Заявка пуста!"
+													   FontSize="18"
+													   HorizontalAlignment="Center"
+													   VerticalAlignment="Center"
+													   Grid.Row="2"
+													   IsVisible="{Binding !Source.OrderManagerProduct.Count}"/>
+										</Grid>
+									</Label>
+								</ItemsControl>
+							</Grid>
+							
+							<Grid IsVisible="True">
+								<ItemsControl Classes="horizontal">
+									<Label Classes="card tag"
+										   Tag="Поставляемые товары (со склада) [поиск + выбор]"
+										   Background="White"
+										   Margin="5"
+										   Height="400"
+										   IsVisible="True">
+										<f_contr:WarehouseGeneral VerticalAlignment="Stretch"
+																  DataContext="{TemplateBinding ControlInjectionUIAddEditLock, Mode=OneWayToSource}"/>
+									</Label>
+
+									<Label Classes="card tag"
+										   Tag="Поставляемые товары (со склада) [в заявке]"
 										   Margin="5"
 										   Height="400"
 										   IsVisible="True">
@@ -217,7 +312,7 @@
 												<DataGridTextColumn Header="Кол-во"			Binding="{Binding OrderCount}"/>
 												<DataGridTextColumn Header="Ед. изм."		Binding="{Binding WarehouseItem.MesurementUnit}"/>
 												<DataGridTextColumn Header="Цена/ед"		Binding="{Binding PriceForSingleItemInput}"/>
-												<DataGridTextColumn Header="Цена/итого"		Binding="{Binding PriceTotal}" IsReadOnly="True"/>
+												<DataGridTextColumn Header="Цена/итого"		Binding="{Binding PriceTotalInput}" IsReadOnly="True"/>
 												<DataGridTextColumn Header="Валюта"			Binding="{Binding Currency}"/>
 												<DataGridTextColumn Header="Курс"			Binding="{Binding UnitToBYNConversion}"/>
 												<DataGridTextColumn Header="Итого/BYN"		Binding="{Binding OrderPriceTotalBYN}"/>
@@ -249,7 +344,7 @@
 												  SelectedIndex="{Binding Source.SelectedItem.PaymentAgreement}"
 												  Margin="5 40 5 5"/>
 
-										<Grid ColumnDefinitions="*, auto"
+										<Grid ColumnDefinitions="*, auto, auto"
 											  RowDefinitions="auto, auto"
 											  Background="White"
 											  Margin="5">
@@ -262,13 +357,25 @@
 											<TextBox Classes="custom header"
 													 Text="{Binding Source.SelectedItem.PriceRequired}"
 													 IsVisible="{Binding Source.SelectedItem.IsPaymentPartial}"
-													 Watermark="Необходимая предоплата"
+													 Watermark="Необходимая предоплата [для старта производства]"
 													 Grid.Row="1"
 													 Margin="0 15 5 0"/>
+											<TextBox Classes="custom header"
+													 Text="{Binding Source.SelectedItem.UnitToBYNConversion}"
+													 IsVisible="{Binding Source.SelectedItem.IsPaymentRequired}"
+													 Classes.vertical_stretch="{Binding !Source.SelectedItem.IsPaymentPartial}"
+													 Watermark="Курс к BYN"
+													 Grid.RowSpan="2"
+													 Grid.Column="1"
+													 HorizontalContentAlignment="Center"
+													 VerticalContentAlignment="Center"
+													 VerticalAlignment="Stretch"
+													 Margin="0 5 5 0"/>
+											
 											<ComboBox Classes="custom"
 													  Classes.vertical_stretch="{Binding !Source.SelectedItem.IsPaymentPartial}"
 													  IsVisible="{Binding Source.SelectedItem.IsPaymentRequired}"
-													  Grid.Column="1"
+													  Grid.Column="2"
 													  Grid.RowSpan="2"
 													  Margin="0 5 0 0"
 													  VerticalAlignment="Stretch"
@@ -280,9 +387,20 @@
 
 								<Label Classes="card tag" Margin="5"
 									   Background="White"
+									   Padding="5"
 									   Tag="Условия доставки"
 									   IsVisible="True">
-
+									<StackPanel Background="White">
+										<TextBox Classes="custom header"
+												 Watermark="Кол-во РАБОЧИХ дней на производство + доставку"
+												 HorizontalAlignment="Stretch"
+												 VerticalAlignment="Top"
+												 Text="{Binding Source.SelectedItem.DaysOnHold}"
+												 Margin="5 45 5 5"/>
+										<TextBlock TextWrapping="Wrap"
+												   Text="Пояснение: именно столько дней будет дано на производство и отгрузку оборудования и/или иных изделий с момента, как будут выполнены условия частичной или полной оплаты, в зависимости от указанных условий в соответсвующем разделе."
+												   Margin="5 0 5 5"/>
+									</StackPanel>
 								</Label>
 							</ItemsControl>
 
@@ -291,7 +409,21 @@
 									   Background="White"
 									   Height="400"
 									   Tag="Дополнительная информация">
-
+									<Grid Background="White"
+										  RowDefinitions="auto, *"
+										  ColumnDefinitions="*, 5">
+										<TextBlock TextWrapping="Wrap"
+												   Text="Добавьте всю необходимую информацию касаемо особенностей заказа, требования, пожелания, просьбы клиента, которые могут быть полезны и/или должны быть учтены на этапах производства, доставки и/или оказания услуг клиенту."
+												   Margin="5 40 5 10"
+												   Grid.Row="0"/>
+										<TextBox Classes="custom header"
+											 Watermark="Дополнительная инфомрация"
+											 Text="{Binding Source.SelectedItem.AdditionalInfo}"
+											 TextWrapping="Wrap"
+											 AcceptsReturn="True"
+											 Margin="5 5 0 5"
+											 Grid.Row="1"/>
+									</Grid>
 								</Label>
 
 								<Label Classes="card tag" Margin="5"
@@ -323,6 +455,10 @@
 	<Style Selector="controls|OrderEditorControl ComboBox.custom.vertical_stretch">
 		<Setter Property="Height" Value="44"/>
 		<Setter Property="Margin" Value="0 5 0 -44"/>
+		<Setter Property="VerticalAlignment" Value="Top"/>
+	</Style>
+
+	<Style Selector="controls|OrderEditorControl TextBox.custom.vertical_stretch">
 		<Setter Property="VerticalAlignment" Value="Top"/>
 	</Style>
 </Styles>
