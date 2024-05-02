@@ -43,5 +43,17 @@ public partial class WarehouseItem
         set => SetProperty(ref _qRBitmap, value);
     }
 
+    [NotMapped]
+    private int _orderBuilder_Count = 1;
+
+    [NotMapped]
+    public int OrderBuilder_Count
+    {
+        get => _orderBuilder_Count;
+        set => value
+            .Do(x => _orderBuilder_Count = x)
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_Count)));
+    }
+
     partial void OnCountRequiredChanged(double value) => CountRequired = Double.IsNaN(value) ? 0 : value;
 }

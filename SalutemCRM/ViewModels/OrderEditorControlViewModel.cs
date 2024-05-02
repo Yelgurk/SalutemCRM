@@ -40,6 +40,11 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
     private ObservableCollection<ProductTemplate> _orderManagerProduct = new();
 
 
+    /* Service warehouse item sale */
+    [ObservableProperty]
+    private ObservableCollection<WarehouseItem> _orderServiceItem = new();
+
+
     /* Mesurement unit */
     [ObservableProperty]
     private ObservableCollection<string> _mesurementUnits = new();
@@ -57,9 +62,11 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
 
     public ReactiveCommand<Unit, Unit>? AddNew_WarehouseSupply { get; protected set; }
     public ReactiveCommand<Unit, Unit>? AddNew_ManagerProductSale { get; protected set; }
+    public ReactiveCommand<Unit, Unit>? AddNew_ServiceItemSale { get; protected set; }
 
     public ReactiveCommand<WarehouseSupply, Unit>? RemoveNew_WarehouseSupply { get; protected set; }
     public ReactiveCommand<ProductTemplate, Unit>? RemoveNew_ManagerProductSale { get; protected set; }
+    public ReactiveCommand<WarehouseItem, Unit>? RemoveNew_ServiceItemSale { get; protected set; }
 
     public OrderEditorControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -113,6 +120,27 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
             });
         }, CRUSProductTemplateControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
 
+        AddNew_ServiceItemSale = ReactiveCommand.Create(() => {
+            CRUSWarehouseItemControlViewModelSource.GlobalContainer.SelectedItem!
+            .Do(gsi =>
+            {
+                var x = gsi.Clone();
+                x.Category = gsi.Category;
+                return x;
+            })
+            .Do(x =>
+            {
+                try
+                {
+                    if (Source.OrderServiceItem.Single(s => s.InnerName == x.InnerName && s.InnerCode == x.InnerCode) is var match)
+                        ++match.OrderBuilder_Count;
+                    else
+                        throw new Exception();
+                }
+                catch { Source.OrderServiceItem.Add(x); }
+            });
+        }, CRUSWarehouseItemControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
+
         RemoveNew_WarehouseSupply = ReactiveCommand.Create<WarehouseSupply>(x => {
             Source.OrderWarehouseSupplies.Remove(x);
             Source.CollectionReIndex();
@@ -120,6 +148,10 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
 
         RemoveNew_ManagerProductSale = ReactiveCommand.Create<ProductTemplate>(x => {
             Source.OrderManagerProduct.Remove(x);
+        });
+
+        RemoveNew_ServiceItemSale = ReactiveCommand.Create<WarehouseItem>(x => {
+            Source.OrderServiceItem.Remove(x);
         });
     }
 }

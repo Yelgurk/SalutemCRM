@@ -168,10 +168,10 @@
 														Margin="0 40 0 0">
 												
 												<DockPanel HorizontalAlignment="Center"
-														   DataContext="{x:Static vm:CRUSProductTemplateControlViewModelSource.GlobalContainer}">
-													<TextBlock FontSize="15" Text="Продукт: "/>
+														   DataContext="{x:Static vm:CRUSWarehouseItemControlViewModelSource.GlobalContainer}">
+													<TextBlock FontSize="15" Text="Позиция со склада: "/>
 													<TextBlock FontSize="15" Text="{Binding SelectedItem.Category.Name, FallbackValue=[не выбрано]}"/>
-													<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding SelectedItem.Name, StringFormat=', {0}', FallbackValue={}}"/>
+													<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding SelectedItem.InnerName, StringFormat=', {0}', FallbackValue={}}"/>
 												</DockPanel>
 
 												<Label Padding="10 5">
@@ -179,7 +179,7 @@
 															Height="40"
 															HorizontalAlignment="Stretch"
 															FontWeight="SemiBold"
-															Command="{Binding AddNew_ManagerProductSale}">
+															Command="{Binding AddNew_ServiceItemSale}">
 														<TextBlock FontSize="15" FontWeight="SemiBold" Text="Добавить +"
 																   HorizontalAlignment="Center"/>
 													</Button>
@@ -195,7 +195,7 @@
 											<ScrollViewer VerticalScrollBarVisibility="Auto"
 														  Grid.Row="2">
 												<ListBox Classes="custom zebra unmarked"
-														 ItemsSource="{Binding Source.OrderManagerProduct}"
+														 ItemsSource="{Binding Source.OrderServiceItem}"
 														 BorderThickness="0 1 0 0"
 														 BorderBrush="{DynamicResource Primary_DarkBlue}">
 													<ListBox.ItemTemplate>
@@ -204,7 +204,8 @@
 																  Margin="10 0 0 0">
 																<DockPanel VerticalAlignment="Center">
 																	<TextBlock FontSize="15" Text="{Binding Category.Name, StringFormat='{}{0}, '}"/>
-																	<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding Name}"/>
+																	<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding InnerName}"/>
+																	<TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding InnerCode, StringFormat=' [{0}]'}"/>
 																</DockPanel>
 
 																<DockPanel Grid.ColumnSpan="2"
@@ -216,11 +217,11 @@
 																			 Margin="0 0 5 0"
 																			 HorizontalAlignment="Right"
 																			 HorizontalContentAlignment="Center"
-																			 Text="{Binding OrderBasketCount}"
+																			 Text="{Binding OrderBuilder_Count}"
 																			 IsReadOnly="{Binding HaveSerialNumber}"/>
 																	<Button HorizontalAlignment="Right"
 																			Classes="custom iconed pink rounded sys close"
-																			Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNew_ManagerProductSale}"
+																			Command="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.RemoveNew_ServiceItemSale}"
 																			CommandParameter="{Binding}"/>
 																</DockPanel>
 															</Grid>
@@ -234,7 +235,7 @@
 													   HorizontalAlignment="Center"
 													   VerticalAlignment="Center"
 													   Grid.Row="2"
-													   IsVisible="{Binding !Source.OrderManagerProduct.Count}"/>
+													   IsVisible="{Binding !Source.OrderServiceItem.Count}"/>
 										</Grid>
 									</Label>
 								</ItemsControl>

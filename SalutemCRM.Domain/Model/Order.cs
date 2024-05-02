@@ -57,7 +57,7 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
-    private int _daysOnHold = 0;
+    private int _daysOnHold = 10;
 
     [NotMapped]
     [ObservableProperty]
