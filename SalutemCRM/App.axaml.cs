@@ -48,14 +48,7 @@ public partial class App : Application
 
         Host!.Services.GetService<FilesContainerService>();
 
-        new Thread(() =>
-        {
-            Thread.Sleep(10000);
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                new Account().SetAccount(User.RootOrBoss);
-            });
-        }).Start();
+        new Account().SetAccount(User.RootOrBoss);
 
         if (false)
         if (!Design.IsDesignMode)

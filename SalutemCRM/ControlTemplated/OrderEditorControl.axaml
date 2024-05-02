@@ -50,7 +50,7 @@
 								</Label>
 							</Grid>
 
-							<Grid IsVisible="False">
+							<Grid IsVisible="True">
 								<ItemsControl Classes="horizontal">
 									<Label Classes="card tag"
 										   Tag="Продаваемое оборудование [поиск + выбор]"
@@ -240,7 +240,7 @@
 								</ItemsControl>
 							</Grid>
 
-							<Grid IsVisible="False">
+							<Grid IsVisible="True">
 								<Label Classes="card tag"
 									   Tag="Позиции на закупку (цены с НДС)"
 									   Background="White"
@@ -248,44 +248,38 @@
 									   IsVisible="True">
 									<Grid Background="White"
 										  RowDefinitions="auto, auto, auto, auto">
-										<Grid ColumnDefinitions="*, 120, 90, 90, 120, 120, auto, 5"
+										<Grid ColumnDefinitions="*, 120, 90, 90, 120, auto, 5"
 											  Background="White"
 											  Margin="0 35 0 0"
 											  DataContext="{Binding Source}">
 											<TextBox Classes="custom header "
-													 Text="{Binding NewOrderWarehouseSupplyInput.WarehouseItem.InnerName}"
+													 Text="{Binding NewOrderWarehouseSupplyInput.VendorName}"
 													 Watermark="Наименование"
 													 Margin="5"
 													 Grid.Column="0"/>
 											<TextBox Classes="custom header "
-													 Text="{Binding NewOrderWarehouseSupplyInput.OrderCount}"
+													 Text="{Binding NewOrderWarehouseSupplyInput.OrderBuilder_Count}"
 													 Watermark="Кол-во"
 													 Margin="0 5 5 5"
 													 Grid.Column="1"/>
-											<ComboBox Classes="custom header"
-													  Margin="0 5 5 5"
-													  Height="44"
-													  SelectedItem="{Binding NewOrderWarehouseSupplyInput.WarehouseItem.MesurementUnit}"
-													  ItemsSource="{Binding MesurementUnits}"
-													  Grid.Column="2"/>
 											<TextBox Classes="custom header "
-													 Text="{Binding NewOrderWarehouseSupplyInput.PriceForSingleItemInput}"
+													 Text="{Binding NewOrderWarehouseSupplyInput.OrderBuilder_PriceSingle}"
 													 Watermark="Цена/ед."
 													 Margin="0 5 5 5"
-													 Grid.Column="3"/>
+													 Grid.Column="2"/>
 											<ComboBox Classes="custom header"
 													  Margin="0 5 5 5"
 													  Height="44"
 													  SelectedItem="{Binding NewOrderWarehouseSupplyInput.Currency}"
 													  ItemsSource="{Binding CurrencyUnits}"
-													  Grid.Column="4"/>
+													  Grid.Column="3"/>
 											<TextBox Classes="custom header "
-													 Text="{Binding NewOrderWarehouseSupplyInput.UnitToBYNConversion}"
+													 Text="{Binding NewOrderWarehouseSupplyInput.OrderBuilder_ToBYNConv}"
 													 Watermark="Курс к BYN"
 													 Margin="0 5 5 5"
-													 Grid.Column="5"/>
+													 Grid.Column="4"/>
 											<Button Classes="custom iconed orange plus rounded"
-													Grid.Column="6"
+													Grid.Column="5"
 													Height="44"
 													Width="{Binding $self.Bounds.Height}"
 													CornerRadius="5"
@@ -308,14 +302,13 @@
 												  ItemsSource="{Binding Source.OrderWarehouseSupplies}">
 											<DataGrid.Columns>
 												<DataGridTextColumn Header="№"				Binding="{Binding Id, StringFormat='{}{0}.'}"/>
-												<DataGridTextColumn Header="Наименование"	Binding="{Binding WarehouseItem.InnerName}"/>
-												<DataGridTextColumn Header="Кол-во"			Binding="{Binding OrderCount}"/>
-												<DataGridTextColumn Header="Ед. изм."		Binding="{Binding WarehouseItem.MesurementUnit}"/>
-												<DataGridTextColumn Header="Цена/ед"		Binding="{Binding PriceForSingleItemInput}"/>
-												<DataGridTextColumn Header="Цена/итого"		Binding="{Binding PriceTotalInput}" IsReadOnly="True"/>
+												<DataGridTextColumn Header="Наименование"	Binding="{Binding VendorName}"/>
+												<DataGridTextColumn Header="Кол-во"			Binding="{Binding OrderBuilder_Count}"/>
+												<DataGridTextColumn Header="Цена/ед"		Binding="{Binding OrderBuilder_PriceSingle}"/>
+												<DataGridTextColumn Header="Цена/итого"		Binding="{Binding OrderBuilder_PriceTotal}" IsReadOnly="True"/>
 												<DataGridTextColumn Header="Валюта"			Binding="{Binding Currency}"/>
-												<DataGridTextColumn Header="Курс"			Binding="{Binding UnitToBYNConversion}"/>
-												<DataGridTextColumn Header="Итого/BYN"		Binding="{Binding OrderPriceTotalBYN}"/>
+												<DataGridTextColumn Header="Курс"			Binding="{Binding OrderBuilder_ToBYNConv}"/>
+												<DataGridTextColumn Header="Итого/BYN"		Binding="{Binding OrderBuilder_PriceTotalBYN}"/>
 												<DataGridTemplateColumn Width="auto" Header="Убрать">
 													<DataGridTemplateColumn.CellTemplate>
 														<DataTemplate>

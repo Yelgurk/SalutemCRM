@@ -19,23 +19,50 @@ public partial class WarehouseSupply
     public double InStockPriceTotalBYN { get => OrderPriceSingleBYN * InStockCount; }
 
     [NotMapped]
-    public double PriceTotalInput = 0;
+    private double _orderBuilder_Count = 0;
 
     [NotMapped]
-    private double _priceForSingleItemInput = 0.0;
+    private double _orderBuilder_PriceSingle = 0;
 
     [NotMapped]
-    public double PriceForSingleItemInput
+    private double _orderBuilder_ToBYNConv = 1.00;
+
+    [NotMapped]
+    public double OrderBuilder_PriceTotal => OrderBuilder_Count * OrderBuilder_PriceSingle;
+
+    [NotMapped]
+    public double OrderBuilder_PriceTotalBYN => OrderBuilder_PriceTotal * OrderBuilder_ToBYNConv;
+
+    [NotMapped]
+    public double OrderBuilder_Count
     {
-        get => _priceForSingleItemInput;
-        set
-        {
-            _priceForSingleItemInput = value;
-            PriceTotalInput = value * OrderCount;
-            OnPropertyChanged(nameof(PriceTotalInput));
-            OnPropertyChanged(nameof(PriceForSingleItemInput));
-        }
+        get => _orderBuilder_Count;
+        set => value
+            .Do(x => _orderBuilder_Count = x)
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_Count)))
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotal)))
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotalBYN)));
     }
 
-    partial void OnOrderCountChanged(double value) => PriceTotalInput = PriceForSingleItemInput * value;
+    [NotMapped]
+    public double OrderBuilder_PriceSingle
+    {
+        get => _orderBuilder_PriceSingle;
+        set => value
+            .Do(x => _orderBuilder_PriceSingle = x)
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceSingle)))
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotal)))
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotalBYN)));
+    }
+
+    [NotMapped]
+    public double OrderBuilder_ToBYNConv
+    {
+        get => _orderBuilder_ToBYNConv;
+        set => value
+            .Do(x => _orderBuilder_ToBYNConv = x)
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_ToBYNConv)))
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotal)))
+            .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotalBYN)));
+    }
 }

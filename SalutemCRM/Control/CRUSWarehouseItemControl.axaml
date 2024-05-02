@@ -114,20 +114,31 @@
 									</Grid>
 								</Label.Tag>
 								<Label.Content>
-									<ItemsControl DataContext="{x:Static root:Account.Current}"
-												  IsVisible="{Binding IsStockCountInfoVisible}"
-												  ItemsSource="{Binding #PART_WarehouseItemContainer.DataContext.WarehouseSupplying}">
-										<ItemsControl.ItemTemplate>
-											<DataTemplate>
-												<DockPanel>
-													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding InStockCount}"/>
-													<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding #PART_WarehouseItemContainer.DataContext.MesurementUnit, StringFormat='{}{0},'}"/>
-													<TextBlock FontSize="14" Text="{Binding VendorName, StringFormat=' поставщик - {0}'}"/>
-													<TextBlock FontSize="14" Text="{Binding VendorCode, StringFormat=', код: {0}'}"/>
-												</DockPanel>
-											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-									</ItemsControl>
+									<StackPanel>
+										<ItemsControl DataContext="{x:Static root:Account.Current}"
+													  IsVisible="{Binding IsStockCountInfoVisible}"
+													  ItemsSource="{Binding #PART_WarehouseItemContainer.DataContext.WarehouseSupplying}">
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<DockPanel>
+														<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding InStockCount}"/>
+														<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding #PART_WarehouseItemContainer.DataContext.MesurementUnit, StringFormat='{}{0}, '}"/>
+														<TextBlock FontSize="14" Text="{Binding VendorName}"/>
+														<TextBlock FontSize="14" Text="{Binding VendorCode, StringFormat=' [{0}]'}"/>
+													</DockPanel>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+										<Grid DataContext="{x:Static root:Account.Current}"
+											  IsVisible="{Binding IsStockCountInfoVisible}">
+											<TextBlock Text="На складе не осталось таких позиций"
+													   IsVisible="{Binding !#PART_WarehouseItemContainer.DataContext.WarehouseSupplying.Count}"/>
+										</Grid>
+										<Grid DataContext="{x:Static root:Account.Current}"
+											  IsVisible="{Binding !IsStockCountInfoVisible}">
+											<TextBlock Text="Вам недоступна информация по наличию на складе"/>
+										</Grid>
+									</StackPanel>
 								</Label.Content>
 							</Label>
 						</DataTemplate>

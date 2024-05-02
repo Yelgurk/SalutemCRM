@@ -28,7 +28,7 @@ public partial class WarehouseItem
         "неизвестная ошибка";
 
     [NotMapped]
-    public double BYNPriceForSingleInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum() / TotalInStockCount; }
+    public double BYNPriceForSingleInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum() / (TotalInStockCount > 0.0 ? TotalInStockCount : 1); }
 
     [NotMapped]
     public double BYNPriceForTotalInStock { get => WarehouseSupplying.Select(x => x.InStockPriceTotalBYN).Sum(); }

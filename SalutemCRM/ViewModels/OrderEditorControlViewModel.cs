@@ -29,7 +29,7 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 
     /* Warehouse supplying */
     [ObservableProperty]
-    private WarehouseSupply _newOrderWarehouseSupplyInput = new() { WarehouseItem = new() };
+    private WarehouseSupply _newOrderWarehouseSupplyInput = new();
 
     [ObservableProperty]
     private ObservableCollection<WarehouseSupply> _orderWarehouseSupplies = new();
@@ -47,8 +47,6 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
     [ObservableProperty]
     private ObservableCollection<string> _currencyUnits = new();
 
-
-    partial void OnNewOrderWarehouseSupplyInputChanged(WarehouseSupply value) => value.WarehouseItem = new();
 
     public void CollectionReIndex() => 0.Do(x => OrderWarehouseSupplies.DoForEach(y => y.Id = ++x));
 }
@@ -71,10 +69,10 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
                 .DoInst(x => Source.CurrencyUnits = new(db.CurrencyUnits.Select(y => y.Name)));
 
         IfNewItemFilled = this.WhenAnyValue(
-            x => x.Source!.NewOrderWarehouseSupplyInput.WarehouseItem.InnerName,
+            x => x.Source!.NewOrderWarehouseSupplyInput.VendorName,
             x => x.Source!.NewOrderWarehouseSupplyInput.Currency,
-            x => x.Source!.NewOrderWarehouseSupplyInput.OrderCount,
-            x => x.Source!.NewOrderWarehouseSupplyInput.OrderPriceSingleBYN,
+            x => x.Source!.NewOrderWarehouseSupplyInput.OrderBuilder_Count,
+            x => x.Source!.NewOrderWarehouseSupplyInput.OrderBuilder_PriceSingle,
             (name, curr_u, count, price) =>
                 !string.IsNullOrWhiteSpace(name) &&
                 !string.IsNullOrWhiteSpace(curr_u) &&
@@ -88,7 +86,6 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
             Source.OrderWarehouseSupplies.Add(Source.NewOrderWarehouseSupplyInput);
             Source.NewOrderWarehouseSupplyInput
                 .DoInst(x => Source.NewOrderWarehouseSupplyInput = new() {
-                    WarehouseItem = new(),
                     Currency = x.Currency,
                     UnitToBYNConversion = x.UnitToBYNConversion
                 });
