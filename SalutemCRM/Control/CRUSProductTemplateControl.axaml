@@ -68,7 +68,7 @@
 									<TextBlock FontSize="15" Text="{Binding Name}" FontWeight="SemiBold"/>
 								</DockPanel>
 								<DockPanel Grid.Column="0" Grid.Row="1">
-									<TextBlock FontSize="13" Text="Позиций: "/>
+									<TextBlock FontSize="13" Text="деталей: "/>
 									<TextBlock FontSize="13" Text="{Binding ProductSchemas.Count}"/>
 								</DockPanel>
 

@@ -32,6 +32,8 @@ public partial class Order : ClonableObservableObject<Order>
     [NotMapped]
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsCustomerOrder))]
+    [NotifyPropertyChangedFor(nameof(IsManagerSales))]
+    [NotifyPropertyChangedFor(nameof(IsWarehouseRestocking))]
     [NotifyPropertyChangedFor(nameof(IsServiceOrder))]
     private Order_Type _orderType;
 

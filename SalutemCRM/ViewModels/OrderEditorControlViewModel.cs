@@ -54,6 +54,57 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 
 
     public void CollectionReIndex() => 0.Do(x => OrderWarehouseSupplies.DoForEach(y => y.Id = ++x));
+
+    public void ClearOrderBuilder()
+    {
+        SelectedItem = Order.Default;
+        NewOrderWarehouseSupplyInput = new();
+        OrderWarehouseSupplies.Clear();
+        OrderManagerProduct.Clear();
+        OrderServiceItem.Clear();
+    }
+
+    public void CreateNewOrderBasedOnBuilder()
+    {
+        new Order()
+            .Do(order =>
+            {
+                order.OrderType = SelectedItem!.OrderType;
+                order.PaymentAgreement = SelectedItem!.PaymentAgreement;
+                order.PaymentStatus = SelectedItem!.PaymentAgreement == Payment_Status.Unpaid ? Payment_Status.FullyPaid : Payment_Status.Unpaid;
+                order.TaskStatus = Task_Status.AwaitPayment;
+                order.AdditionalInfo = SelectedItem!.AdditionalInfo;
+                order.DaysOnHold = SelectedItem!.DaysOnHold;
+
+                return order.OrderType switch
+                {
+                    Order_Type.ManagerSale => order.Do(x =>
+                    {
+                        
+                    }),
+
+                    Order_Type.CustomerService => order.Do(x =>
+                    {
+                    }),
+
+                    Order_Type.WarehouseRestocking => order.Do(x =>
+                    {
+                    }),
+
+                    _ => null
+                };
+            })?
+            .Do(x =>
+            {
+                using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                {
+                    db.Orders.Add(x);
+                    db.SaveChanges();
+                }
+            });
+
+        ClearOrderBuilder();
+    }
 }
 
 public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEditorControlViewModelSource>
@@ -67,6 +118,9 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
     public ReactiveCommand<WarehouseSupply, Unit>? RemoveNew_WarehouseSupply { get; protected set; }
     public ReactiveCommand<ProductTemplate, Unit>? RemoveNew_ManagerProductSale { get; protected set; }
     public ReactiveCommand<WarehouseItem, Unit>? RemoveNew_ServiceItemSale { get; protected set; }
+
+    public ReactiveCommand<Unit, Unit>? AcceptNewOrder { get; protected set; }
+    public ReactiveCommand<Unit, Unit>? ClearNewOrder { get; protected set; }
 
     public OrderEditorControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -153,5 +207,9 @@ public partial class OrderEditorControlViewModel : ViewModelBase<Order, OrderEdi
         RemoveNew_ServiceItemSale = ReactiveCommand.Create<WarehouseItem>(x => {
             Source.OrderServiceItem.Remove(x);
         });
+
+        AcceptNewOrder = ReactiveCommand.Create(Source.CreateNewOrderBasedOnBuilder);
+
+        ClearNewOrder = ReactiveCommand.Create(Source.ClearOrderBuilder);
     }
 }

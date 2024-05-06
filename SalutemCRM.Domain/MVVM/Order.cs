@@ -24,6 +24,12 @@ public partial class Order
     public bool IsCustomerOrder => OrderType == Order_Type.WarehouseRestocking ? false : true;
 
     [NotMapped]
+    public bool IsManagerSales => OrderType == Order_Type.ManagerSale ? true : false;
+
+    [NotMapped]
+    public bool IsWarehouseRestocking => OrderType == Order_Type.WarehouseRestocking ? true : false;
+
+    [NotMapped]
     public bool IsServiceOrder => OrderType == Order_Type.CustomerService ? true : false;
 
     [NotMapped]

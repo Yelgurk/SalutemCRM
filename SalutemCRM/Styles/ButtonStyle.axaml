@@ -92,14 +92,16 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border>
-					<Grid ColumnDefinitions="*, auto, *">
+					<Grid ColumnDefinitions="*, auto, auto, *">
 						<Label Content="{TemplateBinding Content}"
 							   Padding="0"
 							   FontSize="16"
-							   VerticalAlignment="Center"/>
+							   VerticalAlignment="Center"
+							   Grid.Column="1"/>
 						<Image Width="24"
 							   Height="24"
-							   Grid.Column="1"/>
+							   Grid.Column="2"
+							   VerticalAlignment="Center"/>
 					</Grid>
 				</Border>
 			</ControlTemplate>

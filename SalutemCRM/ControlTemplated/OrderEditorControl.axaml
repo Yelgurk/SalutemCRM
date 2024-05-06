@@ -50,7 +50,7 @@
 								</Label>
 							</Grid>
 
-							<Grid IsVisible="True">
+							<Grid IsVisible="{Binding Source.SelectedItem.IsManagerSales}">
 								<ItemsControl Classes="horizontal">
 									<Label Classes="card tag"
 										   Tag="Продаваемое оборудование [поиск + выбор]"
@@ -145,7 +145,7 @@
 								</ItemsControl>
 							</Grid>
 							
-							<Grid IsVisible="True">
+							<Grid IsVisible="{Binding Source.SelectedItem.IsServiceOrder}">
 								<ItemsControl Classes="horizontal">
 									<Label Classes="card tag"
 										   Tag="Поставляемые товары (со склада) [поиск + выбор]"
@@ -241,7 +241,7 @@
 								</ItemsControl>
 							</Grid>
 
-							<Grid IsVisible="True">
+							<Grid IsVisible="{Binding Source.SelectedItem.IsWarehouseRestocking}">
 								<Label Classes="card tag"
 									   Tag="Позиции на закупку (цены с НДС)"
 									   Background="White"
@@ -382,17 +382,17 @@
 								<Label Classes="card tag" Margin="5"
 									   Background="White"
 									   Padding="5"
-									   Tag="Условия доставки"
+									   Tag="Условия доставки/оказания услуг"
 									   IsVisible="True">
 									<StackPanel Background="White">
 										<TextBox Classes="custom header"
-												 Watermark="Кол-во РАБОЧИХ дней на производство + доставку"
+												 Watermark="Кол-во РАБОЧИХ дней на производство + доставку или оказание услуг"
 												 HorizontalAlignment="Stretch"
 												 VerticalAlignment="Top"
 												 Text="{Binding Source.SelectedItem.DaysOnHold}"
 												 Margin="5 45 5 5"/>
 										<TextBlock TextWrapping="Wrap"
-												   Text="Пояснение: именно столько дней будет дано на производство и отгрузку оборудования и/или иных изделий с момента, как будут выполнены условия частичной или полной оплаты, в зависимости от указанных условий в соответсвующем разделе."
+												   Text="Пояснение: именно столько дней будет дано на оказание услуг/производство и отгрузку оборудования и/или иных изделий с момента, как будут выполнены условия частичной или полной оплаты, в зависимости от указанных условий в соответсвующем разделе."
 												   Margin="5 0 5 5"/>
 									</StackPanel>
 								</Label>
@@ -407,7 +407,7 @@
 										  RowDefinitions="auto, *"
 										  ColumnDefinitions="*, 5">
 										<TextBlock TextWrapping="Wrap"
-												   Text="Добавьте всю необходимую информацию касаемо особенностей заказа, требования, пожелания, просьбы клиента, которые могут быть полезны и/или должны быть учтены на этапах производства, доставки и/или оказания услуг клиенту."
+												   Text="Добавьте всю необходимую информацию касаемо особенностей заказа, требования, список выполняемых сервисом работ, пожелания, просьбы клиента, которые могут быть полезны и/или должны быть учтены на этапах производства, доставки и/или оказания услуг клиенту."
 												   Margin="5 40 5 10"
 												   Grid.Row="0"/>
 										<TextBox Classes="custom header"
@@ -427,6 +427,24 @@
 									<crus:FileSelectorControl/>
 								</Label>
 							</ItemsControl>
+
+							<Grid ColumnDefinitions="*, *">
+
+								<Label Margin="10 5 5 10"
+									   Grid.Column="0">
+									<Button Classes="custom iconed orange ok rounded"
+											Content="Заявка готова "
+											Command="{Binding AcceptNewOrder}"
+											HorizontalAlignment="Stretch"/>
+								</Label>
+								<Label Margin="5 5 10 10"
+									   Grid.Column="1">
+									<Button Classes="custom iconed pink close rounded"
+											Content="Очистить заявку "
+											Command="{Binding ClearNewOrder}"
+											HorizontalAlignment="Stretch"/>
+								</Label>
+							</Grid>
 						</StackPanel>
 					</ScrollViewer>
 				</Grid>
