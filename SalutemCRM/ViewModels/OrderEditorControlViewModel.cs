@@ -66,31 +66,54 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 
     public void CreateNewOrderBasedOnBuilder()
     {
+        DateTime RecordDT = DateTime.Now;
+
         new Order()
             .Do(order =>
             {
+                order.EmployeeForeignkey = Account.Current.User.Id; 
+
                 order.OrderType = SelectedItem!.OrderType;
                 order.PaymentAgreement = SelectedItem!.PaymentAgreement;
                 order.PaymentStatus = SelectedItem!.PaymentAgreement == Payment_Status.Unpaid ? Payment_Status.FullyPaid : Payment_Status.Unpaid;
                 order.TaskStatus = Task_Status.AwaitPayment;
                 order.AdditionalInfo = SelectedItem!.AdditionalInfo;
                 order.DaysOnHold = SelectedItem!.DaysOnHold;
+                order.Currency = SelectedItem!.Currency;
+                order.UnitToBYNConversion = SelectedItem!.UnitToBYNConversion < 0 ? 1.00 : SelectedItem!.UnitToBYNConversion;
+                order.PriceRequired = SelectedItem!.PaymentAgreement switch
+                {
+                    Payment_Status.Unpaid => 0,
+                    Payment_Status.PartiallyPaid => SelectedItem!.PriceRequired,
+                    Payment_Status.FullyPaid => SelectedItem!.PriceTotal,
+                    _ => -1
+                };
+                order.PriceTotal = SelectedItem!.PriceTotal;
+                order.RecordDT = RecordDT;
+                order.DeadlineDT = null;
+                order.StartedDT = null;
+                order.CompletedDT = null;
+
+                if (order.IsCustomerOrder && CRUSClientControlViewModelSource.GlobalContainer.SelectedItem == null)
+                    return null;
+
+                if (!order.IsCustomerOrder && CRUSVendorControlViewModelSource.GlobalContainer.SelectedItem == null)
+                    return null;
 
                 return order.OrderType switch
                 {
-                    Order_Type.ManagerSale => order.Do(x =>
-                    {
-                        
-                    }),
+                    Order_Type.CustomerService => order.DoInst(x => x.ClientForeignKey = CRUSClientControlViewModelSource.GlobalContainer.SelectedItem!.Id),
 
-                    Order_Type.CustomerService => order.Do(x =>
-                    {
-                    }),
+                    Order_Type.ManagerSale =>
+                        OrderManagerProduct.Count == 0 ?
+                        null :
+                        order.DoInst(x => x.ClientForeignKey = CRUSClientControlViewModelSource.GlobalContainer.SelectedItem!.Id),
 
-                    Order_Type.WarehouseRestocking => order.Do(x =>
-                    {
-                    }),
-
+                    Order_Type.WarehouseRestocking =>
+                        OrderWarehouseSupplies.Count == 0 ?
+                        null :
+                        order.DoInst(x => x.VendorForeignKey = CRUSVendorControlViewModelSource.GlobalContainer.SelectedItem!.Id),
+                    
                     _ => null
                 };
             })?
@@ -100,10 +123,75 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                 {
                     db.Orders.Add(x);
                     db.SaveChanges();
-                }
-            });
 
-        ClearOrderBuilder();
+                    int OrderID = db.Orders.Single(s =>
+                            s.RecordDT == RecordDT &&
+                            s.EmployeeForeignkey == x.EmployeeForeignkey &&
+                            (s.ClientForeignKey == x.ClientForeignKey || s.VendorForeignKey == x.VendorForeignKey)
+                        ).Id;
+
+                    Debug.WriteLine(Account.Current.User.Id);
+                    Debug.WriteLine(OrderID);
+
+                    if (x.OrderType == Order_Type.CustomerService)
+                    {
+                        foreach (var item in OrderServiceItem)
+                            db.MaterialFlow.Add(new()
+                            {
+                                ReturnedForeignKey = null,
+                                EmployeeForeignKey = x.EmployeeForeignkey,
+                                WarehouseItemForeignKey = item.Id,
+                                WarehouseSupplyForeignKey = null,
+                                ManufactureForeignKey = null,
+                                OrderForeignKey = OrderID,
+                                AdditionalInfo = x.AdditionalInfo,
+                                CountReservedFromStock = item.OrderBuilder_Count,
+                                CountProvidedFromStock = 0,
+                                CountReturnedToStock = 0,
+                                DeliveryStatus = Delivery_Status.NotDelivered,
+                                RecordDT = RecordDT
+                            });
+                    }
+                    else if (x.OrderType == Order_Type.ManagerSale)
+                    {
+                        foreach (var prod in OrderManagerProduct)
+                            db.Manufacture.Add(new()
+                            {
+                                OrderForeignKey = OrderID,
+                                DeliveryStatus = Delivery_Status.NotDelivered,
+                                TaskStatus = Task_Status.NotAvailable,
+                                HaveSerialNumber = prod.HaveSerialNumber,
+                                Name = prod.Name,
+                                Code = null,
+                                Count = prod.HaveSerialNumber ? 1 : prod.OrderBasketCount,
+                                AdditionalInfo = prod.AdditionalInfo ?? "[нет дополнительной информации]",
+                                ShipmentDT = null
+                            });
+                    }
+                    else if (x.OrderType == Order_Type.WarehouseRestocking)
+                    {
+                        foreach (var item in OrderWarehouseSupplies)
+                            db.WarehouseSupplying.Add(new()
+                            {
+                                WarehouseItemForeignKey = null,
+                                OrderForeignKey = OrderID,
+                                DeliveryStatus = Delivery_Status.NotDelivered,
+                                VendorName = item.VendorName,
+                                VendorCode = null,
+                                Currency = item.Currency,
+                                UnitToBYNConversion = item.OrderBuilder_ToBYNConv,
+                                PriceTotal = item.OrderBuilder_PriceTotal,
+                                OrderCount = item.OrderBuilder_Count,
+                                InStockCount = 0,
+                                RecordDT = RecordDT
+                            });
+                    }
+
+                    db.SaveChanges();
+                }
+
+                ClearOrderBuilder();
+            });
     }
 }
 

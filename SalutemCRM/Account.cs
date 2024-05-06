@@ -17,7 +17,7 @@ public partial class Account : ObservableObject
     [ObservableProperty]
     private User _user = User.Storekeeper;
 
-    public void SetAccount(User SignIn) => Current.User = SignIn;
+    public static void SetAccount(User SignIn) => Current.User = SignIn;
 
     partial void OnUserChanged(User value)
     {

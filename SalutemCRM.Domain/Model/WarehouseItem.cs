@@ -58,4 +58,8 @@ public partial class WarehouseItem : ClonableObservableObject<WarehouseItem>
     [NotMapped]
     [ObservableProperty]
     private ObservableCollection<FileAttach> _fileAttachs = new();
+
+    [NotMapped]
+    [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _materialFlows = new();
 }

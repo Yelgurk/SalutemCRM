@@ -88,7 +88,7 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
-    private DateTime _deadlineDT;
+    private DateTime? _deadlineDT;
 
     [NotMapped]
     [ObservableProperty]

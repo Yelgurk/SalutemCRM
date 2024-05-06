@@ -21,7 +21,11 @@ public partial class MaterialFlow : ClonableObservableObject<MaterialFlow>
 
     [NotMapped]
     [ObservableProperty]
-    private int _warehouseSupplyForeignKey;
+    private int _warehouseItemForeignKey;
+
+    [NotMapped]
+    [ObservableProperty]
+    private int? _warehouseSupplyForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -41,7 +45,7 @@ public partial class MaterialFlow : ClonableObservableObject<MaterialFlow>
 
     [NotMapped]
     [ObservableProperty]
-    private double _countUsed;
+    private double _countProvidedFromStock;
 
     [NotMapped]
     [ObservableProperty]
@@ -64,6 +68,10 @@ public partial class MaterialFlow : ClonableObservableObject<MaterialFlow>
     [NotMapped]
     [ObservableProperty]
     private User? _employee;
+
+    [NotMapped]
+    [ObservableProperty]
+    private WarehouseItem? _warehouseItem;
 
     [NotMapped]
     [ObservableProperty]

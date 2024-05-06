@@ -23,29 +23,29 @@ public partial class User
 
 
     [NotMapped]
-    public static User Default => new User() { UserRole = new() { Id = -1, Name = "Не авторизованный пользователь" } };
+    public static User Default => new User() { Id = -1, UserRole = new() { Name = "Не авторизованный пользователь" } };
 
     [NotMapped]
-    public static User RootOrBoss => new User() { UserRole = new() { Id = 1, Name = "Руководитель" } };
+    public static User RootOrBoss => new User() { Id = 1, UserRole = new() { Name = "Руководитель" } };
 
     [NotMapped]
-    public static User Bookkeeper => new User() { UserRole = new() { Id = 2, Name = "Бухгалтер" } };
+    public static User Bookkeeper => new User() { Id = 2, UserRole = new() { Name = "Бухгалтер" } };
 
     [NotMapped]
-    public static User SeniorSalesManager => new User() { UserRole = new() { Id = 3, Name = "Гл. менеджер" } };
+    public static User SeniorSalesManager => new User() { Id = 3, UserRole = new() { Name = "Гл. менеджер" } };
 
     [NotMapped]
-    public static User SalesManager => new User() { UserRole = new() { Id = 4, Name = "Менеджер" } };
+    public static User SalesManager => new User() { Id = 4, UserRole = new() { Name = "Менеджер" } };
 
     [NotMapped]
-    public static User ManufactureManager => new User() { UserRole = new() { Id = 5, Name = "Гл. производства" } };
+    public static User ManufactureManager => new User() { Id = 5, UserRole = new() { Name = "Гл. производства" } };
 
     [NotMapped]
-    public static User ConstrEngineer => new User() { UserRole = new() { Id = 6, Name = "Конструктор" } };
+    public static User ConstrEngineer => new User() { Id = 6, UserRole = new() { Name = "Конструктор" } };
 
     [NotMapped]
-    public static User ManufactureEmployee => new User() { UserRole = new() { Id = 7, Name = "Производство" } };
+    public static User ManufactureEmployee => new User() { Id = 7, UserRole = new() { Name = "Производство" } };
 
     [NotMapped]
-    public static User Storekeeper => new User() { UserRole = new() { Id = 8, Name = "Кладовщик" } };
+    public static User Storekeeper => new User() { Id = 8, UserRole = new() { Name = "Кладовщик" } };
 }

@@ -15,7 +15,7 @@ public partial class WarehouseSupply : ClonableObservableObject<WarehouseSupply>
 
     [NotMapped]
     [ObservableProperty]
-    private int _warehouseItemForeignKey;
+    private int? _warehouseItemForeignKey;
 
     [NotMapped]
     [ObservableProperty]
@@ -46,10 +46,6 @@ public partial class WarehouseSupply : ClonableObservableObject<WarehouseSupply>
     [NotifyPropertyChangedFor(nameof(OrderPriceSingleBYN))]
     [NotifyPropertyChangedFor(nameof(InStockPriceTotalBYN))]
     private double _unitToBYNConversion = 1.0;
-
-    [NotMapped]
-    [ObservableProperty]
-    private double _priceRequired;
 
     [NotMapped]
     [ObservableProperty]
