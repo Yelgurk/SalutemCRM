@@ -35,6 +35,7 @@ public partial class Order : ClonableObservableObject<Order>
     [NotifyPropertyChangedFor(nameof(IsManagerSales))]
     [NotifyPropertyChangedFor(nameof(IsWarehouseRestocking))]
     [NotifyPropertyChangedFor(nameof(IsServiceOrder))]
+    [NotifyPropertyChangedFor(nameof(OrderTypeDescription))]
     private Order_Type _orderType;
 
     [NotMapped]
@@ -52,6 +53,10 @@ public partial class Order : ClonableObservableObject<Order>
     private Task_Status _taskStatus;
 
 
+
+    [NotMapped]
+    [ObservableProperty]
+    private bool _paymentTermsMet = false;
 
     [NotMapped]
     [ObservableProperty]
@@ -106,16 +111,21 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PaymentEndpointPerson))]
     private Client? _client;
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PaymentEndpointPerson))]
     private Vendor? _vendor;
 
     
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PricePaid))]
+    [NotifyPropertyChangedFor(nameof(PricePaidBYN))]
+    [NotifyPropertyChangedFor(nameof(PricePaidPercantage))]
     private ObservableCollection<Payment> _payments = new();
 
     [NotMapped]

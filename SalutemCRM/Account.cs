@@ -33,21 +33,21 @@ public partial class Account : ObservableObject
         OnPropertyChanged(nameof(IsStockCountInfoVisible));
     }
 
-    public bool IsRootOrBossUser => (Current.User.UserRole?.Name ?? "") == "Руководитель";
+    public bool IsRootOrBossUser => Current.User.Permission == User_Permission.Boss;
 
-    public bool IsBookkeeperUser => (Current.User.UserRole?.Name ?? "") == "Бухгалтер";
+    public bool IsBookkeeperUser => Current.User.Permission == User_Permission.Bookkeeper;
 
-    public bool IsSeniorSalesManagerUser => (Current.User.UserRole?.Name ?? "") == "Гл. менеджер";
+    public bool IsSeniorSalesManagerUser => Current.User.Permission == User_Permission.SeniorSalesManager;
 
-    public bool IsSalesManagerUser => (Current.User.UserRole?.Name ?? "") == "Менеджер";
+    public bool IsSalesManagerUser => Current.User.Permission == User_Permission.SalesManager;
 
-    public bool IsManufactureManagerUser => (Current.User.UserRole?.Name ?? "") == "Гл. производства";
+    public bool IsManufactureManagerUser => Current.User.Permission == User_Permission.ManufactureManager;
 
-    public bool IsConstrEngineer => (Current.User.UserRole?.Name ?? "") == "Конструктор";
+    public bool IsConstrEngineer => Current.User.Permission == User_Permission.ConstrEngineer;
 
-    public bool IsManufactureEmployeeUser => (Current.User.UserRole?.Name ?? "") == "Производство";
+    public bool IsManufactureEmployeeUser => Current.User.Permission == User_Permission.ManufactureEmployee;
 
-    public bool IsStorekeeperUser => (Current.User.UserRole?.Name ?? "") == "Кладовщик";
+    public bool IsStorekeeperUser => Current.User.Permission == User_Permission.Storekeeper;
 
     public bool IsMoneyStateInfoVisible => IsRootOrBossUser;
 

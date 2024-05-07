@@ -53,7 +53,9 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
     private ObservableCollection<string> _currencyUnits = new();
 
 
-    public void CollectionReIndex() => 0.Do(x => OrderWarehouseSupplies.DoForEach(y => y.Id = ++x));
+    public void OrderTotalPriceCalc() => SelectedItem!.PriceRequired = 0.5 * (SelectedItem!.PriceTotal = OrderWarehouseSupplies.Select(x => x.OrderBuilder_PriceTotalBYN).Sum());
+
+    public void CollectionReIndex() => 0.Do(x => OrderWarehouseSupplies.DoForEach(y => y.Id = ++x)).Do(x => OrderTotalPriceCalc());
 
     public void ClearOrderBuilder()
     {
@@ -71,13 +73,14 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
         new Order()
             .Do(order =>
             {
-                order.EmployeeForeignkey = Account.Current.User.Id; 
+                order.EmployeeForeignkey = Account.Current.User.Id;
 
                 order.OrderType = SelectedItem!.OrderType;
                 order.PaymentAgreement = SelectedItem!.PaymentAgreement;
-                order.PaymentStatus = SelectedItem!.PaymentAgreement == Payment_Status.Unpaid ? Payment_Status.FullyPaid : Payment_Status.Unpaid;
-                order.TaskStatus = Task_Status.AwaitPayment;
-                order.AdditionalInfo = SelectedItem!.AdditionalInfo;
+                order.PaymentStatus = order.PaymentAgreement == Payment_Status.Unpaid ? Payment_Status.FullyPaid : Payment_Status.Unpaid;
+                order.PaymentTermsMet = order.PaymentAgreement == Payment_Status.Unpaid ? true : false;
+                order.TaskStatus = order.OrderType == Order_Type.CustomerService ? Task_Status.NotAvailable : Task_Status.AwaitPayment;
+                order.AdditionalInfo = string.IsNullOrEmpty(SelectedItem!.AdditionalInfo) ? $"[{Account.Current.User.FullNameWithLogin} : нет дополнительной информации]" : SelectedItem!.AdditionalInfo;
                 order.DaysOnHold = SelectedItem!.DaysOnHold;
                 order.Currency = SelectedItem!.Currency;
                 order.UnitToBYNConversion = SelectedItem!.UnitToBYNConversion < 0 ? 1.00 : SelectedItem!.UnitToBYNConversion;
@@ -113,25 +116,24 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                         OrderWarehouseSupplies.Count == 0 ?
                         null :
                         order.DoInst(x => x.VendorForeignKey = CRUSVendorControlViewModelSource.GlobalContainer.SelectedItem!.Id),
-                    
+
                     _ => null
                 };
             })?
             .Do(x =>
             {
+                int OrderID = 0;
+
                 using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
                 {
                     db.Orders.Add(x);
                     db.SaveChanges();
 
-                    int OrderID = db.Orders.Single(s =>
+                    OrderID = db.Orders.Single(s =>
                             s.RecordDT == RecordDT &&
                             s.EmployeeForeignkey == x.EmployeeForeignkey &&
                             (s.ClientForeignKey == x.ClientForeignKey || s.VendorForeignKey == x.VendorForeignKey)
                         ).Id;
-
-                    Debug.WriteLine(Account.Current.User.Id);
-                    Debug.WriteLine(OrderID);
 
                     if (x.OrderType == Order_Type.CustomerService)
                     {
@@ -144,7 +146,7 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                                 WarehouseSupplyForeignKey = null,
                                 ManufactureForeignKey = null,
                                 OrderForeignKey = OrderID,
-                                AdditionalInfo = x.AdditionalInfo,
+                                AdditionalInfo = x.AdditionalInfo ?? $"[счёт #{OrderID}, {Account.Current.User.FullNameWithLogin} : нет дополнительной информации]",
                                 CountReservedFromStock = item.OrderBuilder_Count,
                                 CountProvidedFromStock = 0,
                                 CountReturnedToStock = 0,
@@ -164,7 +166,7 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                                 Name = prod.Name,
                                 Code = null,
                                 Count = prod.HaveSerialNumber ? 1 : prod.OrderBasketCount,
-                                AdditionalInfo = prod.AdditionalInfo ?? "[нет дополнительной информации]",
+                                AdditionalInfo = prod.AdditionalInfo ?? $"[счёт #{OrderID}, {Account.Current.User.FullNameWithLogin} : нет дополнительной информации]",
                                 ShipmentDT = null
                             });
                     }
@@ -190,6 +192,7 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                     db.SaveChanges();
                 }
 
+                FileSelectorControlViewModelSource.AttachFilesTo(x);
                 ClearOrderBuilder();
             });
     }

@@ -1,0 +1,244 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:SalutemCRM.ViewModels"
+			 xmlns:control="using:SalutemCRM.Control"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="SalutemCRM.Control.OrdersObservableControl"
+			 x:DataType="vm:OrdersObservableControlViewModel"
+			 Background="White">
+	<UserControl.DataContext>
+		<vm:OrdersObservableControlViewModel/>
+	</UserControl.DataContext>
+
+	<Grid ColumnDefinitions="2*, 1*">
+		<Grid Grid.Column="0"
+			  RowDefinitions="auto, *"
+			  Background="WhiteSmoke">
+			<StackPanel>
+				<ItemsControl HorizontalAlignment="Center"
+						      Margin="0 10 0 5">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					
+					<CheckBox IsChecked="{Binding Source.IsOnlyFullyPaid}"
+							  Command="{Binding UpdateOrsersListCommand}"
+							  Content="Полностью оплачено"
+							  Margin="20 0 10 0"/>
+					<CheckBox IsChecked="{Binding Source.IsOnlyPartialPaid}"
+							  Command="{Binding UpdateOrsersListCommand}"
+							  Content="Частично оплачено"
+							  Margin="10 0"/>
+					<CheckBox IsChecked="{Binding Source.IsOnlyNotPaid}"
+							  Command="{Binding UpdateOrsersListCommand}"
+							  Content="Не оплачено"
+							  Margin="10 0 20 0"/>
+				</ItemsControl>
+				
+				<ItemsControl HorizontalAlignment="Center"
+						   Margin="0 5 0 10">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					
+					<TextBlock Text="Период: с"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Margin="10 0"/>
+					<CalendarDatePicker SelectedDate="{Binding Source.DtSortBegin}"/>
+					<TextBlock Text="по"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Margin="10 0"/>
+					<CalendarDatePicker SelectedDate="{Binding Source.DtSortEnd}"/>
+					<Button Classes="custom iconed rounded orange settings"
+							Content="Поиск "
+							Margin="10 0"
+							Command="{Binding UpdateOrsersListCommand}"/>
+				</ItemsControl>
+			</StackPanel>
+
+			<ScrollViewer Grid.Row="1"
+						  Margin="0 5 0 0"
+						  BorderThickness="0 1 0 0"
+						  BorderBrush="{DynamicResource Primary_Gray}"
+						  VerticalScrollBarVisibility="Hidden"
+						  HorizontalScrollBarVisibility="Visible">
+				<DataGrid ItemsSource="{Binding Source.OrdersCollection}"
+						  SelectedItem="{Binding Source.SelectedItem}"
+						  IsReadOnly="True"
+						  HorizontalScrollBarVisibility="Hidden">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="#" Binding="{Binding Id}"/>
+						<DataGridTextColumn Header="Тип" Binding="{Binding OrderTypeDescription}"/>
+						<DataGridTextColumn Header="Сотрудник" Binding="{Binding Employee.FullName}"/>
+						<DataGridTextColumn Header="Клиент/Поставщик" Binding="{Binding PaymentEndpointPerson}"/>
+						<DataGridTextColumn Header="Стоимость" Binding="{Binding PriceTotal}"/>
+						<DataGridTextColumn Header="Мин. условия" Binding="{Binding PriceRequired}"/>
+						<DataGridTextColumn Header="Выплачено" Binding="{Binding PricePaid}"/>
+						<DataGridTextColumn Header="%" Binding="{Binding PricePaidPercantage}"/>
+						<DataGridTextColumn Header="Валюта" Binding="{Binding Currency}"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</ScrollViewer>
+		</Grid>
+		
+
+		<Border Grid.Column="1"
+				BorderThickness="1 0 0 0"
+				BorderBrush="{DynamicResource Primary_Gray}">
+			<Grid RowDefinitions="*, auto">
+				<Grid Grid.Row="0"
+					  RowDefinitions="auto, *">
+					<DockPanel Grid.Row="0"
+							   HorizontalAlignment="Center"
+							   Margin="0 5">
+						<TextBlock FontSize="16"
+								   Text="Список платежей"
+								   VerticalAlignment="Center"
+								   Margin="0 0 10 0 "/>
+						<Button Classes="custom iconed rounded blue update"
+								Command="{Binding UpdateOrsersListCommand}"/>
+					</DockPanel>
+
+					<ScrollViewer Grid.Row="1">
+						<ItemsControl ItemsSource="{Binding Source.SelectedItem.Payments}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<RadioButton Classes="BookkeeperPayment"
+												 Content="{Binding}"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+					
+					<TextBlock Text="Пусто"
+							   Grid.RowSpan="2"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   IsVisible="{Binding !Source.SelectedItem.Payments.Count}"/>
+				</Grid>
+
+				<Border Grid.Row="1"
+						BorderThickness="0 1 0 0"
+						BorderBrush="{DynamicResource Primary_Gray}">
+					<StackPanel>
+						<TextBlock Text="Добавить оплату"
+								   HorizontalAlignment="Center"
+								   VerticalAlignment="Top"
+								   Margin="0 5 0 25"
+								   FontSize="16"/>
+
+						<Grid Classes="background"
+							  ColumnDefinitions="5, *, 5, auto, 5, auto, 5">
+							<TextBox IsVisible="{Binding Source.SelectedItem.IsWarehouseRestocking}"
+									 Text="{Binding Source.BookkeeperPrice}"
+									 Grid.Column="1"
+								     Classes="custom header"
+									 Watermark="Сумма выполненной оплаты"/>
+							<TextBox IsVisible="{Binding !Source.SelectedItem.IsWarehouseRestocking, FallbackValue=False}"
+									 Text="{Binding Source.BookkeeperPrice}"
+									 Grid.Column="1"
+								     Classes="custom header"
+									 Watermark="Сумма поступлений"/>
+							<ComboBox Classes="custom"
+									  Grid.Column="3"
+									  VerticalAlignment="Stretch"
+									  ItemsSource="{Binding Source.CurrencyUnits}"
+									  SelectedItem="{Binding Source.Currency}"/>
+							<TextBox Text="{Binding Source.UnitToBYNConv}"
+									 Grid.Column="5"
+								     Classes="custom header"
+									 Watermark="Курс"/>
+						</Grid>
+
+						<control:FileSelectorControl Height="250"/>
+
+						<Button Classes="custom iconed rounded orange plus"
+								Content="Добавить платёж  "
+								HorizontalAlignment="Stretch"
+								Command="{Binding PaymentPartialAccept}"
+								Margin="6 6 6 3"/>
+
+						<Button Classes="custom iconed rounded blue manufacture"
+								Content="Разрешить производство  "
+								HorizontalAlignment="Stretch"
+								IsEnabled="{Binding !Source.SelectedItem.PaymentTermsMet}"
+								Command="{Binding ProductionAccept}"
+								IsVisible="{Binding !Source.SelectedItem.IsWarehouseRestocking, FallbackValue=True}"
+								Margin="6 3"/>
+
+						<Button Classes="custom iconed rounded green ok"
+								Content="Полностью оплачено  "
+								HorizontalAlignment="Stretch"
+								Command="{Binding PaymentFullAccept}"
+								Margin="6 3 6 6"/>
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Border>
+	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="RadioButton.BookkeeperPayment">
+			<Setter Property="GroupName" Value="BookkeeperPaymentGroup"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="MinHeight" Value="30"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid Name="PART_RadiobuttonContainer"
+						  DataContext="{TemplateBinding Content}"
+						  RowDefinitions="auto, auto, auto"
+						  Background="Transparent">
+						<Grid Grid.Row="0"
+							  Margin="10 0 0 0"
+							  ColumnDefinitions="auto, 30, auto, 10, auto, *">
+							<TextBlock Grid.Column="0" Text="{Binding RecordDate}"/>
+							<TextBlock Grid.Column="2" Text="{Binding PaymentValue}"/>
+							<TextBlock Grid.Column="4" Text="{Binding Currency}"/>
+						</Grid>
+
+						<TextBlock Text="Список файлов:"
+								   Grid.Row="1"
+								   Margin="10 5"
+								   IsVisible="{TemplateBinding IsChecked}"/>
+						
+						<ItemsControl IsVisible="{TemplateBinding IsChecked}"
+									  ItemsSource="{Binding FileAttachs}"
+									  Margin="20 0 0 0"
+									  Grid.Row="2">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid ColumnDefinitions="*, auto">
+										<TextBlock Text="{Binding FileName}"
+												   VerticalAlignment="Center"/>
+										<Grid Margin="5 1"
+											  Grid.Column="1">
+											<Button Classes="custom iconed rounded blue eye"
+													Command="{Binding $parent[UserControl].DataContext.OpenFileCommand}"
+													CommandParameter="{Binding FileName}"/>
+										</Grid>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="RadioButton.BookkeeperPayment:pointerover /template/ Grid#PART_RadiobuttonContainer">
+			<Setter Property="Background" Value="LightGray"/>
+		</Style>
+
+		<Style Selector="RadioButton.BookkeeperPayment:checked /template/ Grid#PART_RadiobuttonContainer">
+			<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
+		</Style>
+	</UserControl.Styles>
+</UserControl>

@@ -21,6 +21,18 @@ public partial class User
     [NotMapped]
     public string FullNameWithLogin => $"{this.FirstName} {this.LastName} [{this.Login}]";
 
+    public User_Permission Permission => UserRole!.Name switch
+    {
+        "Руководитель" => User_Permission.Boss,
+        "Бухгалтер" => User_Permission.Bookkeeper,
+        "Гл. менеджер" => User_Permission.SeniorSalesManager,
+        "Менеджер" => User_Permission.SalesManager,
+        "Гл. производства" => User_Permission.ManufactureManager,
+        "Конструктор" => User_Permission.ConstrEngineer,
+        "Производство" => User_Permission.ManufactureEmployee,
+        "Кладовщик" => User_Permission.Storekeeper,
+        _ => User_Permission.None
+    };
 
     [NotMapped]
     public static User Default => new User() { Id = -1, UserRole = new() { Name = "Не авторизованный пользователь" } };

@@ -29,6 +29,10 @@ public partial class FileAttach : ClonableObservableObject<FileAttach>
 
     [NotMapped]
     [ObservableProperty]
+    private int? _paymentForeignKey;
+
+    [NotMapped]
+    [ObservableProperty]
     private DateTime _recordDT;
 
     [NotMapped]
@@ -48,4 +52,8 @@ public partial class FileAttach : ClonableObservableObject<FileAttach>
     [NotMapped]
     [ObservableProperty]
     private MaterialFlow? _materialFlow;
+
+    [NotMapped]
+    [ObservableProperty]
+    private Payment? _payment;
 }

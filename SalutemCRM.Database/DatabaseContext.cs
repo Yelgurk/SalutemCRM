@@ -460,6 +460,11 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(fs => fs.MaterialFlowForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
+            .HasOne(fa => fa.Payment)
+            .WithMany(oo => oo.FileAttachs)
+            .HasForeignKey(fs => fs.PaymentForeignKey)
+            .OnDelete(DeleteBehavior.Restrict);
+        builder
             .Property(fa => fa.RecordDT)
             .HasColumnType("datetime2");
         builder
@@ -585,6 +590,9 @@ public partial class DatabaseContext : DbContext
             .HasConversion<int>()
             .HasDefaultValue(Task_Status.AwaitPayment);
 
+        builder
+            .Property(wo => wo.PaymentTermsMet)
+            .HasDefaultValue(false);
         builder
             .Property(wo => wo.Currency)
             .HasMaxLength(200);

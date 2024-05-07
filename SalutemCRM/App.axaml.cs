@@ -31,7 +31,7 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        DatabaseContext.ReCreateDatabase(!Design.IsDesignMode);
+        //DatabaseContext.ReCreateDatabase(!Design.IsDesignMode);
 
         AvaloniaXamlLoader.Load(this);
         Host =
@@ -50,7 +50,7 @@ public partial class App : Application
 
         Account.SetAccount(User.RootOrBoss);
 
-        if (false)
+        //if (false)
         if (!Design.IsDesignMode)
             Host!.Services.GetService<TCPChannel>()!
                 .Do(x => x.thisServer.DataReceived += (o, e) =>

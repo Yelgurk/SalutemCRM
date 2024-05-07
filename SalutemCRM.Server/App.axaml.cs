@@ -2,9 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Server.Services;
 using SalutemCRM.Server.ViewModels;
@@ -55,22 +56,29 @@ public partial class App : Application
                             {
                                 List<FileAttach>? receivedFiles = JsonSerializer.Deserialize<List<FileAttach>>(e.Message);
 
-                                receivedFiles?.DoForEach(file =>
+                                using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
                                 {
-                                    Directory.CreateDirectory(FilesContainerPath);
+                                    receivedFiles?.DoForEach(file =>
+                                    {
+                                        Directory.CreateDirectory(FilesContainerPath);
 
-                                    string filePath = $"{FilesContainerPath}\\{file!.FileName}";
+                                        string refFileName = file!.FileName;
+                                        string filePath = $"{FilesContainerPath}\\{file!.FileName}";
 
-                                    filePath =
-                                        !File.Exists(filePath) ?
-                                        filePath :
-                                        $"{FilesContainerPath}\\{file!.FileName = $"{DateTime.Now.ToShortDateString()}_{DateTime.Now.ToLongTimeString().Replace(":", ".")}_{DateTime.Now.Millisecond} {file!.FileName}"}";
+                                        for (int i = 0; File.Exists(filePath); ++i)
+                                            filePath = $"{FilesContainerPath}\\{file!.FileName = $"{i}_{refFileName}"}";
 
-                                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                                        fs.Write(file!.Bytes!, 0, file.Bytes!.Length);
-                                    
-                                    x.Logging($"New file received [{e.ThisChannel.Id}]: {file!.FileName}\nFile path: {filePath}");
-                                });
+                                        using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                                            fs.Write(file!.Bytes!, 0, file.Bytes!.Length);
+
+                                        file.RecordDT = DateTime.Now;
+                                        db.FileAttachs.Add(file);
+
+                                        x.Logging($"New file received [{e.ThisChannel.Id}]: {file!.FileName}\nFile path: {filePath}");
+                                    });
+
+                                    db.SaveChanges();
+                                }
 
                             }; break;
                         case MBEnums.GET_FILE_JSON:

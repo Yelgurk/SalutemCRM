@@ -176,6 +176,18 @@
 	<Style Selector="Button.trashbin /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Trash.png"/>
 	</Style>
+	
+	<Style Selector="Button.settings /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Settings.png"/>
+	</Style>
+	
+	<Style Selector="Button.manufacture /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Manufacture.png"/>
+	</Style>
+	
+	<Style Selector="Button.update /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Update.png"/>
+	</Style>
 
 	<Style Selector="Button.orange">
 		<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>

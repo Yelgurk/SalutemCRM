@@ -43,6 +43,18 @@ public enum Stock_Status {
     ZeroWarning
 };
 
+public enum User_Permission {
+    None,
+    Boss,
+    Bookkeeper,
+    SeniorSalesManager,
+    SalesManager,
+    ManufactureManager,
+    ConstrEngineer,
+    ManufactureEmployee,
+    Storekeeper
+};
+
 public static class EnumToString
 {
     public static ObservableCollection<string> PaymentStatusToString { get; } = new() {

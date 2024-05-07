@@ -69,6 +69,11 @@ public partial class FileSelectorControlViewModelSource : ReactiveControlSource<
         .Do(x => RemoveNotLocalFiles())
         .DoInst(x => x.DoForEach(file => file.MaterialFlowForeignKey = materialFlow.Id))
         .DoIf(x => SendFilesToTCPServer(), x => x.Count > 0);
+
+    public static void AttachFilesTo(Payment payment) => FilesCollection
+        .Do(x => RemoveNotLocalFiles())
+        .DoInst(x => x.DoForEach(file => file.PaymentForeignKey = payment.Id))
+        .DoIf(x => SendFilesToTCPServer(), x => x.Count > 0);
 }
 
 public partial class FileSelectorControlViewModel : ViewModelBase<FileAttach, FileSelectorControlViewModelSource>
@@ -107,11 +112,10 @@ public partial class FileSelectorControlViewModel : ViewModelBase<FileAttach, Fi
             FileSelectorControlViewModelSource.FilesCollection.Remove(x);
         });
 
-        RemoveAllFilesCommand = ReactiveCommand.Create(() => {
-            FileSelectorControlViewModelSource.FilesCollection.Clear();
-        });
+        RemoveAllFilesCommand = ReactiveCommand.Create(FileSelectorControlViewModelSource.FilesCollection.Clear);
 
         OpenUntracableFile = ReactiveCommand.Create<FileAttach>(x => {
+            //App.Host!.Services.GetService<FilesContainerService>()!.OpenFile(x.FileName);
             new ProcessStartInfo(x.FileLocalPath) { UseShellExecute = true }.Do(Process.Start);
         });
     }

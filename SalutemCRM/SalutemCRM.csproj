@@ -79,4 +79,8 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Control\OrdersObservableControl.axaml" />
+	</ItemGroup>
 </Project>

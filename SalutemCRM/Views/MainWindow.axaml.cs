@@ -16,10 +16,5 @@ public partial class MainWindow : Window
         DataContext = this;
 
         InitializeComponent();
-
-        (SVC.DataContext as CRUSVendorControlViewModel)!
-       .DoInst(v => v.Source.IsResponsiveControl = true)
-       .DoInst(v => v.Source.IsFuncAddNewAvailable = false)
-       .DoInst(v => v.Source.IsFuncEditAvailable = false);
     }
 }

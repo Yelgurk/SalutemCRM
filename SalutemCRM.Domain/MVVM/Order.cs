@@ -21,6 +21,30 @@ public partial class Order
     };
 
     [NotMapped]
+    public string OrderTypeDescription => OrderType switch
+    {
+        Order_Type.ManagerSale => "Продажа",
+        Order_Type.CustomerService => "Сервис",
+        Order_Type.WarehouseRestocking => "Закупка",
+        _ => "Иное"
+    };
+
+    [NotMapped]
+    public string PaymentEndpointPerson
+    {
+        get
+        {
+            if (Client is not null)
+                return Client.Name;
+
+            if (Vendor is not null)
+                return Vendor.Name;
+
+            return "[Салутем]";
+        }
+    }
+
+    [NotMapped]
     public bool IsCustomerOrder => OrderType == Order_Type.WarehouseRestocking ? false : true;
 
     [NotMapped]
@@ -39,5 +63,14 @@ public partial class Order
     public bool IsPaymentPartial => PaymentAgreement == Payment_Status.PartiallyPaid ? true : false;
 
     [NotMapped]
-    public double PriceTotalBYN { get => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion); }
+    public double PriceTotalBYN => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion);
+
+    [NotMapped]
+    public double PricePaid => Payments.Select(x => x.PaymentValue).Sum();
+
+    [NotMapped]
+    public double PricePaidBYN => Payments.Select(x => x.PaymentValueBYN).Sum();
+
+    [NotMapped]
+    public double PricePaidPercantage => Math.Round(100.0 / PriceTotalBYN * PricePaidBYN, 2).Do(x => double.IsNaN(x) ? 0 : x);
 }
