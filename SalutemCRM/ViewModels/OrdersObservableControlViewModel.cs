@@ -7,6 +7,7 @@ using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
 using SalutemCRM.Services;
+using SalutemCRM.TCP;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -90,8 +91,6 @@ public partial class OrdersObservableControlViewModelSource : ReactiveControlSou
         {
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
             {
-                db.Orders.Single(x => x.Id == SelectedItem!.Id).PaymentStatus = Payment_Status.PartiallyPaid;
-
                 db.Payments.Add(new()
                 {
                     OrderForeignKey = SelectedItem!.Id,
@@ -103,6 +102,8 @@ public partial class OrdersObservableControlViewModelSource : ReactiveControlSou
                 db.SaveChanges();
 
                 FileSelectorControlViewModelSource.AttachFilesTo(db.Payments.Single(x => x.OrderForeignKey == SelectedItem!.Id && x.RecordDT == RecordDT));
+
+                CheckOrderCondition(db, SelectedItem!.Clone());
             }
 
             UpdateOrdersList();
@@ -113,25 +114,53 @@ public partial class OrdersObservableControlViewModelSource : ReactiveControlSou
     {
         using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
         {
-            db.Orders.Single(x => x.Id == SelectedItem!.Id)
-                .DoInst(x => x.PaymentTermsMet = true)
-                .Do(x => x.PaymentStatus = Payment_Status.FullyPaid);
-
+            db.Orders.Single(x => x.Id == SelectedItem!.Id).PaymentStatus = Payment_Status.FullyPaid;
             db.SaveChanges();
+            
+            CheckOrderCondition(db, SelectedItem!.Clone());
         }
 
         UpdateOrdersList();
     }
 
-    public void AcceptOrderProduction()
+    private void CheckOrderCondition(DatabaseContext db, Order edited)
     {
-        using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+        db.Orders
+        .Where(x => x.Id == edited.Id)
+        .Include(x => x.Payments)
+        .First()
+        .Do(x =>
         {
-            db.Orders.Single(x => x.Id == SelectedItem!.Id).PaymentTermsMet = true;
-            db.SaveChanges();
-        }
+            if (x.PaymentStatus != Payment_Status.FullyPaid)
+            {
+                if (x.Payments.Select(s => s.PaymentValue).Sum() >= x.PriceTotal)
+                    x.PaymentStatus = Payment_Status.FullyPaid;
+                else
+                if (x.Payments.Select(s => s.PaymentValue).Sum() > 0)
+                    x.PaymentStatus = Payment_Status.PartiallyPaid;
+            }
 
-        UpdateOrdersList();
+            switch (x.PaymentStatus)
+            {
+                case Payment_Status.PartiallyPaid:
+                    {
+                        if (x.Payments.Select(s => s.PaymentValue).Sum() >= x.PriceRequired)
+                            x.TaskStatus = x.TaskStatus == Task_Status.AwaitPayment ? Task_Status.AwaitStart : x.TaskStatus;
+                    };
+                    break;
+
+                case Payment_Status.FullyPaid:
+                    {
+                        x.TaskStatus = x.TaskStatus == Task_Status.AwaitPayment ? Task_Status.AwaitStart : x.TaskStatus;
+                    };
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+        db.SaveChanges();
     }
 }    
 
@@ -148,8 +177,6 @@ public class OrdersObservableControlViewModel : ViewModelBase<Order, OrdersObser
     public ReactiveCommand<Unit, Unit>? PaymentPartialAccept { get; protected set; }
 
     public ReactiveCommand<Unit, Unit>? PaymentFullAccept { get; protected set; }
-
-    public ReactiveCommand<Unit, Unit>? ProductionAccept { get; protected set; }
 
     public OrdersObservableControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -179,15 +206,21 @@ public class OrdersObservableControlViewModel : ViewModelBase<Order, OrdersObser
         });
 
         PaymentPartialAccept = ReactiveCommand.Create(Source.PaymentAccept, IfOrderIsSelected);
-
-        ProductionAccept = ReactiveCommand.Create(Source.AcceptOrderProduction, IfOrderIsSelected);
         
         PaymentFullAccept = ReactiveCommand.Create(Source.OrderFullyPayed, IfFullyPayed);
 
         if (!Design.IsDesignMode)
         {
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit())) db
-                .DoInst(x => Source.CurrencyUnits = new(db.CurrencyUnits.Select(y => y.Name)));
+                .DoInst(x => Source.CurrencyUnits = new(db.CurrencyUnits.Select(y => y.Name)))
+                .Do(x =>
+                {
+                    Source.DtSortBegin = x.Orders
+                        .Where(s => s.PaymentStatus == Payment_Status.Unpaid || s.PaymentStatus == Payment_Status.PartiallyPaid)
+                        .DoIf(x => { }, x => x.Count() > 0)?
+                        .Select(s => s.RecordDT.Date)
+                        .Min() ?? DateTime.Today;
+                });
 
             Source.UpdateOrdersList();
         }

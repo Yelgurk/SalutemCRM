@@ -50,13 +50,10 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TaskStatusTypeDescription))]
+    [NotifyPropertyChangedFor(nameof(IsOrderManufactureExecuted))]
     private Task_Status _taskStatus;
 
-
-
-    [NotMapped]
-    [ObservableProperty]
-    private bool _paymentTermsMet = false;
 
     [NotMapped]
     [ObservableProperty]
@@ -89,6 +86,7 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RecordDate))]
     private DateTime _recordDT;
 
     [NotMapped]

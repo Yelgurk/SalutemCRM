@@ -77,9 +77,10 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 
                 order.OrderType = SelectedItem!.OrderType;
                 order.PaymentAgreement = SelectedItem!.PaymentAgreement;
+
                 order.PaymentStatus = order.PaymentAgreement == Payment_Status.Unpaid ? Payment_Status.FullyPaid : Payment_Status.Unpaid;
-                order.PaymentTermsMet = order.PaymentAgreement == Payment_Status.Unpaid ? true : false;
                 order.TaskStatus = order.OrderType == Order_Type.CustomerService ? Task_Status.NotAvailable : Task_Status.AwaitPayment;
+
                 order.AdditionalInfo = string.IsNullOrEmpty(SelectedItem!.AdditionalInfo) ? $"[{Account.Current.User.FullNameWithLogin} : нет дополнительной информации]" : SelectedItem!.AdditionalInfo;
                 order.DaysOnHold = SelectedItem!.DaysOnHold;
                 order.Currency = SelectedItem!.Currency;
@@ -127,6 +128,7 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                 using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
                 {
                     db.Orders.Add(x);
+                    Debug.WriteLine(x.TaskStatus);
                     db.SaveChanges();
 
                     OrderID = db.Orders.Single(s =>

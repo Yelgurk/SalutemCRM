@@ -21,6 +21,9 @@ public partial class Order
     };
 
     [NotMapped]
+    public string RecordDate => RecordDT.ToShortDateString();
+
+    [NotMapped]
     public string OrderTypeDescription => OrderType switch
     {
         Order_Type.ManagerSale => "Продажа",
@@ -28,6 +31,21 @@ public partial class Order
         Order_Type.WarehouseRestocking => "Закупка",
         _ => "Иное"
     };
+
+    [NotMapped]
+    public string TaskStatusTypeDescription => TaskStatus switch
+    {
+        Task_Status.NotAvailable => "Ожидает проверки",
+        Task_Status.AwaitPayment => "Ожидает оплаты",
+        Task_Status.AwaitStart => "Ожидает старта выполнения",
+        Task_Status.Execution => "Выполняется",
+        Task_Status.Finished => "Закончено",
+        Task_Status.Cancelled => "Отменено",
+        _ => "Иное"
+    };
+
+    [NotMapped]
+    public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
 
     [NotMapped]
     public string PaymentEndpointPerson

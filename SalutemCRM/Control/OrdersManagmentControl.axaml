@@ -3,13 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:SalutemCRM.ViewModels"
-			 xmlns:control="using:SalutemCRM.Control"
-             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
-             x:Class="SalutemCRM.Control.OrdersObservableControl"
-			 x:DataType="vm:OrdersObservableControlViewModel"
-			 Background="White">
+			 xmlns:acc="using:SalutemCRM"
+			 x:DataType="vm:OrdersManagmentControlViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemCRM.Control.OrdersManagmentControl">
 	<UserControl.DataContext>
-		<vm:OrdersObservableControlViewModel/>
+		<vm:OrdersManagmentControlViewModel/>
 	</UserControl.DataContext>
 
 	<Grid ColumnDefinitions="2*, 1*">
@@ -18,27 +17,65 @@
 			  Background="WhiteSmoke">
 			<StackPanel>
 				<ItemsControl HorizontalAlignment="Center"
+						      Margin="0 10 0 5"
+							  DataContext="{x:Static acc:Account.Current}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsOnlyFullyPaid}"
+							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
+							  IsVisible="{Binding IsRootOrBossUser}"
+							  Content="Полностью оплачено"
+							  Margin="20 0 10 0"/>
+					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsOnlyPartialPaid}"
+							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
+							  IsVisible="{Binding IsRootOrBossUser}"
+							  Content="Частично оплачено"
+							  Margin="10 0"/>
+					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsOnlyNotPaid}"
+							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
+							  IsVisible="{Binding IsRootOrBossUser}"
+							  Content="Не оплачено"
+							  Margin="10 0 20 0"/>
+				</ItemsControl>
+
+				<ItemsControl HorizontalAlignment="Center"
 						      Margin="0 10 0 5">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
 							<WrapPanel/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
-					
-					<CheckBox IsChecked="{Binding Source.IsOnlyFullyPaid}"
+
+					<CheckBox IsChecked="{Binding Source.IsNotAvailable}"
 							  Command="{Binding UpdateOrsersListCommand}"
-							  Content="Полностью оплачено"
+							  Content="На проверке"
 							  Margin="20 0 10 0"/>
-					<CheckBox IsChecked="{Binding Source.IsOnlyPartialPaid}"
+					<CheckBox IsChecked="{Binding Source.IsAwaitPayment}"
 							  Command="{Binding UpdateOrsersListCommand}"
-							  Content="Частично оплачено"
+							  Content="Ожидает оплаты"
 							  Margin="10 0"/>
-					<CheckBox IsChecked="{Binding Source.IsOnlyNotPaid}"
+					<CheckBox IsChecked="{Binding Source.IsAwaitStart}"
 							  Command="{Binding UpdateOrsersListCommand}"
-							  Content="Не оплачено"
+							  Content="Ожидает старта выполнения"
+							  Margin="10 0 20 0"/>
+					<CheckBox IsChecked="{Binding Source.IsExecution}"
+							  Command="{Binding UpdateOrsersListCommand}"
+							  Content="Выполняется"
+							  Margin="10 0 20 0"/>
+					<CheckBox IsChecked="{Binding Source.IsFinished}"
+							  Command="{Binding UpdateOrsersListCommand}"
+							  Content="Закончено"
+							  Margin="10 0 20 0"/>
+					<CheckBox IsChecked="{Binding Source.IsCancelled}"
+							  Command="{Binding UpdateOrsersListCommand}"
+							  Content="Отменено"
 							  Margin="10 0 20 0"/>
 				</ItemsControl>
-				
+
 				<ItemsControl HorizontalAlignment="Center"
 						   Margin="0 5 0 10">
 					<ItemsControl.ItemsPanel>
@@ -46,7 +83,7 @@
 							<WrapPanel/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
-					
+
 					<TextBlock Text="Период: с"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
@@ -78,6 +115,7 @@
 						<DataGridTextColumn Header="#" Binding="{Binding Id}"/>
 						<DataGridTextColumn Header="Дата" Binding="{Binding RecordDate}"/>
 						<DataGridTextColumn Header="Тип" Binding="{Binding OrderTypeDescription}"/>
+						<DataGridTextColumn Header="Статус" Binding="{Binding TaskStatusTypeDescription}"/>
 						<DataGridTextColumn Header="Сотрудник" Binding="{Binding Employee.FullName}"/>
 						<DataGridTextColumn Header="Клиент/Поставщик" Binding="{Binding PaymentEndpointPerson}"/>
 						<DataGridTextColumn Header="Стоимость" Binding="{Binding PriceTotal}"/>
@@ -89,7 +127,7 @@
 				</DataGrid>
 			</ScrollViewer>
 		</Grid>
-		
+
 
 		<Border Grid.Column="1"
 				BorderThickness="1 0 0 0"
@@ -112,13 +150,13 @@
 						<ItemsControl ItemsSource="{Binding Source.SelectedItem.Payments}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<RadioButton Classes="BookkeeperPayment"
+									<RadioButton Classes="ManagerPayment"
 												 Content="{Binding}"/>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
 					</ScrollViewer>
-					
+
 					<TextBlock Text="Пусто"
 							   Grid.RowSpan="2"
 							   VerticalAlignment="Center"
@@ -128,58 +166,24 @@
 
 				<Border Grid.Row="1"
 						BorderThickness="0 1 0 0"
+						DataContext="{x:Static acc:Account.Current}"
+						IsVisible="{Binding IsRootOrBossUser}"
 						BorderBrush="{DynamicResource Primary_Gray}">
-					<StackPanel>
-						<TextBlock Text="Добавить оплату"
-								   HorizontalAlignment="Center"
-								   VerticalAlignment="Top"
-								   Margin="0 5 0 25"
-								   FontSize="16"/>
-
-						<Grid Classes="background"
-							  ColumnDefinitions="5, *, 5, auto, 5, auto, 5">
-							<TextBox IsVisible="{Binding Source.SelectedItem.IsWarehouseRestocking}"
-									 Text="{Binding Source.BookkeeperPrice}"
-									 Grid.Column="1"
-								     Classes="custom header"
-									 Watermark="Сумма выполненной оплаты"/>
-							<TextBox IsVisible="{Binding !Source.SelectedItem.IsWarehouseRestocking, FallbackValue=False}"
-									 Text="{Binding Source.BookkeeperPrice}"
-									 Grid.Column="1"
-								     Classes="custom header"
-									 Watermark="Сумма поступлений"/>
-							<ComboBox Classes="custom"
-									  Grid.Column="3"
-									  VerticalAlignment="Stretch"
-									  ItemsSource="{Binding Source.CurrencyUnits}"
-									  SelectedItem="{Binding Source.Currency}"/>
-							<TextBox Text="{Binding Source.UnitToBYNConv}"
-									 Grid.Column="5"
-								     Classes="custom header"
-									 Watermark="Курс"/>
-						</Grid>
-
-						<control:FileSelectorControl Height="250"/>
-
-						<Button Classes="custom iconed rounded orange plus"
-								Content="Добавить платёж  "
-								HorizontalAlignment="Stretch"
-								Command="{Binding PaymentPartialAccept}"
-								Margin="6 6 6 3"/>
-
-						<Button Classes="custom iconed rounded green ok"
-								Content="Полностью оплачено  "
-								HorizontalAlignment="Stretch"
-								Command="{Binding PaymentFullAccept}"
-								Margin="6 3 6 6"/>
-					</StackPanel>
+					<Button Classes="custom iconed rounded blue manufacture"
+							Content="Разрешить без оплаты  "
+							HorizontalAlignment="Stretch"
+							DataContext="{Binding $parent[UserControl].DataContext}"
+							IsEnabled="{Binding !Source.SelectedItem.IsOrderManufactureExecuted}"
+							Command="{Binding ProductionAcceptCommand}"
+							IsVisible="{Binding !Source.SelectedItem.IsWarehouseRestocking, FallbackValue=True}"
+							Margin="6 3"/>
 				</Border>
 			</Grid>
 		</Border>
 	</Grid>
 
 	<UserControl.Styles>
-		<Style Selector="RadioButton.BookkeeperPayment">
+		<Style Selector="RadioButton.ManagerPayment">
 			<Setter Property="GroupName" Value="BookkeeperPaymentGroup"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="MinHeight" Value="30"/>
@@ -201,7 +205,7 @@
 								   Grid.Row="1"
 								   Margin="10 5"
 								   IsVisible="{TemplateBinding IsChecked}"/>
-						
+
 						<ItemsControl IsVisible="{TemplateBinding IsChecked}"
 									  ItemsSource="{Binding FileAttachs}"
 									  Margin="20 0 0 0"
@@ -226,11 +230,11 @@
 			</Setter>
 		</Style>
 
-		<Style Selector="RadioButton.BookkeeperPayment:pointerover /template/ Grid#PART_RadiobuttonContainer">
+		<Style Selector="RadioButton.ManagerPayment:pointerover /template/ Grid#PART_RadiobuttonContainer">
 			<Setter Property="Background" Value="LightGray"/>
 		</Style>
 
-		<Style Selector="RadioButton.BookkeeperPayment:checked /template/ Grid#PART_RadiobuttonContainer">
+		<Style Selector="RadioButton.ManagerPayment:checked /template/ Grid#PART_RadiobuttonContainer">
 			<Setter Property="Background" Value="{DynamicResource Primary_Yellow}"/>
 		</Style>
 	</UserControl.Styles>

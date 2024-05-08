@@ -575,24 +575,14 @@ public partial class DatabaseContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .Property(wo => wo.OrderType)
-            .HasConversion<int>();
+            .Property(wo => wo.OrderType);
         builder
-            .Property(wo => wo.PaymentAgreement)
-            .HasConversion<int>()
-            .HasDefaultValue(Payment_Status.FullyPaid);
+            .Property(wo => wo.PaymentAgreement);
         builder
-            .Property(wo => wo.PaymentStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Payment_Status.Unpaid);
+            .Property(wo => wo.PaymentStatus);
         builder
-            .Property(wo => wo.TaskStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Task_Status.AwaitPayment);
+            .Property(wo => wo.TaskStatus);
 
-        builder
-            .Property(wo => wo.PaymentTermsMet)
-            .HasDefaultValue(false);
         builder
             .Property(wo => wo.Currency)
             .HasMaxLength(200);
