@@ -73,22 +73,7 @@ public partial class CRUSProductCategoryControlViewModelSource : ReactiveControl
                     .Do(x => Cat.Add(x))
                     .Do(x => x.ToList());
 
-            CatMatch
-                .DoIf(x => { }, x => keyword.Length > 0)?
-                .Do(x => Cat
-                    .Where(y => y.Name.ToLower().Contains(keyword))
-                    .DoIf(y => { }, y => y.Count() > 0)?
-                    .DoForEach(y => y.ObjHierarchyToZeroDeepParent.Do(y => y.Reverse()).Do(z => {
-                        x?.Add(new(z.First()));
-                        z.RemoveAt(0);
-                        x?.Last().ObjHierarchyToLastChild(z);
-                    }))
-                );
-
-            Task.Factory
-                .Do(x => x.StartNew(() => ProductCategories = new(keyword.Length > 0 ? CatMatch : CatTree)))
-                .Do(x => x.Wait())
-                .Do(x => Task.Factory.StartNew(() => IsSearchMatch = keyword.Length > 0));
+            ProductCategories = new(CatTree);
         }
     }
 }

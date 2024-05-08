@@ -35,9 +35,9 @@
 						   VerticalAlignment="Center"/>
 				
 				<ItemsControl Classes="custom inline" Margin="15 0 0 0">
-					<RadioButton GroupName="ProdTempl_ViewSelGroup" Content="Список"
+					<RadioButton Content="Список"
 								 IsChecked="{Binding Source.IsListPreview}"/>
-					<RadioButton GroupName="ProdTempl_ViewSelGroup" Content="Таблица"
+					<RadioButton Content="Таблица"
 								 IsChecked="{Binding !Source.IsListPreview}"/>
 				</ItemsControl>
 			</DockPanel>
