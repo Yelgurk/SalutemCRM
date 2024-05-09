@@ -1,0 +1,103 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemCRM.Control.OrderManufactureControl"
+			 xmlns:vm="using:SalutemCRM.ViewModels">
+	<UserControl.DataContext>
+		<vm:OrderManufactureControlViewModel/>
+	</UserControl.DataContext>
+
+	<Grid ColumnDefinitions="*, *, *">
+		<Grid Grid.Column="0" 
+			  RowDefinitions="auto, auto, auto, *, auto">
+			<TextBlock Text="Счёт:"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Center"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+					   Margin="5"/>
+
+			<TextBlock Grid.Row="1"
+					   Text="Дополнительная информация:"
+					   Margin="5 0 5 5"/>
+			
+			<ScrollViewer Grid.Row="2"
+						  MaxHeight="150">
+				<TextBlock Text=""
+					   TextWrapping="Wrap"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Top"
+					   Margin="5"/>
+			</ScrollViewer>
+
+			<ListBox Grid.Row="3">
+			</ListBox>
+
+			<StackPanel Grid.Row="4">
+				<Button Classes="custom iconed rounded pink close"
+						Content="Отмена старта"
+						Margin="5 5 5 0"
+						HorizontalAlignment="Stretch"/>
+				
+				<Button Classes="custom iconed rounded green ok"
+						Content="Старт производства"
+						Margin="5"
+						HorizontalAlignment="Stretch"/>
+			</StackPanel>
+		</Grid>
+		
+		<Grid Grid.Column="1" 
+			  RowDefinitions="auto, *, auto">
+			<TextBlock Text="Задачи"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+					   Margin="5"/>
+			
+			<ListBox Grid.Row="1">
+			</ListBox>
+
+			<TextBlock Grid.Row="1"
+					   Text="Изделие не выбрано"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   FontSize="16"
+					   IsVisible="True"/>
+
+			<Button Grid.Row="2"
+					Classes="custom iconed rounded orange edit"
+					Content="Задачи"
+					Margin="5"
+					HorizontalAlignment="Stretch"/>
+		</Grid>
+		
+		<Grid Grid.Column="2" 
+			  RowDefinitions="auto, *, auto">
+			<TextBlock Text="Материалы"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+					   Margin="5"/>
+			
+			<ListBox Grid.Row="1">				
+			</ListBox>
+
+			<TextBlock Grid.Row="1"
+					   Text="Изделие не выбрано"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   FontSize="16"
+					   IsVisible="True"/>
+			
+			<Button Grid.Row="2"
+					Classes="custom iconed rounded orange edit"
+					Content="Материалы"
+					Margin="5"
+					HorizontalAlignment="Stretch"/>
+		</Grid>
+	</Grid>
+</UserControl>

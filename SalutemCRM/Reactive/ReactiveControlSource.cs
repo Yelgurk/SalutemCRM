@@ -47,6 +47,10 @@ public partial class ReactiveControlGlobalSetterContainer<T> : ObservableObject
         (item1, item2) =>
             item1 is not null
     );
+
+    partial void OnSelectedItemChanged(T? value) => OnSelectedItemChangedEvent?.Invoke(value);
+
+    public event Action<T?> OnSelectedItemChangedEvent;
 }
 
 public partial class ReactiveControlSource<T> : ObservableObject, IReactiveControlSource, IReactiveControlResponseUI

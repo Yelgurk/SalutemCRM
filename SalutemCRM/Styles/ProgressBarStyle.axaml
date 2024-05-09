@@ -13,7 +13,7 @@
 				<ProgressBar Classes="custom pink"
 							 Margin="0 0 0 10"/>
 
-				<ProgressBar Classes="custom blue"
+				<ProgressBar Classes="custom hide blue"
 							 Margin="0 0 0 10" Value="95"/>
 
 				<ProgressBar Classes="custom green right"
@@ -24,7 +24,7 @@
 
 	<Style Selector="ProgressBar.custom">
 		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="MinHeight" Value="40"/> 
+		<Setter Property="MinHeight" Value="20"/> 
 		<Setter Property="Margin" Value="0"/>
 		<Setter Property="Padding" Value="0"/>
 		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>

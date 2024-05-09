@@ -6,7 +6,7 @@
 			 xmlns:acc="using:SalutemCRM"
 			 xmlns:conv="using:SalutemCRM.Converter"
 			 x:DataType="vm:OrdersManagmentControlViewModel"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
              x:Class="SalutemCRM.Control.OrdersManagmentControl">
 	<UserControl.DataContext>
 		<vm:OrdersManagmentControlViewModel/>
@@ -19,7 +19,8 @@
 			<StackPanel>
 				<ItemsControl HorizontalAlignment="Center"
 						      Margin="0 10 0 5"
-							  DataContext="{x:Static acc:Account.Current}">
+							  DataContext="{x:Static acc:Account.Current}"
+							  IsVisible="{Binding IsRootOrBossUser}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
 							<WrapPanel/>
@@ -28,17 +29,14 @@
 
 					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsOnlyFullyPaid}"
 							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
-							  IsVisible="{Binding IsRootOrBossUser}"
 							  Content="Полностью оплачено"
 							  Margin="20 0 10 0"/>
 					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsOnlyPartialPaid}"
 							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
-							  IsVisible="{Binding IsRootOrBossUser}"
 							  Content="Частично оплачено"
 							  Margin="10 0"/>
 					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsOnlyNotPaid}"
 							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
-							  IsVisible="{Binding IsRootOrBossUser}"
 							  Content="Не оплачено"
 							  Margin="10 0 20 0"/>
 				</ItemsControl>
@@ -124,7 +122,17 @@
 						<DataGridTextColumn Header="Валюта" Binding="{Binding Currency}"/>
 						<DataGridTextColumn Header="Выплачено" Binding="{Binding PricePaid}"/>
 						<DataGridTextColumn Header="%" Binding="{Binding PricePaidPercantage}"/>
-						<DataGridTextColumn Header="Выполнено %" Binding="{Binding TaskCompletedPercentage}"/>
+						
+						<DataGridTemplateColumn Width="auto" Header="Выполнено %">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ProgressBar Classes="custom green"
+												 VerticalAlignment="Stretch"
+												 HorizontalAlignment="Stretch"
+												 Value="{Binding TaskCompletedPercentage}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 					</DataGrid.Columns>
 				</DataGrid>
 			</ScrollViewer>
@@ -134,39 +142,50 @@
 		<Border Grid.Column="1"
 				BorderThickness="1 0 0 0"
 				BorderBrush="{DynamicResource Primary_Gray}">
-			<Grid RowDefinitions="*, auto">
+			<Grid RowDefinitions="auto, *, auto">
 				<Grid Grid.Row="0"
-					  RowDefinitions="auto, *">
-					<DockPanel Grid.Row="0"
-							   HorizontalAlignment="Center"
-							   Margin="0 5">
-						<TextBlock FontSize="16"
-								   Text="Список платежей"
+					  Height="300"
+					  DataContext="{x:Static acc:Account.Current}"
+					  IsVisible="{Binding IsRootOrBossUser}">
+					<Grid RowDefinitions="auto, *"
+						  DataContext="{Binding $parent[UserControl].DataContext}">
+						<DockPanel Grid.Row="0"
+								   HorizontalAlignment="Center"
+								   Margin="0 5">
+							<TextBlock FontSize="16"
+									   Text="Список платежей"
+									   VerticalAlignment="Center"
+									   Margin="0 0 10 0 "/>
+							<Button Classes="custom iconed rounded blue update"
+									Command="{Binding UpdateOrsersListCommand}"/>
+						</DockPanel>
+
+						<ScrollViewer Grid.Row="1">
+							<ItemsControl ItemsSource="{Binding Source.SelectedItem.Payments}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<RadioButton Classes="ManagerPayment"
+													 Content="{Binding}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</ScrollViewer>
+
+						<TextBlock Text="Пусто"
+								   Grid.RowSpan="2"
 								   VerticalAlignment="Center"
-								   Margin="0 0 10 0 "/>
-						<Button Classes="custom iconed rounded blue update"
-								Command="{Binding UpdateOrsersListCommand}"/>
-					</DockPanel>
-
-					<ScrollViewer Grid.Row="1">
-						<ItemsControl ItemsSource="{Binding Source.SelectedItem.Payments}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<RadioButton Classes="ManagerPayment"
-												 Content="{Binding}"/>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</ScrollViewer>
-
-					<TextBlock Text="Пусто"
-							   Grid.RowSpan="2"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   IsVisible="{Binding !Source.SelectedItem.Payments.Count}"/>
+								   HorizontalAlignment="Center"
+								   IsVisible="{Binding !Source.SelectedItem.Payments.Count}"/>
+					</Grid>
 				</Grid>
 
 				<Border Grid.Row="1"
+						BorderThickness="0 1 0 0"
+						BorderBrush="{DynamicResource Primary_Gray}">
+					<!--тут контролы отображения производства/закупок/сервиса + additional info-->
+				</Border>
+
+				<Border Grid.Row="2"
 						BorderThickness="0 1 0 0"
 						DataContext="{x:Static acc:Account.Current}"
 						IsVisible="{Binding IsRootOrBossUser}"

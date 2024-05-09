@@ -573,15 +573,6 @@ public partial class DatabaseContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .Property(wo => wo.OrderType);
-        builder
-            .Property(wo => wo.PaymentAgreement);
-        builder
-            .Property(wo => wo.PaymentStatus);
-        builder
-            .Property(wo => wo.TaskStatus);
-
-        builder
             .Property(wo => wo.Currency)
             .HasMaxLength(200);
         builder
@@ -689,10 +680,6 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(mp => mp.OrderDutyForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
-            .Property(mp => mp.TaskStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Task_Status.AwaitStart);
-        builder
             .Property(mp => mp.RecordDT)
             .HasColumnType("datetime2");
         builder
@@ -720,14 +707,6 @@ public partial class DatabaseContext : DbContext
             .WithMany(oo => oo.Manufactures)
             .HasForeignKey(ms => ms.OrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
-        builder
-            .Property(ws => ws.DeliveryStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Delivery_Status.NotDelivered);
-        builder
-            .Property(ws => ws.TaskStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Task_Status.NotAvailable);
         builder
             .Property(ws => ws.Code)
             .HasMaxLength(200);
@@ -777,10 +756,6 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(ms => ms.OrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder
-            .Property(mf => mf.DeliveryStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Delivery_Status.NotDelivered);
         builder
             .Property(mf => mf.RecordDT)
             .HasColumnType("datetime2");

@@ -37,7 +37,15 @@ public partial class OrderProcess : ClonableObservableObject<OrderProcess>
 
     [NotMapped]
     [ObservableProperty]
+    private string? _additionalInfo;
+
+    [NotMapped]
+    [ObservableProperty]
     private DateTime _recordDT;
+
+    [NotMapped]
+    [ObservableProperty]
+    private DateTime _mustBeStartedDT;
 
     [NotMapped]
     [ObservableProperty]

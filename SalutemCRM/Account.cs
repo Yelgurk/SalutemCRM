@@ -31,6 +31,8 @@ public partial class Account : ObservableObject
         OnPropertyChanged(nameof(IsStorekeeperUser));
         OnPropertyChanged(nameof(IsMoneyStateInfoVisible));
         OnPropertyChanged(nameof(IsStockCountInfoVisible));
+        OnPropertyChanged(nameof(IsOrderSalesPermission));
+        OnPropertyChanged(nameof(IsOrderManufacturePermission));
     }
 
     public bool IsRootOrBossUser => Current.User.Permission == User_Permission.Boss;
@@ -51,5 +53,9 @@ public partial class Account : ObservableObject
 
     public bool IsMoneyStateInfoVisible => IsRootOrBossUser;
 
-    public bool IsStockCountInfoVisible => IsRootOrBossUser | IsManufactureManagerUser;
+    public bool IsStockCountInfoVisible => IsRootOrBossUser || IsManufactureManagerUser;
+
+    public bool IsOrderSalesPermission => IsRootOrBossUser || IsSalesManagerUser || IsSeniorSalesManagerUser;
+
+    public bool IsOrderManufacturePermission => IsRootOrBossUser || IsManufactureManagerUser;
 }

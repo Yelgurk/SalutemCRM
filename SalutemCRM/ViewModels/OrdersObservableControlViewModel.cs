@@ -72,9 +72,10 @@ public partial class OrdersObservableControlViewModelSource : ReactiveControlSou
                     .Include(x => x.Client)
                     .Include(x => x.Vendor)
                     .Include(x => x.Payments)
-                    .ThenInclude(x => x.FileAttachs)
+                        .ThenInclude(x => x.FileAttachs)
                 where PaymentSelector.Any(s => item.PaymentStatus == s) &&
-                    item.RecordDT >= DtSortBegin && item.RecordDT <= DtSortEnd
+                      item.TaskStatus > Task_Status.NotAvailable && item.TaskStatus <= Task_Status.Finished &&
+                      item.RecordDT >= DtSortBegin && item.RecordDT <= DtSortEnd
                 select item
             );
         }

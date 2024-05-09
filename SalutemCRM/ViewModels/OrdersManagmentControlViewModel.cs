@@ -93,14 +93,14 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
                     .Include(x => x.Client)
                     .Include(x => x.Vendor)
                     .Include(x => x.Manufactures)
-                    .ThenInclude(x => x.OrderProcesses)
+                        .ThenInclude(x => x.OrderProcesses)
                     .Include(x => x.WarehouseSupplies)
                     .Include(x => x.MaterialFlows)
-                    .ThenInclude(x => x.WarehouseItem)
+                        .ThenInclude(x => x.WarehouseItem)
                     .Include(x => x.MaterialFlows)
-                    .ThenInclude(x => x.WarehouseSupply)
+                        .ThenInclude(x => x.WarehouseSupply)
                     .Include(x => x.Payments)
-                    .ThenInclude(x => x.FileAttachs)
+                        .ThenInclude(x => x.FileAttachs)
                 where (PaymentSelector.Any(s => item.PaymentStatus == s) &&
                        TaskSelector.Any(s => item.TaskStatus == s)) &&
                        item.RecordDT >= DtSortBegin && item.RecordDT <= DtSortEnd

@@ -23,6 +23,8 @@ public partial class Order
     [NotMapped]
     public string RecordDate => RecordDT.ToShortDateString();
 
+
+
     [NotMapped]
     public string OrderTypeDescription => OrderType switch
     {
@@ -71,6 +73,8 @@ public partial class Order
         _ => -1
     };
 
+
+
     [NotMapped]
     public string PaymentEndpointPerson
     {
@@ -86,8 +90,12 @@ public partial class Order
         }
     }
 
+
+
     [NotMapped]
     public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
+
+
 
     [NotMapped]
     public bool IsCustomerOrder => OrderType == Order_Type.WarehouseRestocking ? false : true;
@@ -106,6 +114,8 @@ public partial class Order
 
     [NotMapped]
     public bool IsPaymentPartial => PaymentAgreement == Payment_Status.PartiallyPaid ? true : false;
+
+
 
     [NotMapped]
     public double PriceTotalBYN => Currency == "BYN" ? PriceTotal : (PriceTotal * UnitToBYNConversion);
