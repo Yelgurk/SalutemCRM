@@ -531,9 +531,7 @@ public partial class DatabaseContext : DbContext
             .HasForeignKey(ws => ws.OrderForeignKey)
             .OnDelete(DeleteBehavior.Restrict);
         builder
-            .Property(ws => ws.DeliveryStatus)
-            .HasConversion<int>()
-            .HasDefaultValue(Delivery_Status.NotDelivered);
+            .Property(ws => ws.DeliveryStatus);
         builder
             .Property(ws => ws.VendorCode)
             .HasMaxLength(200);

@@ -136,10 +136,12 @@ public partial class Order : ClonableObservableObject<Order>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TaskCompletedPercentage))]
     private ObservableCollection<WarehouseSupply> _warehouseSupplies = new();
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TaskCompletedPercentage))]
     private ObservableCollection<Manufacture> _manufactures = new();
 
     [NotMapped]

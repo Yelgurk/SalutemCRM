@@ -12,7 +12,7 @@
 		<vm:OrdersObservableControlViewModel/>
 	</UserControl.DataContext>
 
-	<Grid ColumnDefinitions="2*, 1*">
+	<Grid ColumnDefinitions="5*, 2*">
 		<Grid Grid.Column="0"
 			  RowDefinitions="auto, *"
 			  Background="WhiteSmoke">
@@ -82,9 +82,9 @@
 						<DataGridTextColumn Header="Клиент/Поставщик" Binding="{Binding PaymentEndpointPerson}"/>
 						<DataGridTextColumn Header="Стоимость" Binding="{Binding PriceTotal}"/>
 						<DataGridTextColumn Header="Мин. условия" Binding="{Binding PriceRequired}"/>
+						<DataGridTextColumn Header="Валюта" Binding="{Binding Currency}"/>
 						<DataGridTextColumn Header="Выплачено" Binding="{Binding PricePaid}"/>
 						<DataGridTextColumn Header="%" Binding="{Binding PricePaidPercantage}"/>
-						<DataGridTextColumn Header="Валюта" Binding="{Binding Currency}"/>
 					</DataGrid.Columns>
 				</DataGrid>
 			</ScrollViewer>

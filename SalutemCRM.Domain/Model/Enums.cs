@@ -25,8 +25,8 @@ public enum Task_Status {
     AwaitPayment,
     AwaitStart,
     Execution,
-    Reassigned,
     Finished,
+    Reassigned,
     Cancelled
 };
 

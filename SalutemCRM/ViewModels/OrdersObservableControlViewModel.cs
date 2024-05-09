@@ -39,7 +39,7 @@ public partial class OrdersObservableControlViewModelSource : ReactiveControlSou
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PaymentSelector))]
-    private bool _isOnlyFullyPaid = true;
+    private bool _isOnlyFullyPaid = false;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PaymentSelector))]

@@ -45,7 +45,31 @@ public partial class Order
     };
 
     [NotMapped]
-    public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
+    public double TaskCompletedPercentage => OrderType switch
+    {
+        Order_Type.WarehouseRestocking => WarehouseSupplies
+            .DoIf(x => { }, x => x.Count > 0)?
+            .Do(x => Extensions.PercentageCalc(
+                x.Count * 2,
+                x.Select(s => s.DeliveryStatus.Cast<int>()).Sum()
+            )) ?? -1,
+
+        Order_Type.ManagerSale => Manufactures
+            .DoIf(x => { }, x => x.Count > 0)?
+            .Do(x => Extensions.PercentageCalc(
+                x.Count * 100.0,
+                x.Select(s => s.CompletedPercentage).Sum()
+             )) ?? -1,
+
+        Order_Type.CustomerService => TaskStatus switch
+        {
+            Task_Status.Execution => 50.0,
+            Task_Status.Finished => 100.0,
+            _ => 0.0
+        },
+
+        _ => -1
+    };
 
     [NotMapped]
     public string PaymentEndpointPerson
@@ -61,6 +85,9 @@ public partial class Order
             return "[Салутем]";
         }
     }
+
+    [NotMapped]
+    public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
 
     [NotMapped]
     public bool IsCustomerOrder => OrderType == Order_Type.WarehouseRestocking ? false : true;

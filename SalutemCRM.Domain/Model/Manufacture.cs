@@ -64,5 +64,6 @@ public partial class Manufacture : ClonableObservableObject<Manufacture>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CompletedPercentage))]
     private ObservableCollection<OrderProcess> _orderProcesses = new();
 }
