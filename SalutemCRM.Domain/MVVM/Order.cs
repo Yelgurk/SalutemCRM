@@ -39,7 +39,7 @@ public partial class Order
     {
         Task_Status.NotAvailable => "Ожидает проверки",
         Task_Status.AwaitPayment => "Ожидает оплаты",
-        Task_Status.AwaitStart => "Ожидает старта выполнения",
+        Task_Status.AwaitStart => "Ожидает старта",
         Task_Status.Execution => "Выполняется",
         Task_Status.Finished => "Закончено",
         Task_Status.Cancelled => "Отменено",
@@ -95,6 +95,8 @@ public partial class Order
     [NotMapped]
     public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
 
+    [NotMapped]
+    public bool IsOrderAwaitManufacture => TaskStatus == Task_Status.AwaitStart;
 
 
     [NotMapped]

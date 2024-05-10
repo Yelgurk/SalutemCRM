@@ -53,22 +53,29 @@
 							  Command="{Binding UpdateOrsersListCommand}"
 							  Content="На проверке"
 							  Margin="20 0 10 0"/>
-					<CheckBox IsChecked="{Binding Source.IsAwaitPayment}"
-							  Command="{Binding UpdateOrsersListCommand}"
+					
+					<CheckBox IsChecked="{Binding $parent[UserControl].DataContext.Source.IsAwaitPayment}"
+							  Command="{Binding $parent[UserControl].DataContext.UpdateOrsersListCommand}"
 							  Content="Ожидает оплаты"
-							  Margin="10 0"/>
+							  Margin="10 0"
+							  DataContext="{x:Static acc:Account.Current}"
+							  IsVisible="{Binding IsOrderSalesPermission}"/>
+					
 					<CheckBox IsChecked="{Binding Source.IsAwaitStart}"
 							  Command="{Binding UpdateOrsersListCommand}"
 							  Content="Ожидает старта выполнения"
 							  Margin="10 0 20 0"/>
+					
 					<CheckBox IsChecked="{Binding Source.IsExecution}"
 							  Command="{Binding UpdateOrsersListCommand}"
 							  Content="Выполняется"
 							  Margin="10 0 20 0"/>
+					
 					<CheckBox IsChecked="{Binding Source.IsFinished}"
 							  Command="{Binding UpdateOrsersListCommand}"
 							  Content="Закончено"
 							  Margin="10 0 20 0"/>
+					
 					<CheckBox IsChecked="{Binding Source.IsCancelled}"
 							  Command="{Binding UpdateOrsersListCommand}"
 							  Content="Отменено"
@@ -105,23 +112,66 @@
 						  BorderThickness="0 1 0 0"
 						  BorderBrush="{DynamicResource Primary_Gray}"
 						  VerticalScrollBarVisibility="Hidden"
-						  HorizontalScrollBarVisibility="Visible">
-				<DataGrid ItemsSource="{Binding Source.OrdersCollection}"
+						  HorizontalScrollBarVisibility="Visible"
+						  DataContext="{x:Static acc:Account.Current}"
+						  Name="DataGridManagmentContainer">
+				<DataGrid DataContext="{Binding $parent[UserControl].DataContext}"
+						  ItemsSource="{Binding Source.OrdersCollection}"
 						  SelectedItem="{Binding Source.SelectedItem}"
 						  IsReadOnly="True"
 						  HorizontalScrollBarVisibility="Hidden">
 					<DataGrid.Columns>
+						<DataGridTemplateColumn Width="auto" Header="Действия"
+												IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsOrderManufacturePermission}">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Classes="custom iconed rounded orange ok"
+											Content="Старт "
+											Height="30"
+											Margin="5"
+											IsEnabled="{Binding IsOrderAwaitManufacture}"/>
+									<!--Button Classes="custom iconed rounded orange ok"
+											Content="Старт "
+											IsEnabled="{Binding IsOrderManufactureExecuted}"
+											Command=""
+											CommandParameter=""/-->
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
 						<DataGridTextColumn Header="#" Binding="{Binding Id}"/>
+						
 						<DataGridTextColumn Header="Дата" Binding="{Binding RecordDate}"/>
+						
 						<DataGridTextColumn Header="Тип" Binding="{Binding OrderTypeDescription}"/>
+						
 						<DataGridTextColumn Header="Статус" Binding="{Binding TaskStatusTypeDescription}"/>
+						
 						<DataGridTextColumn Header="Сотрудник" Binding="{Binding Employee.FullName}"/>
+						
 						<DataGridTextColumn Header="Клиент/Поставщик" Binding="{Binding PaymentEndpointPerson}"/>
-						<DataGridTextColumn Header="Стоимость" Binding="{Binding PriceTotal}"/>
-						<DataGridTextColumn Header="Мин. условия" Binding="{Binding PriceRequired}"/>
-						<DataGridTextColumn Header="Валюта" Binding="{Binding Currency}"/>
-						<DataGridTextColumn Header="Выплачено" Binding="{Binding PricePaid}"/>
-						<DataGridTextColumn Header="%" Binding="{Binding PricePaidPercantage}"/>
+						
+						<DataGridTextColumn Header="Стоимость" Binding="{Binding PriceTotal}"
+											IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsOrderSalesPermission}"/>
+						
+						<DataGridTextColumn Header="Мин. условия" Binding="{Binding PriceRequired}"
+											IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsOrderSalesPermission}"/>
+						
+						<DataGridTextColumn Header="Валюта" Binding="{Binding Currency}"
+											IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsOrderSalesPermission}"/>
+
+						<DataGridTemplateColumn Width="auto" Header="Выплачено, %"
+												IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsOrderSalesPermission}">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<DockPanel VerticalAlignment="Center"
+											   HorizontalAlignment="Center">
+										<TextBlock Text="{Binding PricePaid}"/>
+										<TextBlock Text="{Binding PricePaidPercantage, StringFormat=' [{0:0.##}%]'}"/>
+									</DockPanel>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 						
 						<DataGridTemplateColumn Width="auto" Header="Выполнено %">
 							<DataGridTemplateColumn.CellTemplate>

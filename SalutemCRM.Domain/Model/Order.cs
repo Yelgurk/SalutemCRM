@@ -52,6 +52,7 @@ public partial class Order : ClonableObservableObject<Order>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaskStatusTypeDescription))]
     [NotifyPropertyChangedFor(nameof(IsOrderManufactureExecuted))]
+    [NotifyPropertyChangedFor(nameof(IsOrderAwaitManufacture))]
     private Task_Status _taskStatus;
 
 

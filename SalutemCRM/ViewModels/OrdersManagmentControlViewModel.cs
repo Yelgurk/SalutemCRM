@@ -37,11 +37,11 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaskSelector))]
-    private bool _isNotAvailable = true;
+    private bool _isNotAvailable = false;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaskSelector))]
-    private bool _isAwaitPayment = true;
+    private bool _isAwaitPayment = false;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaskSelector))]

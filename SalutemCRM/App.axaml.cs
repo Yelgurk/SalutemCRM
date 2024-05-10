@@ -48,7 +48,9 @@ public partial class App : Application
 
         Host!.Services.GetService<FilesContainerService>();
 
-        Account.SetAccount(User.RootOrBoss);
+        //Account.SetAccount(User.RootOrBoss);
+        //Account.SetAccount(User.SalesManager);
+        Account.SetAccount(User.ManufactureManager);
 
         //if (false)
         if (!Design.IsDesignMode)

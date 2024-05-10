@@ -21,18 +21,42 @@
 
 			<TextBlock Grid.Row="1"
 					   Text="Дополнительная информация:"
-					   Margin="5 0 5 5"/>
+					   Margin="5 5 5 0"/>
 			
 			<ScrollViewer Grid.Row="2"
-						  MaxHeight="150">
-				<TextBlock Text=""
-					   TextWrapping="Wrap"
-					   HorizontalAlignment="Left"
-					   VerticalAlignment="Top"
-					   Margin="5"/>
+						  MaxHeight="150"
+						  Margin="0 0 0 5">
+				<TextBlock Text="{Binding Source.SelectedItem.AdditionalInfo,
+								  FallbackValue='[информация отсутствует]'}"
+						   TextWrapping="Wrap"
+						   HorizontalAlignment="Left"
+						   VerticalAlignment="Top"
+						   Margin="5"/>
 			</ScrollViewer>
 
-			<ListBox Grid.Row="3">
+			<ListBox Grid.Row="3"
+					 Classes="custom zebra unmarked"
+					 BorderThickness="0 1 0 0"
+					 BorderBrush="{DynamicResource Primary_Gray}"
+					 ItemsSource="{Binding Source.SelectedItem.Manufactures}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid ColumnDefinitions="auto, *, auto, 80">
+							<TextBlock Grid.Column="0"
+									   Text="{Binding Name}"/>
+							
+							<TextBlock Grid.Column="2"
+									   Text="{Binding Count}"
+									   IsVisible="{Binding !HaveSerialNumber}"/>
+							
+							<TextBox Grid.Column="3"
+									 Classes="custom header"
+									 Watermark="# изд."
+									 Text="{Binding Code}"
+									 IsVisible="{Binding HaveSerialNumber}"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
 			</ListBox>
 
 			<StackPanel Grid.Row="4">

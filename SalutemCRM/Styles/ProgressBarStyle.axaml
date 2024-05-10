@@ -25,6 +25,7 @@
 	<Style Selector="ProgressBar.custom">
 		<Setter Property="CornerRadius" Value="0"/>
 		<Setter Property="MinHeight" Value="20"/> 
+		<Setter Property="MinWidth" Value="0"/> 
 		<Setter Property="Margin" Value="0"/>
 		<Setter Property="Padding" Value="0"/>
 		<Setter Property="Background" Value="{DynamicResource Basic_LightGray}"/>
