@@ -14,6 +14,7 @@
 	<Grid>
 		<t_control:OrderEditorControl IsVisible="False"/>
 		<control:OrdersObservableControl IsVisible="False"/>
-		<control:OrdersManagmentControl IsVisible="True"/>
+		<control:OrdersManagmentControl IsVisible="False"/>
+		<control:AuthorizationControl IsVisible="True"/>
 	</Grid>
 </Window>

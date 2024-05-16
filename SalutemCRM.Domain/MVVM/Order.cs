@@ -90,8 +90,6 @@ public partial class Order
         }
     }
 
-
-
     [NotMapped]
     public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
 

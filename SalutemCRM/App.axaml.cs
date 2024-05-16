@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SalutemCRM.Database;
@@ -33,7 +34,6 @@ public partial class App : Application
     {
         //DatabaseContext.ReCreateDatabase(!Design.IsDesignMode);
 
-        AvaloniaXamlLoader.Load(this);
         Host =
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
             .ConfigureServices(services => {
@@ -49,8 +49,8 @@ public partial class App : Application
         Host!.Services.GetService<FilesContainerService>();
 
         //Account.SetAccount(User.RootOrBoss);
-        //Account.SetAccount(User.SalesManager);
-        Account.SetAccount(User.ManufactureManager);
+        // Account.SetAccount(User.SalesManager);
+        //Account.SetAccount(User.ManufactureManager);
 
         //if (false)
         if (!Design.IsDesignMode)
@@ -77,10 +77,29 @@ public partial class App : Application
                                     Debug.WriteLine("FILE WAS NOT FOUNDED IN SERVER SIDE");
                             }; break;
 
+                        case MBEnums.USER_JSON:
+                            {
+                                User? signIn = JsonSerializer.Deserialize<User>(e.Message);
+
+                                if (signIn != null)
+                                {
+                                    using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                                        signIn = db.Users
+                                        .Where(x => x.Login == signIn.Login)
+                                        .Include(x => x.UserRole)
+                                        .First();
+
+                                    signIn.IsSuccess = true;
+                                    Account.SetAccount(signIn);
+                                }
+                            }; break;
+
                         default: break;
                     }
                 })
                 .Do(x => x.Open());
+
+        AvaloniaXamlLoader.Load(this);
     }
 
     public override void OnFrameworkInitializationCompleted()

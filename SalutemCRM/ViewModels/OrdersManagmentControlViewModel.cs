@@ -10,6 +10,7 @@ using SalutemCRM.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Text;
@@ -114,13 +115,16 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
 
     public void AcceptOrderProduction()
     {
-        using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+        if (SelectedItem is not null)
         {
-            db.Orders.Single(x => x.Id == SelectedItem!.Id).TaskStatus = Task_Status.AwaitStart;
-            db.SaveChanges();
-        }
+            using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+            {
+                db.Orders.Single(x => x.Id == SelectedItem!.Id).TaskStatus = Task_Status.AwaitStart;
+                db.SaveChanges();
+            }
 
-        UpdateOrdersList();
+            UpdateOrdersList();
+        }
     }
 }
 

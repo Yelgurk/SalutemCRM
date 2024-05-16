@@ -16,12 +16,16 @@ namespace SalutemCRM.Domain.Model;
 public partial class User
 {
     [NotMapped]
+    public bool IsSuccess { get; set; } = false;
+
+    [NotMapped]
     public string FullName => $"{this.FirstName} {this.LastName}";
 
     [NotMapped]
     public string FullNameWithLogin => $"{this.FirstName} {this.LastName} [{this.Login}]";
 
-    public User_Permission Permission => UserRole!.Name switch
+    [NotMapped]
+    public User_Permission Permission => UserRole?.Name switch
     {
         "Руководитель" => User_Permission.Boss,
         "Бухгалтер" => User_Permission.Bookkeeper,

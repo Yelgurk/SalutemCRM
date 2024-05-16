@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace SalutemCRM.Server;
@@ -52,6 +54,7 @@ public partial class App : Application
                     switch (e.MessageType)
                     {
                         case MBEnums.STRING: { x.Logging($"New message [{e.ThisChannel.Id}]: {e.Message}"); }; break;
+
                         case MBEnums.FILE_JSON:
                             {
                                 List<FileAttach>? receivedFiles = JsonSerializer.Deserialize<List<FileAttach>>(e.Message);
@@ -81,6 +84,7 @@ public partial class App : Application
                                 }
 
                             }; break;
+
                         case MBEnums.GET_FILE_JSON:
                             {
                                 List<FileAttach> response = new() { new FileAttach() { FileName = e.Message } };
@@ -96,6 +100,25 @@ public partial class App : Application
 
                                 x.Logging($"Client request for file [{e.ThisChannel.Id}]: {e.Message}\nDoes file founded: {response[0].FileFounded}");
                             }; break;
+
+                        case MBEnums.USER_JSON:
+                            {
+                                User? match = JsonSerializer.Deserialize<User>(e.Message),
+                                      result = match?.Clone() ?? null;
+
+                                Debug.WriteLine($"{match!.Login} {match!.PasswordMD5}");
+
+                                using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                                    e.ThisChannel.Send(JsonSerializer.Serialize(
+                                        result = db.Users
+                                        .Where(x => x.Login == match!.Login && x.PasswordMD5 == match.PasswordMD5)
+                                        .FirstOrDefault()),
+                                        MBEnums.USER_JSON
+                                    );
+
+                                x.Logging($"Authorization attempt [{e.ThisChannel.Id}]: {match?.Login ?? "null"} | {match?.PasswordMD5 ?? "null"}, result = {result != null}, {result?.UserRole?.Name ?? ""}");
+                            }; break;
+
                         default: break;
                     }
                 })

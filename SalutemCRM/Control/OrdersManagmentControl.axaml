@@ -232,6 +232,9 @@
 				<Border Grid.Row="1"
 						BorderThickness="0 1 0 0"
 						BorderBrush="{DynamicResource Primary_Gray}">
+					<TextBlock Text="ТУТ"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"/>
 					<!--тут контролы отображения производства/закупок/сервиса + additional info-->
 				</Border>
 
