@@ -33,7 +33,11 @@ public partial class Account : ObservableObject
         OnPropertyChanged(nameof(IsStockCountInfoVisible));
         OnPropertyChanged(nameof(IsOrderSalesPermission));
         OnPropertyChanged(nameof(IsOrderManufacturePermission));
+
+        OnUserChangedTrigger?.Invoke(value);
     }
+
+    public static Func<User, bool>? OnUserChangedTrigger { get; set; }
 
     public bool IsRootOrBossUser => Current.User.Permission == User_Permission.Boss;
 

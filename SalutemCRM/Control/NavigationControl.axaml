@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:SalutemCRM.ViewModels"
+             x:Class="SalutemCRM.Control.NavigationControl">
+	<UserControl.DataContext>
+		<vm:NavigationViewModel/>
+	</UserControl.DataContext>
+
+	<Grid ColumnDefinitions="200, *">
+		<ListBox Grid.Column="0"
+				 Classes="custom"
+				 ItemsSource="{Binding Source.NavigationCollection}"
+				 SelectedItem="{Binding Source.SelectedItem}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid ColumnDefinitions="auto, *">
+						<Image Grid.Column="0"
+							   Margin="5 0"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Source="{Binding Icon}"/>
+						
+						<TextBlock Grid.Column="1"
+								   VerticalAlignment="Center"
+								   HorizontalAlignment="Center"
+								   FontWeight="SemiBold"
+								   Text="{Binding Title}"/>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<UserControl Grid.Column="1"
+					 HorizontalAlignment="Stretch"
+					 VerticalAlignment="Stretch"
+					 Content="{Binding Source.SelectedItem.Content}"/>
+	</Grid>
+</UserControl>

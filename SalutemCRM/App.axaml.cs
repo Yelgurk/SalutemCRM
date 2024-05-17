@@ -7,6 +7,8 @@ using Avalonia.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SalutemCRM.Control;
+using SalutemCRM.ControlTemplated;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
@@ -43,6 +45,10 @@ public partial class App : Application
                 services.AddSingleton<QRCodeBleScanService>();
                 services.AddSingleton<FilesContainerService>();
                 services.AddSingleton<TCPChannel>();
+
+                services.AddSingleton<OrderEditorControl>();
+                services.AddSingleton<OrdersObservableControl>();
+                services.AddSingleton<OrdersManagmentControl>();
             })
             .Build();
 

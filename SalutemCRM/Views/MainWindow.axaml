@@ -3,6 +3,7 @@
         xmlns:vm="using:SalutemCRM.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:main="using:SalutemCRM"
         xmlns:views="clr-namespace:SalutemCRM.Views"
 		xmlns:control="clr-namespace:SalutemCRM.Control"
 		xmlns:f_control="clr-namespace:SalutemCRM.FunctionalControl"
@@ -11,10 +12,20 @@
         x:Class="SalutemCRM.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemCRM">
-	<Grid>
+	<Grid DataContext="{x:Static main:Account.Current}">
+
+		<Grid IsVisible="{Binding !User.IsSuccess}">
+			<control:AuthorizationControl/>
+		</Grid>
+
+		<Grid IsVisible="{Binding User.IsSuccess}">
+			<control:NavigationControl/>
+		</Grid>
+		
+		<!--
 		<t_control:OrderEditorControl IsVisible="False"/>
 		<control:OrdersObservableControl IsVisible="False"/>
 		<control:OrdersManagmentControl IsVisible="False"/>
-		<control:AuthorizationControl IsVisible="True"/>
+		-->
 	</Grid>
 </Window>

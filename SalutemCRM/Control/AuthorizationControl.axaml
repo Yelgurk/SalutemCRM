@@ -49,7 +49,7 @@
 						Content="Авторизоваться "
 						DataContext="{x:Static main:Account.Current}"
 						Command="{Binding #THIS_UserControl.DataContext.TryLogInCommand}"
-						IsVisible="{Binding !User.IsSuccess}"/>
+						IsEnabled="{Binding !User.IsSuccess}"/>
 				
 				<TextBlock Text="Проверьте логин и пароль"
 						   Foreground="IndianRed"

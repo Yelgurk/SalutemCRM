@@ -12,7 +12,7 @@
 		<vm:OrdersManagmentControlViewModel/>
 	</UserControl.DataContext>
 
-	<Grid ColumnDefinitions="5*, 2*">
+	<Grid ColumnDefinitions="6*, 2*">
 		<Grid Grid.Column="0"
 			  RowDefinitions="auto, *"
 			  Background="WhiteSmoke">
@@ -232,7 +232,7 @@
 				<Border Grid.Row="1"
 						BorderThickness="0 1 0 0"
 						BorderBrush="{DynamicResource Primary_Gray}">
-					<TextBlock Text="ТУТ"
+					<TextBlock Text="Производство не начато"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"/>
 					<!--тут контролы отображения производства/закупок/сервиса + additional info-->
