@@ -11,6 +11,7 @@ using SalutemCRM.Control;
 using SalutemCRM.ControlTemplated;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
+using SalutemCRM.FunctionalControl;
 using SalutemCRM.Reactive;
 using SalutemCRM.Services;
 using SalutemCRM.TCP;
@@ -34,8 +35,6 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        //DatabaseContext.ReCreateDatabase(!Design.IsDesignMode);
-
         Host =
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
             .ConfigureServices(services => {
@@ -52,13 +51,17 @@ public partial class App : Application
                 services.AddSingleton<TemplateRegionsEditor>();
                 services.AddSingleton<CRUSClientControl>();
                 services.AddSingleton<TemplateRegionsManagment>();
+                services.AddSingleton<CRUSVendorControl>();
+                services.AddSingleton<WarehouseGeneral>();
+                services.AddSingleton<ProductTemplateBuilder>();
+                services.AddSingleton<TemplateMasterSettingsPanel>();
             })
             .Build();
 
         Host!.Services.GetService<FilesContainerService>();
 
         //Account.SetAccount(User.RootOrBoss);
-        // Account.SetAccount(User.SalesManager);
+        //Account.SetAccount(User.SalesManager);
         //Account.SetAccount(User.ManufactureManager);
 
         //if (false)

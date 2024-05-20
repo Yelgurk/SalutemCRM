@@ -84,8 +84,12 @@ public class CRUSWarehouseCategoryControlViewModel : ViewModelBase<WarehouseCate
 {
     public ReactiveCommand<Unit, Unit>? RemoveCategoryInheritanceCommand { get; set; }
 
+    public ReactiveCommand<Unit, Unit>? UnselectCommand { get; protected set; }
+
     public CRUSWarehouseCategoryControlViewModel() : base(new() { PagesCount = 3 })
     {
+        UnselectCommand = ReactiveCommand.Create(() => { Source.SelectedItem = null; }, CRUSWarehouseCategoryControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
+
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,
             x => x.Source.TempItem!.Name,

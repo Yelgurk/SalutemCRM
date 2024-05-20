@@ -82,8 +82,12 @@ public class CRUSProductCategoryControlViewModel : ViewModelBase<ProductCategory
 {
     public ReactiveCommand<Unit, Unit>? RemoveCategoryInheritanceCommand { get; set; }
 
+    public ReactiveCommand<Unit, Unit>? UnselectCommand { get; protected set; }
+
     public CRUSProductCategoryControlViewModel() : base(new() { PagesCount = 3 })
     {
+        UnselectCommand = ReactiveCommand.Create(() => { Source.SelectedItem = null; }, CRUSProductCategoryControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
+
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.TempItem,
             x => x.Source.TempItem!.Name,

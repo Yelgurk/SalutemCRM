@@ -35,6 +35,8 @@ public partial class User
         "Конструктор" => User_Permission.ConstrEngineer,
         "Производство" => User_Permission.ManufactureEmployee,
         "Кладовщик" => User_Permission.Storekeeper,
+        "Отдел закупок" => User_Permission.PurchasingDepartment,
+        "Сервисное обсл." => User_Permission.ServiceDepartment,
         _ => User_Permission.None
     };
 

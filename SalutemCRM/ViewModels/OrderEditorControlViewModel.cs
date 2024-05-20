@@ -13,6 +13,7 @@ using SalutemCRM.TCP;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
@@ -25,7 +26,23 @@ namespace SalutemCRM.ViewModels;
 
 public partial class OrderEditorControlViewModelSource : ReactiveControlSource<Order>
 {
-    public OrderEditorControlViewModelSource() => SelectedItem = Order.Default;
+    public static Order Default => new()
+    {
+        OrderType = Account.Current.User.Permission switch
+        {
+            User_Permission.Boss => Order_Type.ManagerSale,
+            User_Permission.SeniorSalesManager => Order_Type.ManagerSale,
+            User_Permission.SalesManager => Order_Type.ManagerSale,
+            User_Permission.PurchasingDepartment => Order_Type.WarehouseRestocking,
+            User_Permission.ServiceDepartment => Order_Type.CustomerService,
+            _ => Order_Type.CustomerService
+        },
+        PaymentAgreement = Payment_Status.PartiallyPaid,
+        PaymentStatus = Payment_Status.Unpaid,
+        TaskStatus = Task_Status.AwaitPayment
+    };
+
+    public OrderEditorControlViewModelSource() => SelectedItem = Default;
 
     /* Warehouse supplying */
     [ObservableProperty]
@@ -59,7 +76,7 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 
     public void ClearOrderBuilder()
     {
-        SelectedItem = Order.Default;
+        SelectedItem = Default;
         NewOrderWarehouseSupplyInput = new();
         OrderWarehouseSupplies.Clear();
         OrderManagerProduct.Clear();

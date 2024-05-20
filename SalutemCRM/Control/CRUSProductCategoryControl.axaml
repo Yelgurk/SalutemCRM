@@ -26,12 +26,22 @@
 
 			<Grid RowDefinitions="auto, *"
 				  ColumnDefinitions="*">
-				<Button Classes="custom iconed orange plus rounded"
+				<StackPanel>
+					<Button Classes="custom iconed orange plus rounded"
+							HorizontalAlignment="Stretch"
+							CornerRadius="5"
+							Margin="5"
+							IsVisible="{Binding Source.IsFuncAddNewAvailable}"
+							Command="{Binding GoAddCommand}"/>
+					
+					<Button Classes="custom iconed blue update rounded"
 						HorizontalAlignment="Stretch"
 						CornerRadius="5"
 						Margin="5"
+						Content="Убрать выборку "
 						IsVisible="{Binding Source.IsFuncAddNewAvailable}"
-						Command="{Binding GoAddCommand}"/>
+						Command="{Binding UnselectCommand}"/>
+				</StackPanel>
 
 				<TreeDataGrid x:Name="TreeDataGridControl_1"
 							  Classes="custom editable"

@@ -14,7 +14,7 @@
 		<vm:ProductSchemaBuilderViewModel/>
 	</UserControl.DataContext>
 	
-	<Grid ColumnDefinitions="70*, 50, 30*"
+	<Grid ColumnDefinitions="70*, 50, 50*"
 		  RowDefinitions="2*, 3*">
 		
 		<Label Grid.Column="0" Grid.Row="0" Classes="card rounded tag"

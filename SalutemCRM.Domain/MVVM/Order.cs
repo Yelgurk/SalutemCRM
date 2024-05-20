@@ -12,15 +12,6 @@ namespace SalutemCRM.Domain.Model;
 public partial class Order
 {
     [NotMapped]
-    public static Order Default => new()
-    {
-        OrderType = Order_Type.ManagerSale,
-        PaymentAgreement = Payment_Status.PartiallyPaid,
-        PaymentStatus = Payment_Status.Unpaid,
-        TaskStatus = Task_Status.AwaitPayment
-    };
-
-    [NotMapped]
     public string RecordDate => RecordDT.ToShortDateString();
 
 

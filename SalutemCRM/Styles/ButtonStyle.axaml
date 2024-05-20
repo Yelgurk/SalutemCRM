@@ -172,6 +172,10 @@
 	<Style Selector="Button.collapse_down /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Collapse_down.png"/>
 	</Style>
+
+	<Style Selector="Button.update /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Update.png"/>
+	</Style>
 	
 	<Style Selector="Button.trashbin /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Trash.png"/>

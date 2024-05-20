@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:control="using:SalutemCRM.Control"
-             x:Class="SalutemCRM.Control.TemplateRegionsEditor">
-	<Grid ColumnDefinitions="*, *">
+             x:Class="SalutemCRM.Control.TemplateMasterSettingsPanel">
+	<Grid ColumnDefinitions="3*, 4*">
 		<Label Classes="card rounded" Tag="Валюты" Margin="15"
 			   Grid.Column="0">
-			<control:CRUSCountryControl Grid.Column="0"/>
+			<control:CRUSCurrencyUnitControl/>
 		</Label>
 
-		<Label Classes="card rounded" Tag="Валюты" Margin="15"
+		<Label Classes="card rounded" Tag="Роли" Margin="0 15 15 15"
 			   Grid.Column="1">
-			<control:CRUSCityControl Grid.Column="1"/>
+			<control:CRUSUserRoleControl/>
 		</Label>
 	</Grid>
 </UserControl>

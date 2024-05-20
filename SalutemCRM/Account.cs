@@ -33,6 +33,8 @@ public partial class Account : ObservableObject
         OnPropertyChanged(nameof(IsStockCountInfoVisible));
         OnPropertyChanged(nameof(IsOrderSalesPermission));
         OnPropertyChanged(nameof(IsOrderManufacturePermission));
+        OnPropertyChanged(nameof(IsPurchasingDepartmentPermission));
+        OnPropertyChanged(nameof(IsServiceDepartmentPermission));
 
         OnUserChangedTrigger?.Invoke(value);
     }
@@ -54,6 +56,10 @@ public partial class Account : ObservableObject
     public bool IsManufactureEmployeeUser => Current.User.Permission == User_Permission.ManufactureEmployee;
 
     public bool IsStorekeeperUser => Current.User.Permission == User_Permission.Storekeeper;
+
+    public bool IsPurchasingDepartmentPermission => Current.User.Permission == User_Permission.PurchasingDepartment;
+
+    public bool IsServiceDepartmentPermission => Current.User.Permission == User_Permission.ServiceDepartment;
 
     public bool IsMoneyStateInfoVisible => IsRootOrBossUser;
 

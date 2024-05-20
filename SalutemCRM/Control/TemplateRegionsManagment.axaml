@@ -6,8 +6,14 @@
 			 xmlns:control="using:SalutemCRM.Control"
              x:Class="SalutemCRM.Control.TemplateRegionsManagment">
 	<Grid ColumnDefinitions="*, *">
-		<control:CRUSCityControl Grid.Column="0"/>
-		
-		<control:SalesManagerRegionControl Grid.Column="1"/>
+		<Label Classes="card rounded" Tag="Валюты" Margin="15"
+			   Grid.Column="0">
+			<control:CRUSCityControl Grid.Column="0"/>
+		</Label>
+
+		<Label Classes="card rounded" Tag="Валюты" Margin="15"
+			   Grid.Column="1">
+			<control:SalesManagerRegionControl Grid.Column="1"/>
+		</Label>
 	</Grid>
 </UserControl>

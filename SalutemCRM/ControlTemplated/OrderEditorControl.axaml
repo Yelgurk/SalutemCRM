@@ -4,7 +4,8 @@
 		xmlns:crus="using:SalutemCRM.Control"
 		xmlns:f_contr="using:SalutemCRM.FunctionalControl"
 		xmlns:enums="using:SalutemCRM.Domain.Model"
-		xmlns:vm="using:SalutemCRM.ViewModels">
+		xmlns:vm="using:SalutemCRM.ViewModels"
+		xmlns:acc="using:SalutemCRM">
 	<Design.PreviewWith>
 		<Grid Width="800" Height="800">
 			<controls:OrderEditorControl />
@@ -26,9 +27,11 @@
 								   Margin="5">
 								<Grid Background="White">
 									<ComboBox Classes="custom"
-										ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
-										SelectedIndex="{Binding Source.SelectedItem.OrderType}"
-										Margin="5 40 5 5"/>
+											  DataContext="{x:Static acc:Account.Current}"
+											  IsEnabled="{Binding IsRootOrBossUser}"
+											  ItemsSource="{x:Static enums:EnumToString.OrderTypeToString}"
+											  SelectedIndex="{Binding #PART_TemplatedControl_OrderEditorContainer.DataContext.Source.SelectedItem.OrderType}"
+											  Margin="5 40 5 5"/>
 								</Grid>
 							</Label>
 

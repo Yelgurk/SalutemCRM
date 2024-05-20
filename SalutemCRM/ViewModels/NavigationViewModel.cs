@@ -8,6 +8,7 @@ using SalutemCRM.Control;
 using SalutemCRM.ControlTemplated;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Domain.Modell;
+using SalutemCRM.FunctionalControl;
 using SalutemCRM.Reactive;
 using SalutemCRM.Views;
 using System;
@@ -89,9 +90,15 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
         {
             case User_Permission.Boss:
                 {
+                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новая заявка", GetContent = Get<OrderEditorControl> });
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Photo gallery.png", Title = "База клиентов", GetContent = Get<CRUSClientControl> });
+                    NavigationCollection.Add(new() { IconUri = "Photo gallery.png", Title = "База поставщиков", GetContent = Get<CRUSVendorControl> });
+                    NavigationCollection.Add(new() { IconUri = "Warehouse.png", Title = "Склад", GetContent = Get<WarehouseGeneral> });
+                    NavigationCollection.Add(new() { IconUri = "Manufacture.png", Title = "Конструктор изделий", GetContent = Get<ProductTemplateBuilder> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Назначенные регионы", GetContent = Get<TemplateRegionsManagment> });
+                    NavigationCollection.Add(new() { IconUri = "Edit.png", Title = "Иные параметры", GetContent = Get<TemplateMasterSettingsPanel> });
                 } break;
 
             case User_Permission.Bookkeeper:
@@ -101,16 +108,18 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
 
             case User_Permission.SeniorSalesManager:
                 {
-                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новый счёт", GetContent = Get<OrderEditorControl> });
+                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новая заявка", GetContent = Get<OrderEditorControl> });
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Photo gallery.png", Title = "Мои клиенты", GetContent = Get<CRUSClientControl> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Мои регионы", GetContent = Get<TemplateRegionsManagment> });
                 } break;
 
             case User_Permission.SalesManager:
                 {
-                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новый счёт", GetContent = Get<OrderEditorControl> });
+                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новая заявка", GetContent = Get<OrderEditorControl> });
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Photo gallery.png", Title = "Мои клиенты", GetContent = Get<CRUSClientControl> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Мои регионы", GetContent = Get<TemplateRegionsManagment> });
                 } break;

@@ -142,7 +142,9 @@ public partial class DatabaseContext : DbContext
             new UserRole { Id = 5, Name = "Гл. производства" },
             new UserRole { Id = 6, Name = "Конструктор" },
             new UserRole { Id = 7, Name = "Производство" },
-            new UserRole { Id = 8, Name = "Кладовщик" }
+            new UserRole { Id = 8, Name = "Кладовщик" },
+            new UserRole { Id = 9, Name = "Отдел закупок" },
+            new UserRole { Id = 10, Name = "Сервисное обсл." }
         );
 
         modelBuilder.Entity<User>().HasData(

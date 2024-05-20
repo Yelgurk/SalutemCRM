@@ -52,7 +52,9 @@ public enum User_Permission {
     ManufactureManager,
     ConstrEngineer,
     ManufactureEmployee,
-    Storekeeper
+    Storekeeper,
+    PurchasingDepartment,
+    ServiceDepartment
 };
 
 public static class EnumToString
