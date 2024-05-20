@@ -9,8 +9,25 @@
 		<vm:NavigationViewModel/>
 	</UserControl.DataContext>
 
-	<Grid ColumnDefinitions="200, *">
+	<Grid ColumnDefinitions="300, 1, *"
+		  RowDefinitions="auto, *">
+		<Border Grid.Column="1"
+				Grid.RowSpan="2"
+				BorderThickness="0 0 1 0"
+				BorderBrush="{DynamicResource Primary_Gray}"/>
+
+		<Label Grid.Column="0"
+			   Grid.Row="0"
+			   HorizontalContentAlignment="Center"
+			   VerticalContentAlignment="Center"
+			   FontWeight="Light"
+			   FontSize="18"
+			   Padding="10 20">
+			<Image Source="avares://SalutemCRM/Assets/Icon/Salutem logo.png"/>
+		</Label>
+		
 		<ListBox Grid.Column="0"
+				 Grid.Row="1"
 				 Classes="custom"
 				 ItemsSource="{Binding Source.NavigationCollection}"
 				 SelectedItem="{Binding Source.SelectedItem}">
@@ -33,7 +50,8 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 
-		<UserControl Grid.Column="1"
+		<UserControl Grid.Column="2"
+					 Grid.RowSpan="2"
 					 HorizontalAlignment="Stretch"
 					 VerticalAlignment="Stretch"
 					 Content="{Binding Source.SelectedItem.Content}"/>

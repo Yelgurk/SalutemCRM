@@ -122,19 +122,16 @@
 						  HorizontalScrollBarVisibility="Hidden">
 					<DataGrid.Columns>
 						<DataGridTemplateColumn Width="auto" Header="Действия"
-												IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsOrderManufacturePermission}">
+												IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsManufactureManagerUser}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<Button Classes="custom iconed rounded orange ok"
 											Content="Старт "
 											Height="30"
 											Margin="5"
-											IsEnabled="{Binding IsOrderAwaitManufacture}"/>
-									<!--Button Classes="custom iconed rounded orange ok"
-											Content="Старт "
-											IsEnabled="{Binding IsOrderManufactureExecuted}"
+											IsEnabled="{Binding IsOrderAwaitManufacture}"
 											Command=""
-											CommandParameter=""/-->
+											CommandParameter=""/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -232,10 +229,51 @@
 				<Border Grid.Row="1"
 						BorderThickness="0 1 0 0"
 						BorderBrush="{DynamicResource Primary_Gray}">
-					<TextBlock Text="Производство не начато"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"/>
-					<!--тут контролы отображения производства/закупок/сервиса + additional info-->
+					<Grid RowDefinitions="auto, *">
+						<Border Grid.Row="0"
+								BorderThickness="0 0 0 1"
+								BorderBrush="{DynamicResource Primary_Gray}">
+							<StackPanel>
+								<TextBlock Text="Доп. информация заявки:"
+										   Margin="5"/>
+								<ScrollViewer MaxHeight="200">
+									<TextBlock TextWrapping="Wrap"
+											   Margin="5"
+											   Text="{Binding Source.SelectedItem.AdditionalInfo, TargetNullValue='[отсутствует]'}"/>
+								</ScrollViewer>
+							</StackPanel>
+						</Border>
+
+						<ListBox Classes="custom zebra unmarked"
+								 Grid.Row="1"
+								 ItemsSource="{Binding Source.SelectedItem.Manufactures}"
+								 SelectedItem="{Binding Source.SelectedManufacture}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Grid ColumnDefinitions="auto, *, auto">
+										<ProgressBar Grid.ColumnSpan="3"
+													 Classes="custom green hide"
+													 VerticalAlignment="Stretch"
+													 HorizontalAlignment="Stretch"
+													 Value="{Binding CompletedPercentage}"
+													 Margin="0 -5"/>
+										<DockPanel Grid.Column="0"
+												   Margin="5 0"
+												   VerticalAlignment="Center">
+											<TextBlock Text="{Binding Name, StringFormat='{}{0}, '}"/>
+											<TextBlock Text="{Binding Code, StringFormat='#{0}', TargetNullValue='[код не установлен]'}"
+													   IsVisible="{Binding HaveSerialNumber}"/>
+										</DockPanel>
+
+										<TextBlock Grid.Column="2"
+												   Margin="5 0"
+												   VerticalAlignment="Center"
+												   Text="{Binding CompletedPercentage, StringFormat='{}{0}%'}"/>
+									</Grid>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
 				</Border>
 
 				<Border Grid.Row="2"

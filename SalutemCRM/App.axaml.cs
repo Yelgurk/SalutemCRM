@@ -49,6 +49,9 @@ public partial class App : Application
                 services.AddSingleton<OrderEditorControl>();
                 services.AddSingleton<OrdersObservableControl>();
                 services.AddSingleton<OrdersManagmentControl>();
+                services.AddSingleton<TemplateRegionsEditor>();
+                services.AddSingleton<CRUSClientControl>();
+                services.AddSingleton<TemplateRegionsManagment>();
             })
             .Build();
 

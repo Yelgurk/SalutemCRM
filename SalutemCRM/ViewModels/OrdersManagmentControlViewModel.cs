@@ -23,6 +23,10 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
     [ObservableProperty]
     private ObservableCollection<Order> _ordersCollection = new();
 
+    [ObservableProperty]
+    private Manufacture? _selectedManufacture;
+
+
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PaymentSelector))]
@@ -88,6 +92,8 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
 
         using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
         {
+            bool ShowAll = Account.Current.IsRootOrBossUser;
+
             OrdersCollection = new(
                 from item in db.Orders
                     .Include(x => x.Employee)
@@ -104,7 +110,8 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
                         .ThenInclude(x => x.FileAttachs)
                 where (PaymentSelector.Any(s => item.PaymentStatus == s) &&
                        TaskSelector.Any(s => item.TaskStatus == s)) &&
-                       item.RecordDT >= DtSortBegin && item.RecordDT <= DtSortEnd
+                       item.RecordDT >= DtSortBegin && item.RecordDT <= DtSortEnd &&
+                       (ShowAll || item.EmployeeForeignkey == Account.Current.User.Id)
                 select item
             );
         }
@@ -126,6 +133,11 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
             UpdateOrdersList();
         }
     }
+
+    partial void OnSelectedManufactureChanged(Manufacture? oldValue)
+    {
+
+    }
 }
 
 public class OrdersManagmentControlViewModel : ViewModelBase<Order, OrdersManagmentControlViewModelSource>
@@ -134,11 +146,17 @@ public class OrdersManagmentControlViewModel : ViewModelBase<Order, OrdersManagm
 
     public ReactiveCommand<Unit, Unit>? ProductionAcceptCommand { get; protected set; }
 
+    public ReactiveCommand<string, Unit>? OpenFileCommand { get; protected set; }
+
     public OrdersManagmentControlViewModel() : base(new() { PagesCount = 1 })
     {
         UpdateOrsersListCommand = ReactiveCommand.Create(Source.UpdateOrdersList);
 
         ProductionAcceptCommand = ReactiveCommand.Create(Source.AcceptOrderProduction);
+
+        OpenFileCommand = ReactiveCommand.Create<string>(x => {
+            App.Host!.Services.GetService<FilesContainerService>()!.OpenFile(x);
+        });
 
         if (!Design.IsDesignMode)
         {

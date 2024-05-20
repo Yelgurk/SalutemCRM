@@ -90,6 +90,8 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
             case User_Permission.Boss:
                 {
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
+                    NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Назначенные регионы", GetContent = Get<TemplateRegionsManagment> });
                 } break;
 
             case User_Permission.Bookkeeper:
@@ -101,12 +103,16 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
                 {
                     NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новый счёт", GetContent = Get<OrderEditorControl> });
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
+                    NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Мои регионы", GetContent = Get<TemplateRegionsManagment> });
                 } break;
 
             case User_Permission.SalesManager:
                 {
                     NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новый счёт", GetContent = Get<OrderEditorControl> });
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
+                    NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Мои регионы", GetContent = Get<TemplateRegionsManagment> });
                 } break;
 
             case User_Permission.ManufactureManager:

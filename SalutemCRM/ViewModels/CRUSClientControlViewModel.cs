@@ -77,21 +77,23 @@ public partial class CRUSClientControlViewModelSource : ReactiveControlSource<Cl
     {
         keyword = Regex.Replace(keyword.ToLower(), @"\s+", " ");
 
+        bool ShowAll = Account.Current.IsRootOrBossUser;
+
         using (DatabaseContext db = new DatabaseContext(DatabaseContext.ConnectionInit()))
             Clients = new(
                 from v in db.Clients
                     .Include(z => z.City)
                         .ThenInclude(z => z!.Country)
-                    .Include(z => z.City!.RegionMonitoring)
+                    .Include(z => z.City)
+                        .ThenInclude(z => z!.RegionMonitoring)
                             .ThenInclude(z => z!.Employee)
                     .Include(z => z!.Orders)
                     .AsEnumerable()
-                where keyword.Split(" ").Any(s =>
-                    v.Name.ToLower().Contains(s) ||
-                    (v.Address ?? "").ToLower().Contains(s) ||
-                    (v.Contacts ?? "").ToLower().Contains(s)
-                //v.City!.Name.ToLower().Contains(s) ||
-                //v.City!.Country!.Name.ToLower().Contains(s)
+                where (keyword.Split(" ").Any(s =>
+                       v.Name.ToLower().Contains(s) ||
+                       (v.Address ?? "").ToLower().Contains(s) ||
+                       (v.Contacts ?? "").ToLower().Contains(s)) &&
+                       (ShowAll || v.City!.RegionMonitoring!.EmployeeForeignKey == Account.Current.User.Id)
                 )
                 select v
             );

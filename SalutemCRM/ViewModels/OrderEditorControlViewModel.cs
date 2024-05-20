@@ -127,8 +127,9 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
 
                 using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
                 {
+                    Debug.WriteLine($"init: {x.Id}");
+
                     db.Orders.Add(x);
-                    Debug.WriteLine(x.TaskStatus);
                     db.SaveChanges();
 
                     OrderID = db.Orders.Single(s =>
@@ -136,6 +137,8 @@ public partial class OrderEditorControlViewModelSource : ReactiveControlSource<O
                             s.EmployeeForeignkey == x.EmployeeForeignkey &&
                             (s.ClientForeignKey == x.ClientForeignKey || s.VendorForeignKey == x.VendorForeignKey)
                         ).Id;
+
+                    Debug.WriteLine($"got: {OrderID}");
 
                     if (x.OrderType == Order_Type.CustomerService)
                     {
