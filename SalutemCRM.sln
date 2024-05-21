@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.Server", "Salute
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.Server.Desktop", "SalutemCRM.Server.Desktop\SalutemCRM.Server.Desktop.csproj", "{2A2EB697-94F1-4B31-BBD0-049F789CA96B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalutemCRM.TCP", "SalutemCRM.TCP\SalutemCRM.TCP.csproj", "{B20BC07B-CCFA-48EB-B491-1A68505F7395}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalutemCRM.TCP", "SalutemCRM.TCP\SalutemCRM.TCP.csproj", "{B20BC07B-CCFA-48EB-B491-1A68505F7395}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalutemCRM.Server.Console", "SalutemCRM.Server.Console\SalutemCRM.Server.Console.csproj", "{8E187AD8-4CC1-4260-8348-8484D84AF8F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{B20BC07B-CCFA-48EB-B491-1A68505F7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B20BC07B-CCFA-48EB-B491-1A68505F7395}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B20BC07B-CCFA-48EB-B491-1A68505F7395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E187AD8-4CC1-4260-8348-8484D84AF8F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E187AD8-4CC1-4260-8348-8484D84AF8F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E187AD8-4CC1-4260-8348-8484D84AF8F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E187AD8-4CC1-4260-8348-8484D84AF8F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
