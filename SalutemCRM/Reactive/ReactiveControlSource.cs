@@ -50,7 +50,7 @@ public partial class ReactiveControlGlobalSetterContainer<T> : ObservableObject
 
     partial void OnSelectedItemChanged(T? value) => OnSelectedItemChangedEvent?.Invoke(value);
 
-    public event Action<T?> OnSelectedItemChangedEvent;
+    public Action<T?> OnSelectedItemChangedEvent;
 }
 
 public partial class ReactiveControlSource<T> : ObservableObject, IReactiveControlSource, IReactiveControlResponseUI
@@ -149,5 +149,5 @@ public partial class ReactiveControlSource<T> : ObservableObject, IReactiveContr
         .Do(x => SelectedItemChangedTrigger?.Invoke(x!))
         .Do(x => GlobalContainer.SelectedItem = value);
 
-    public Action<T>? SelectedItemChangedTrigger { get; set; }
+    public event Action<T>? SelectedItemChangedTrigger;
 }

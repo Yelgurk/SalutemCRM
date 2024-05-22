@@ -30,7 +30,7 @@ public partial class ProductTemplateControl : UserControl
 
         ProductTemplateVM = CRUS_PTC.DataContext as CRUSProductTemplateControlViewModel;
 
-        (CRUS_PCC.DataContext as CRUSProductCategoryControlViewModel)!.Source.SelectedItemChangedTrigger = (x) => {
+        (CRUS_PCC.DataContext as CRUSProductCategoryControlViewModel)!.Source.SelectedItemChangedTrigger += (x) => {
             ProductTemplateVM!.Source.ProductCategory = x;
         };
     }

@@ -8,6 +8,12 @@ namespace SalutemCRM.Domain.Model;
 public partial class Manufacture
 {
     [NotMapped]
+    public ObservableCollection<WarehouseItem> StartupItemsCollection { get; } = new();
+
+    [NotMapped]
+    public ObservableCollection<WarehouseSupply> EditedMaterialsUsedCollection { get; } = new();
+
+    [NotMapped]
     public double CompletedPercentage => OrderProcesses
         .DoIf(x => { }, x => x.Count > 0)?
         .Do(x => Extensions.PercentageCalc(

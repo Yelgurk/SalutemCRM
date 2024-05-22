@@ -18,11 +18,11 @@ namespace SalutemCRM.FunctionalControl
             (this.FC_PTC.CRUS_PTC.DataContext as dynamic)!.Source.IsResponsiveControl = true;
             //(this.FC_PTC.CRUS_PCC.DataContext as dynamic)!.Source.IsResponsiveControl = true;
 
-            this.FC_WHG.WarehouseItemVM!.Source.SelectedItemChangedTrigger = (x) => {
+            this.FC_WHG.WarehouseItemVM!.Source.SelectedItemChangedTrigger += (x) => {
                 ProductSchemaVM.Source.WarehouseItem = x?.Clone() ?? null;
             };
 
-            this.FC_PTC.ProductTemplateVM!.Source.SelectedItemChangedTrigger = (x) => {
+            this.FC_PTC.ProductTemplateVM!.Source.SelectedItemChangedTrigger += (x) => {
                 ProductSchemaVM.Source.ProductTemplate = x?.Clone() ?? null;
             };
         }

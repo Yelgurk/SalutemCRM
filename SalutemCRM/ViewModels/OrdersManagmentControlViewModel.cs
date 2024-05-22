@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using SalutemCRM.Control;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
@@ -46,7 +47,7 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaskSelector))]
-    private bool _isAwaitPayment = false;
+    private bool _isAwaitPayment = true;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaskSelector))]
@@ -111,7 +112,11 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
                 where (PaymentSelector.Any(s => item.PaymentStatus == s) &&
                        TaskSelector.Any(s => item.TaskStatus == s)) &&
                        item.RecordDT >= DtSortBegin && item.RecordDT <= DtSortEnd &&
-                       (ShowAll || item.EmployeeForeignkey == Account.Current.User.Id)
+                       (
+                            ShowAll ||
+                            item.EmployeeForeignkey == Account.Current.User.Id ||
+                            (Account.Current.IsManufactureManagerUser && item.TaskStatus >= Task_Status.AwaitStart)
+                       )
                 select item
             );
         }
@@ -134,6 +139,12 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
         }
     }
 
+    public void GoToManufacturePreparation(Order SelectedOrder)
+    {
+        NavigationViewModelSource.SetNonRegWindowContent<OrderManufactureControl>();
+        App.Host!.Services.GetService<OrderManufactureControlViewModel>()!.Source.SelectedItem = SelectedOrder;
+    }
+
     partial void OnSelectedManufactureChanged(Manufacture? oldValue)
     {
 
@@ -148,6 +159,8 @@ public class OrdersManagmentControlViewModel : ViewModelBase<Order, OrdersManagm
 
     public ReactiveCommand<string, Unit>? OpenFileCommand { get; protected set; }
 
+    public ReactiveCommand<Order, Unit>? RunOrderPreparationProcessCommand { get; protected set; }
+
     public OrdersManagmentControlViewModel() : base(new() { PagesCount = 1 })
     {
         UpdateOrsersListCommand = ReactiveCommand.Create(Source.UpdateOrdersList);
@@ -157,6 +170,8 @@ public class OrdersManagmentControlViewModel : ViewModelBase<Order, OrdersManagm
         OpenFileCommand = ReactiveCommand.Create<string>(x => {
             App.Host!.Services.GetService<FilesContainerService>()!.OpenFile(x);
         });
+
+        RunOrderPreparationProcessCommand = ReactiveCommand.Create<Order>(Source.GoToManufacturePreparation);
 
         if (!Design.IsDesignMode)
         {

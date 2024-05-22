@@ -130,8 +130,8 @@
 											Height="30"
 											Margin="5"
 											IsEnabled="{Binding IsOrderAwaitManufacture}"
-											Command=""
-											CommandParameter=""/>
+											Command="{Binding $parent[UserControl].DataContext.RunOrderPreparationProcessCommand}"
+											CommandParameter="{Binding}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

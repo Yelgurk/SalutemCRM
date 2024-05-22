@@ -15,6 +15,7 @@ using SalutemCRM.FunctionalControl;
 using SalutemCRM.Reactive;
 using SalutemCRM.Services;
 using SalutemCRM.TCP;
+using SalutemCRM.ViewModels;
 using SalutemCRM.Views;
 using System;
 using System.Collections.Generic;
@@ -55,10 +56,14 @@ public partial class App : Application
                 services.AddSingleton<WarehouseGeneral>();
                 services.AddSingleton<ProductTemplateBuilder>();
                 services.AddSingleton<TemplateMasterSettingsPanel>();
+
+                services.AddSingleton<OrderManufactureControl>();
+                services.AddSingleton<OrderManufactureControlViewModel>();
             })
             .Build();
 
         Host!.Services.GetService<FilesContainerService>();
+        Host!.Services.GetService<OrderManufactureControlViewModel>();
 
         //Account.SetAccount(User.RootOrBoss);
         //Account.SetAccount(User.SalesManager);

@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SalutemCRM.ViewModels;
 
 namespace SalutemCRM.Control
 {

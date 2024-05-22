@@ -5,14 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SalutemCRM.Control.OrderManufactureControl"
 			 xmlns:vm="using:SalutemCRM.ViewModels">
-	<UserControl.DataContext>
-		<vm:OrderManufactureControlViewModel/>
-	</UserControl.DataContext>
-
 	<Grid ColumnDefinitions="*, *, *">
 		<Grid Grid.Column="0" 
 			  RowDefinitions="auto, auto, auto, *, auto">
-			<TextBlock Text="Счёт:"
+			<TextBlock Text="{Binding Source.SelectedItem.Id, StringFormat='Счёт #{0}'}"
 					   HorizontalAlignment="Left"
 					   VerticalAlignment="Center"
 					   FontSize="16"
@@ -116,12 +112,20 @@
 					   VerticalAlignment="Center"
 					   FontSize="16"
 					   IsVisible="True"/>
-			
-			<Button Grid.Row="2"
-					Classes="custom iconed rounded orange edit"
-					Content="Материалы"
-					Margin="5"
-					HorizontalAlignment="Stretch"/>
+
+			<StackPanel Grid.Row="2">
+				<Button Classes="custom iconed rounded orange edit"
+						Content="Материалы"
+						Margin="5"
+						HorizontalAlignment="Stretch"
+						IsVisible="True"/>
+				
+				<Button Classes="custom iconed rounded orange edit"
+						Content="Ротация материалов"
+						Margin="5"
+						HorizontalAlignment="Stretch"
+						IsVisible="True"/>
+			</StackPanel>
 		</Grid>
 	</Grid>
 </UserControl>

@@ -44,14 +44,25 @@ public partial class NavigationModel : ObservableObject
 
 public partial class NavigationViewModelSource : ReactiveControlSource<NavigationModel>
 {
+    private static NavigationViewModelSource _currentNavigation { get; set; }
+
+    public static void SetNonRegWindowContent<T>() where T : class
+    {
+        _currentNavigation?.Do(x => x.SelectedItem = null);
+        _currentNavigation?.Do(x => x.SelectedItem = new() { GetContent = Get<T> });
+    }
+
+    private static object Get<T>() where T : class => App.Host!.Services.GetService<T>()!;
+    
+    
     [ObservableProperty]
     private ObservableCollection<NavigationModel> _navigationCollection = new();
-
-    private object Get<T>() where T : class => App.Host!.Services.GetService<T>()!;
 
 
     public NavigationViewModelSource()
     {
+        _currentNavigation = this;
+
         Account.OnUserChangedTrigger = SetNavigationAccess;
 
         if (Design.IsDesignMode)
@@ -126,6 +137,7 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
 
             case User_Permission.ManufactureManager:
                 {
+                    NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Заявки на производство", GetContent = Get<OrdersManagmentControl> });
                 } break;
 
             case User_Permission.ConstrEngineer:

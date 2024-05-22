@@ -31,7 +31,7 @@ namespace SalutemCRM.FunctionalControl
 
             WarehouseItemVM = CRUS_WIC.DataContext as CRUSWarehouseItemControlViewModel;
 
-            (CRUS_WCC.DataContext as CRUSWarehouseCategoryControlViewModel)!.Source.SelectedItemChangedTrigger = (x) => {
+            (CRUS_WCC.DataContext as CRUSWarehouseCategoryControlViewModel)!.Source.SelectedItemChangedTrigger += (x) => {
                 WarehouseItemVM!.Source.WarehouseCategory = x;
             };
         }
