@@ -7,8 +7,9 @@
 			 xmlns:vm="using:SalutemCRM.ViewModels"
 			 xmlns:control="using:SalutemCRM.Control"
 			 xmlns:f_control="using:SalutemCRM.FunctionalControl">
-	<Grid ColumnDefinitions="*, *, *">
+	<Grid ColumnDefinitions="*, 1, *, 1, *">
 		<Border Grid.Column="1"
+				Grid.ColumnSpan="3"
 				BorderThickness="1 0"
 				BorderBrush="{DynamicResource Primary_Gray}"/>
 		
@@ -79,13 +80,16 @@
 				<Button Classes="custom iconed rounded pink close"
 						Content="Отмена старта"
 						Margin="5 5 5 0"
-						Command="{Binding GoBackCommand}"
-						HorizontalAlignment="Stretch"/>
+						HorizontalAlignment="Stretch"
+						Command="{Binding GoBackCommand}"/>
 				
-				<Button Classes="custom iconed rounded green ok"
-						Content="Старт производства"
+				<Button Classes="custom iconed rounded ok"
+						Classes.green="{Binding !Source.TryAcceptOrderBeginningInfo.Length}"
+						Classes.orange="{Binding Source.TryAcceptOrderBeginningInfo.Length}"
+						Content="{Binding Source.TryAcceptOrderBeginningInfo, StringFormat='Старт производства{0} '}"
 						Margin="5"
-						HorizontalAlignment="Stretch"/>
+						HorizontalAlignment="Stretch"
+						Command="{Binding AcceptOrderStartManufacturingCommand}"/>
 			</StackPanel>
 		</Grid>
 
@@ -97,7 +101,7 @@
 			-->
 		
 		
-		<Grid Grid.Column="1" 
+		<Grid Grid.Column="2" 
 			  RowDefinitions="auto, *, auto">
 			<TextBlock Text="Задачи"
 					   HorizontalAlignment="Center"
@@ -107,7 +111,66 @@
 					   Margin="5"/>
 			
 			<ListBox Grid.Row="1"
-					 Classes="custom zebra">
+					 Classes="custom zebra unmarked"
+					 ItemsSource="{Binding Source.SelectedProduct.OrderProcesses}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid ColumnDefinitions="auto, auto, *"
+							  RowDefinitions="auto, *, auto">
+							<Button Classes="custom iconed rounded pink close"
+									Grid.RowSpan="3"
+									VerticalAlignment="Stretch"
+									Margin="5"
+									Command="{Binding $parent[UserControl].DataContext.RemoveOrderTaskCommand}"
+									CommandParameter="{Binding}"/>
+							
+							<Button Classes="custom iconed rounded blue collapse_up"
+									Grid.Column="1"
+									Grid.Row="0"
+									VerticalAlignment="Stretch"
+									Margin="5"
+									IsEnabled="{Binding !IsFirstInQueue}"
+									Command="{Binding $parent[UserControl].DataContext.MoveOrderTaksUpCommand}"
+									CommandParameter="{Binding}"/>
+							<TextBlock Text="{Binding Queue, StringFormat='#{0}'}"
+									   FontSize="18"
+									   FontWeight="SemiBold"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   Grid.Column="1"
+									   Grid.Row="1"
+									   Margin="5"/>
+							<Button Classes="custom iconed rounded blue collapse_down"
+									Grid.Column="1"
+									Grid.Row="2"
+									VerticalAlignment="Stretch"
+									Margin="5"
+									IsEnabled="{Binding !IsLastInQueue}"
+									Command="{Binding $parent[UserControl].DataContext.MoveOrderTaksDownCommand}"
+									CommandParameter="{Binding}"/>
+
+							<StackPanel Grid.Column="2"
+										Grid.RowSpan="3">
+								<TextBlock Text="{Binding OrderDuty.Name}"
+										   FontSize="16"
+										   FontWeight="SemiBold"/>
+								<TextBlock Text="{Binding Employee.FullName, StringFormat='сотрудник - {0}'}"/>
+								
+								<TextBlock Text="старт в, цель:"
+										   FontSize="12"
+										   Margin="0 8 0 2"/>
+								<CalendarDatePicker SelectedDate="{Binding MustBeStartedDT}"/>
+								<TimePicker SelectedTime="{Binding MustBeStartedTimeSpan}"/>
+
+								<TextBlock Text="закончить в, цель:"
+										   FontSize="12"
+										   Margin="0 8 0 2"/>
+								<CalendarDatePicker SelectedDate="{Binding DeadlineDT}"/>
+								<TimePicker SelectedTime="{Binding DeadlineTimeSpan}"/>
+							</StackPanel>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
 			</ListBox>
 
 			<TextBlock Grid.Row="1"
@@ -137,7 +200,7 @@
 
 		
 		
-		<Grid Grid.Column="2" RowDefinitions="auto, *, auto">
+		<Grid Grid.Column="4" RowDefinitions="auto, *, auto">
 			<TextBlock Text="На выдачу"
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"
@@ -153,7 +216,7 @@
 						  Width="{Binding $parent[ScrollViewer].Bounds.Width}">
 					<DataGrid.Columns>
 						<DataGridTemplateColumn Width="auto"
-												IsVisible="{Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}">
+												IsVisible="{Binding $parent[UserControl].DataContext.Source.OrderOnPrep.IsOrderAwaitManufacture}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<Button Classes="custom iconed rounded pink close"
@@ -165,7 +228,7 @@
 						</DataGridTemplateColumn>
 						
 						<DataGridTemplateColumn Width="auto"
-												IsVisible="{Binding Source.OrderOnPrep.IsOrderManufactureExecuted}">
+												IsVisible="{Binding !$parent[UserControl].DataContext.Source.OrderOnPrep.IsOrderAwaitManufacture}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<Button Classes="custom iconed rounded blue update"
@@ -337,7 +400,7 @@
 
 	<UserControl.Styles>
 		<Style Selector="Label.OverlayControl">
-			<Setter Property="Grid.ColumnSpan" Value="3"/>
+			<Setter Property="Grid.ColumnSpan" Value="5"/>
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Grid>

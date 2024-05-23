@@ -81,12 +81,13 @@ public partial class Order
         }
     }
 
+
+
     [NotMapped]
     public bool IsOrderManufactureExecuted => TaskStatus != Task_Status.AwaitPayment;
 
     [NotMapped]
     public bool IsOrderAwaitManufacture => TaskStatus == Task_Status.AwaitStart;
-
 
     [NotMapped]
     public bool IsCustomerOrder => OrderType == Order_Type.WarehouseRestocking ? false : true;

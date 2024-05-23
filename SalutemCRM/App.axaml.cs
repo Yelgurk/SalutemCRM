@@ -65,10 +65,6 @@ public partial class App : Application
         Host!.Services.GetService<FilesContainerService>();
         Host!.Services.GetService<OrderManufactureControlViewModel>();
 
-        //Account.SetAccount(User.RootOrBoss);
-        //Account.SetAccount(User.SalesManager);
-        //Account.SetAccount(User.ManufactureManager);
-
         //if (false)
         if (!Design.IsDesignMode)
             Host!.Services.GetService<TCPChannel>()!
@@ -117,6 +113,11 @@ public partial class App : Application
                 .Do(x => x.Open());
 
         AvaloniaXamlLoader.Load(this);
+
+        /* DEBUG LOGIN BEGIN */
+        if (!Design.IsDesignMode)
+            Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log51", PasswordMD5 = "pass51" }), MBEnums.USER_JSON);
+        /* DEBUG LOGIN END */
     }
 
     public override void OnFrameworkInitializationCompleted()

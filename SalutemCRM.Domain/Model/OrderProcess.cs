@@ -9,6 +9,7 @@ public partial class OrderProcess : ClonableObservableObject<OrderProcess>
 {
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsBuilderMode))]
     private int _id;
 
     [NotMapped]
@@ -33,6 +34,8 @@ public partial class OrderProcess : ClonableObservableObject<OrderProcess>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFirstInQueue))]
+    [NotifyPropertyChangedFor(nameof(IsLastInQueue))]
     private int _queue;
 
     [NotMapped]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SalutemCRM;
 
@@ -15,6 +16,26 @@ public static partial class Extensions
     public static T Do<T>(this T obj, Action<T> action) { action(obj); return obj; }
     public static T2 Do<T1, T2>(this T1 obj, Func<T1, T2> action) => action(obj);
     public static T1 DoInst<T1, T2>(this T1 obj, Func<T1, T2> action) { action(obj); return obj; }
+
+    public static IEnumerable<T> Move<T>(this ObservableCollection<T> list, T item, int newIndex) => list.ToList().Move(item, newIndex);
+
+    public static IEnumerable<T> Move<T>(this List<T> list, T item, int newIndex)
+    {
+        if (item != null)
+        {
+            var oldIndex = list.IndexOf(item);
+            if (oldIndex > -1)
+            {
+                list.RemoveAt(oldIndex);
+
+                if (newIndex > oldIndex) newIndex -= 1;
+
+                list.Insert(newIndex, item);
+            }
+        }
+
+        return list;
+    }
 
     public static double PercentageCalc(double total, double val) => 100.0 / total * val;
 

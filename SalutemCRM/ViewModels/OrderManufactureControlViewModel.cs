@@ -48,11 +48,15 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     [ObservableProperty]
     private User? _selectedEmployee;
 
+    [ObservableProperty]
+    private string _tryAcceptOrderBeginningInfo = "";
+
     public OrderManufactureControlViewModelSource() => SelectedItemChangedTrigger += _ =>
     {
         HideAllOverlays();
         SelectedProduct = null;
         OrderOnPrep = null;
+        TryAcceptOrderBeginningInfo = "";
 
         ManufactureEmployees?.Clear();
         using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
@@ -90,11 +94,11 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
 
     public void AddMaterialsIntoProduction()
     {
-        if (IsMaterialTakenFromTemplate && CRUSProductTemplateControlViewModelSource.GlobalContainer.SelectedItem is not null)
+        if (IsMaterialTakenFromTemplate && CRUSProductTemplateControlViewModelSource.GlobalContainer.SelectedItem is ProductTemplate _prodTemplate && _prodTemplate is not null)
         {
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
                 db.ProductTemplates
-                    .Where(x => x.Id == CRUSProductTemplateControlViewModelSource.GlobalContainer.SelectedItem.Id)
+                    .Where(x => x.Id == _prodTemplate.Id)
                     .Include(x => x.ProductSchemas)
                         .ThenInclude(x => x.WarehouseItem)
                             .ThenInclude(x => x!.Category)
@@ -110,20 +114,92 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                             SelectedProduct!.MaterialFlows!.Add(new()
                             {
                                 CountReservedFromStock = 1,
-                                WarehouseItem = x,
-                                WarehouseItemForeignKey = x!.Id
+                                WarehouseItem = x!.Clone(),
+                                WarehouseItemForeignKey = x.Clone()!.Id
                             });
                     });
 
             HideAllOverlays();
         }
-        else if (!IsMaterialTakenFromTemplate)
+        else if (!IsMaterialTakenFromTemplate && CRUSWarehouseItemControlViewModelSource.GlobalContainer.SelectedItem is WarehouseItem _warehouseItem && _warehouseItem is not null)
         {
+            if (SelectedProduct!.MaterialFlows!.SingleOrDefault(x => x.WarehouseItem!.Id == _warehouseItem.Id) is MaterialFlow match && match is not null)
+                ++match.CountReservedFromStock;
+            else
+                SelectedProduct!.MaterialFlows!.Add(new()
+                {
+                    CountReservedFromStock = 1,
+                    WarehouseItem = _warehouseItem.Clone(),
+                    WarehouseItemForeignKey = _warehouseItem.Clone()!.Id
+                });
+
+            HideAllOverlays();
         }
     }
 
+    private void ReIndexProductionTasksQueue() => 1.Do(x => SelectedProduct!.OrderProcesses.DoForEach(s =>
+    {
+        s.Queue = x++;
+        s.InQueueCount = SelectedProduct!.OrderProcesses.Count();
+    }));
+
     public void AddEmployeeTaskIntoProduction()
     {
+        if (CRUSOrderDutyControlViewModelSource.GlobalContainer.SelectedItem is OrderDuty _duty && _duty is not null)
+        {
+            SelectedProduct!.OrderProcesses.Add(new()
+            {
+                Id = -1,
+                Employee = SelectedEmployee!.Clone(),
+                EmployeeForeignKey = SelectedEmployee!.Id,
+                OrderDuty = _duty.Clone(),
+                OrderDutyForeignKey = _duty.Id,
+                MustBeStartedDT = DateTime.Today,
+                MustBeStartedTimeSpan = TimeSpan.FromHours(8),
+                DeadlineDT = DateTime.Today,
+                DeadlineTimeSpan = TimeSpan.FromHours(17)
+            });
+
+            ReIndexProductionTasksQueue();
+            HideAllOverlays();
+        }
+    }
+
+    public void MoveOrderTaksTo(OrderProcess _task, bool _up)
+    {
+        if (_up)
+            SelectedProduct!.OrderProcesses = new(SelectedProduct!.OrderProcesses.Move(_task, _task.Queue - 2));
+        else
+            SelectedProduct!.OrderProcesses = new(SelectedProduct!.OrderProcesses.Move(_task, _task.Queue + 1));
+
+        ReIndexProductionTasksQueue();
+    }
+
+    public void RemoveOrderTask(OrderProcess _task)
+    {
+        SelectedProduct!.OrderProcesses.Remove(_task);
+        ReIndexProductionTasksQueue();
+    }
+
+    public void AcceptOrderStartManufacturing()
+    {
+        bool _success = false;
+        this.DoIf(x => { }, x => x.OrderOnPrep is not null)?
+            .DoIf(x => { }, x => x.OrderOnPrep!.Manufactures.Count() > 0)?
+            .DoIf(x => { }, x => x.OrderOnPrep!.Manufactures.Where(s => s.HaveSerialNumber).Select(s => s.Code?.Length ?? 0).Min() > 0)?
+            .DoIf(x => { }, x => x.OrderOnPrep!.Manufactures.Select(s => s.MaterialFlows.Count()).Min() > 0)?
+            .DoIf(x => { }, x => x.OrderOnPrep!.Manufactures.Select(s => s.OrderProcesses.Count()).Min() > 0)?
+            .Do(x =>
+            {
+                _success = true;
+                Debug.WriteLine("YEEEEEEEES");
+            });
+
+        TryAcceptOrderBeginningInfo = _success switch
+        {
+            true => "",
+            _ => " [не хватает инф.]"
+        };
     }
 }
 
@@ -132,6 +208,8 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
     public IObservable<bool>? IsProductSelected { get; protected set; }
 
     public IObservable<bool>? IsEmployeeTaskSelected { get; protected set; }
+
+    public IObservable<bool>? IsOrderManufactureFullfilled { get; protected set; }
 
     public ReactiveCommand<Unit, Unit>? ShowOverlayAddTaskCommand { get; protected set; }
     
@@ -146,6 +224,14 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
     public ReactiveCommand<Unit, Unit>? AddMaterialsIntoProductionCommand { get; protected set; }
 
     public ReactiveCommand<Unit, Unit>? AddEmployeeTaskIntoProductionCommand { get; protected set; }
+
+    public ReactiveCommand<OrderProcess, Unit>? MoveOrderTaksUpCommand { get; protected set; }
+
+    public ReactiveCommand<OrderProcess, Unit>? MoveOrderTaksDownCommand { get; protected set; }
+
+    public ReactiveCommand<OrderProcess, Unit>? RemoveOrderTaskCommand { get; protected set; }
+
+    public ReactiveCommand<Unit, Unit>? AcceptOrderStartManufacturingCommand { get; protected set; }
 
     public OrderManufactureControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -178,5 +264,13 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
         AddMaterialsIntoProductionCommand = ReactiveCommand.Create(Source.AddMaterialsIntoProduction);
 
         AddEmployeeTaskIntoProductionCommand = ReactiveCommand.Create(Source.AddEmployeeTaskIntoProduction, IsEmployeeTaskSelected);
+
+        MoveOrderTaksUpCommand = ReactiveCommand.Create<OrderProcess>(x => { Source.MoveOrderTaksTo(x, true); });
+
+        MoveOrderTaksDownCommand = ReactiveCommand.Create<OrderProcess>(x => { Source.MoveOrderTaksTo(x, false); });
+
+        RemoveOrderTaskCommand = ReactiveCommand.Create<OrderProcess>(Source.RemoveOrderTask);
+
+        AcceptOrderStartManufacturingCommand = ReactiveCommand.Create(Source.AcceptOrderStartManufacturing);
     }
 }
