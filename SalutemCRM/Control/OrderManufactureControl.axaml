@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SalutemCRM.Control.OrderManufactureControl"
-			 xmlns:vm="using:SalutemCRM.ViewModels">
+			 xmlns:vm="using:SalutemCRM.ViewModels"
+			 xmlns:control="using:SalutemCRM.Control"
+			 xmlns:f_control="using:SalutemCRM.FunctionalControl">
 	<Grid ColumnDefinitions="*, *, *">
+		<Border Grid.Column="1"
+				BorderThickness="1 0"
+				BorderBrush="{DynamicResource Primary_Gray}"/>
+		
 		<Grid Grid.Column="0" 
 			  RowDefinitions="auto, auto, auto, *, auto">
 			<TextBlock Text="{Binding Source.OrderOnPrep.Id, StringFormat='Счёт #{0}'}"
@@ -30,37 +36,44 @@
 						   Margin="5"/>
 			</ScrollViewer>
 
-			<DataGrid Grid.Row="3" Height="350"
-					  Classes="custom"
-					  VerticalScrollBarVisibility="Visible"
-					  ItemsSource="{Binding Source.OrderOnPrep.Manufactures}">
-				<DataGrid.Columns>
-					<DataGridTemplateColumn Width="*" Header="Изделие">
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate>
-								<DockPanel>
-									<TextBox Classes="custom "
-											 Watermark="# изд."
-											 Text="{Binding Code}"
-											 MaxWidth="80"
-											 Margin="5 5 0 5"
-											 VerticalAlignment="Center"
-											 IsVisible="{Binding HaveSerialNumber}"
-											 IsEnabled="{Binding !IsManufactureRunned}"/>
+			<ScrollViewer Grid.Row="3"
+						  VerticalScrollBarVisibility="Hidden"
+						  HorizontalScrollBarVisibility="Visible">
+				<DataGrid Classes="custom"
+						  VerticalScrollBarVisibility="Hidden"
+						  ItemsSource="{Binding Source.OrderOnPrep.Manufactures}"
+						  SelectedItem="{Binding Source.SelectedProduct}"
+						  Width="{Binding $parent[ScrollViewer].Bounds.Width}"
+						  IsReadOnly="True"
+						  Background="White">
+					<DataGrid.Columns>
+						<DataGridTemplateColumn Width="*" Header="Изделие">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<DockPanel>
+										<TextBox Classes="custom "
+												 Watermark="# изд."
+												 Text="{Binding Code}"
+												 MaxWidth="80"
+												 Margin="5 5 0 5"
+												 VerticalAlignment="Center"
+												 IsVisible="{Binding HaveSerialNumber}"
+												 IsEnabled="{Binding !IsManufactureRunned}"/>
 
-									<TextBlock Text="{Binding Name}"
-											   TextWrapping="Wrap"
-											   FontSize="15"
-											   Margin="5"
-											   VerticalAlignment="Center"/>
-								</DockPanel>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
+										<TextBlock Text="{Binding Name}"
+												   TextWrapping="Wrap"
+												   FontSize="15"
+												   Margin="5"
+												   VerticalAlignment="Center"/>
+									</DockPanel>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-					<DataGridTextColumn Header="Кол-во" Binding="{Binding Count}"/>
-				</DataGrid.Columns>
-			</DataGrid>
+						<DataGridTextColumn Header="Кол-во" Binding="{Binding Count}"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</ScrollViewer>
 
 			<StackPanel Grid.Row="4">
 				<Button Classes="custom iconed rounded pink close"
@@ -75,6 +88,14 @@
 						HorizontalAlignment="Stretch"/>
 			</StackPanel>
 		</Grid>
+
+
+		<!--
+			{Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}
+			для кнопок. Если производство не начато - то команда удалять,
+			иначе команда ротации
+			-->
+		
 		
 		<Grid Grid.Column="1" 
 			  RowDefinitions="auto, *, auto">
@@ -85,8 +106,8 @@
 					   FontWeight="SemiBold"
 					   Margin="5"/>
 			
-			<ListBox Grid.Row="1">
-				
+			<ListBox Grid.Row="1"
+					 Classes="custom zebra">
 			</ListBox>
 
 			<TextBlock Grid.Row="1"
@@ -94,7 +115,17 @@
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"
 					   FontSize="16"
-					   IsVisible="True"/>
+					   IsVisible="{Binding Source.SelectedProduct,
+								   Converter={x:Static ObjectConverters.IsNull}}"/>
+			<Grid Grid.Row="1"
+				  HorizontalAlignment="Center"
+				  VerticalAlignment="Center"
+				  IsVisible="{Binding Source.SelectedProduct,
+							  Converter={x:Static ObjectConverters.IsNotNull}}">
+				<TextBlock Text="Сотрудники не закреплены"
+						   FontSize="16"
+						   IsVisible="{Binding !Source.SelectedProduct.OrderProcesses.Count}"/>
+			</Grid>
 
 			<Button Grid.Row="2"
 					Classes="custom iconed rounded orange plus"
@@ -104,6 +135,8 @@
 					Command="{Binding ShowOverlayAddTaskCommand}"/>
 		</Grid>
 
+		
+		
 		<Grid Grid.Column="2" RowDefinitions="auto, *, auto">
 			<TextBlock Text="На выдачу"
 					   HorizontalAlignment="Center"
@@ -112,21 +145,84 @@
 					   FontWeight="SemiBold"
 					   Margin="5"/>
 
-			<!--
-			{Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}
-			для кнопок. Если производство не начато - то команда удалять,
-			иначе команда ротации
-			-->
-			
-			<ListBox Grid.Row="1">
-			</ListBox>
+			<ScrollViewer Grid.Row="1"
+						  VerticalScrollBarVisibility="Hidden"
+						  HorizontalScrollBarVisibility="Visible">
+				<DataGrid ItemsSource="{Binding Source.SelectedProduct.MaterialFlows}"
+						  HorizontalScrollBarVisibility="Hidden"
+						  Width="{Binding $parent[ScrollViewer].Bounds.Width}">
+					<DataGrid.Columns>
+						<DataGridTemplateColumn Width="auto">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Classes="custom iconed rounded pink close"
+										    Command="{Binding $parent[UserControl].DataContext.RemoveMaterialFromBuilderCommand}"
+											CommandParameter="{Binding}"
+											Margin="5"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn Width="auto">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Classes="custom iconed rounded blue update"
+										    Command="{Binding $parent[UserControl].DataContext.RunMaterialRotationCommand}"
+											CommandParameter="{Binding}"
+											Margin="5"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!--
+						тут IsReadOnly будет зависеть от {Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}
+						имеется ввиду, что кол-во можно менять на этапе подготовки, а 
+						во время производства только через контрол "ротация"
+						-->
+						<DataGridTextColumn Width="auto"
+											IsReadOnly="False"
+											Binding="{Binding CountReservedFromStock}">
+							<DataGridTextColumn.Header>
+								<TextBlock Text="Кол-во" Margin="0 0 -20 0"/>
+							</DataGridTextColumn.Header>
+						</DataGridTextColumn>
+
+
+						<DataGridTemplateColumn Width="*" Header="Название">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<StackPanel VerticalAlignment="Center"
+												Margin="5 0">
+										<TextBlock Text="{Binding WarehouseItem.Category.Name, StringFormat='[{0}]'}"
+												   TextWrapping="Wrap"
+												   FontSize="12"
+												   FontWeight="Bold"/>
+										<TextBlock Text="{Binding WarehouseItem.InnerName}"
+												   TextWrapping="Wrap"/>
+									</StackPanel>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</ScrollViewer>
 
 			<TextBlock Grid.Row="1"
 					   Text="Изделие не выбрано"
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"
 					   FontSize="16"
-					   IsVisible="True"/>
+					   IsVisible="{Binding Source.SelectedProduct,
+								   Converter={x:Static ObjectConverters.IsNull}}"/>
+			<Grid Grid.Row="1"
+				  HorizontalAlignment="Center"
+				  VerticalAlignment="Center"
+				  IsVisible="{Binding Source.SelectedProduct,
+							  Converter={x:Static ObjectConverters.IsNotNull}}">
+				<TextBlock Text="Не указаны материалы"
+						   FontSize="16"
+						   IsVisible="{Binding !Source.SelectedProduct.MaterialFlows.Count}"/>
+			</Grid>
 
 			<Button Grid.Row="2"
 					Classes="custom iconed rounded orange plus"
@@ -139,19 +235,55 @@
 		<Label Classes="OverlayControl" Tag="Добавить задачу"
 			   IsVisible="{Binding Source.IsOverlayAddTask}">
 			<Grid>
-				<Button Command="{Binding HideOverlaysCommand}"/>
+				<!--Button Command="{Binding HideOverlaysCommand}"/-->
 			</Grid>
 		</Label>
 		
 		<Label Classes="OverlayControl" Tag="Добавить материал"
 			   IsVisible="{Binding Source.IsOverlayAddMaterial}">
+			<Grid RowDefinitions="auto, *, auto">
+				<CheckBox Content="Добавить из шаблона"
+						  IsChecked="{Binding Source.IsMaterialTakenFromTemplate}"
+						  HorizontalAlignment="Center"
+						  VerticalAlignment="Center"
+						  Margin="5"/>
+
+				<Grid Grid.Row="1"
+					  IsVisible="{Binding !Source.IsMaterialTakenFromTemplate}">
+					<f_control:WarehouseGeneral Width="600"/>
+				</Grid>
+
+				<Grid Grid.Row="1"
+					  IsVisible="{Binding Source.IsMaterialTakenFromTemplate}">
+					<f_control:ProductTemplateControl Width="600"/>
+				</Grid>
+
+				<Grid ColumnDefinitions="*, 5, *"
+					  Grid.Row="2"
+					  Margin="0 10 0 0">
+					<Button Classes="custom iconed rounded pink close"
+							Content="Отмена "
+							Grid.Column="0"
+							HorizontalAlignment="Stretch"
+							Command="{Binding HideOverlaysCommand}"/>
+
+					<Button Classes="custom iconed rounded green plus"
+							Content="Применить "
+							Grid.Column="2"
+							HorizontalAlignment="Stretch"
+							Command="{Binding AddMaterialsIntoProductionCommand}"/>
+				</Grid>
+			</Grid>
+		</Label>
+		
+		<Label Classes="OverlayControl" Tag="Заменить материал"
+			   IsVisible="{Binding Source.IsOverlayMaterialRotation}">
 			<Grid>
-				<Button Command="{Binding HideOverlaysCommand}"/>
+				<!--Button Command="{Binding HideOverlaysCommand}"/-->
 			</Grid>
 		</Label>
 	</Grid>
-	
-	
+
 
 	<UserControl.Styles>
 		<Style Selector="Label.OverlayControl">
@@ -164,7 +296,8 @@
 						<Label Classes="card rounded tag"
 							   Tag="{TemplateBinding Tag}"
 							   HorizontalAlignment="Center"
-							   VerticalAlignment="Center">
+							   VerticalAlignment="Center"
+							   Margin="50">
 							<ContentPresenter Content="{TemplateBinding Content}"
 											  Background="White"
 											  Padding="10 40 10 10"/>
