@@ -21,6 +21,7 @@ public partial class Manufacture : ClonableObservableObject<Manufacture>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsManufactureRunned))]
     private Task_Status _taskStatus;
 
     [NotMapped]

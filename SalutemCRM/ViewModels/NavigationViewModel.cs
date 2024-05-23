@@ -30,6 +30,8 @@ public partial class NavigationModel : ObservableObject
 
     public object? Content => GetContent?.Invoke();
 
+    public Type? ContentType => Content?.GetType();
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Icon))]
     public string _iconUri = "";
@@ -53,8 +55,14 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
     }
 
     private static object Get<T>() where T : class => App.Host!.Services.GetService<T>()!;
-    
-    
+
+    public static void SetRegisteredWindowContent<T>() where T : class
+    {
+        _currentNavigation?.NavigationCollection
+            .SingleOrDefault(x => x.ContentType == typeof(T))?
+            .Do(x => _currentNavigation.SelectedItem = x);
+    }
+
     [ObservableProperty]
     private ObservableCollection<NavigationModel> _navigationCollection = new();
 

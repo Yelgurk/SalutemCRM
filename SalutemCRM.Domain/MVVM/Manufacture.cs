@@ -22,4 +22,7 @@ public partial class Manufacture
             .DoForEach(s => s = s > Task_Status.Finished.Cast<int>() ? 0 : s)
             .Sum()
         )) ?? 0.0;
+
+    [NotMapped]
+    public bool IsManufactureRunned => TaskStatus >= Task_Status.Execution;
 }

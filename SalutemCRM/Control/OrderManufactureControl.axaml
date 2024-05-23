@@ -8,7 +8,7 @@
 	<Grid ColumnDefinitions="*, *, *">
 		<Grid Grid.Column="0" 
 			  RowDefinitions="auto, auto, auto, *, auto">
-			<TextBlock Text="{Binding Source.SelectedItem.Id, StringFormat='Счёт #{0}'}"
+			<TextBlock Text="{Binding Source.OrderOnPrep.Id, StringFormat='Счёт #{0}'}"
 					   HorizontalAlignment="Left"
 					   VerticalAlignment="Center"
 					   FontSize="16"
@@ -22,7 +22,7 @@
 			<ScrollViewer Grid.Row="2"
 						  MaxHeight="150"
 						  Margin="0 0 0 5">
-				<TextBlock Text="{Binding Source.SelectedItem.AdditionalInfo,
+				<TextBlock Text="{Binding Source.OrderOnPrep.AdditionalInfo,
 								  FallbackValue='[информация отсутствует]'}"
 						   TextWrapping="Wrap"
 						   HorizontalAlignment="Left"
@@ -30,35 +30,43 @@
 						   Margin="5"/>
 			</ScrollViewer>
 
-			<ListBox Grid.Row="3"
-					 Classes="custom zebra unmarked"
-					 BorderThickness="0 1 0 0"
-					 BorderBrush="{DynamicResource Primary_Gray}"
-					 ItemsSource="{Binding Source.SelectedItem.Manufactures}">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<Grid ColumnDefinitions="auto, *, auto, 80">
-							<TextBlock Grid.Column="0"
-									   Text="{Binding Name}"/>
-							
-							<TextBlock Grid.Column="2"
-									   Text="{Binding Count}"
-									   IsVisible="{Binding !HaveSerialNumber}"/>
-							
-							<TextBox Grid.Column="3"
-									 Classes="custom header"
-									 Watermark="# изд."
-									 Text="{Binding Code}"
-									 IsVisible="{Binding HaveSerialNumber}"/>
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
+			<DataGrid Grid.Row="3" Height="350"
+					  Classes="custom"
+					  VerticalScrollBarVisibility="Visible"
+					  ItemsSource="{Binding Source.OrderOnPrep.Manufactures}">
+				<DataGrid.Columns>
+					<DataGridTemplateColumn Width="*" Header="Изделие">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<DockPanel>
+									<TextBox Classes="custom "
+											 Watermark="# изд."
+											 Text="{Binding Code}"
+											 MaxWidth="80"
+											 Margin="5 5 0 5"
+											 VerticalAlignment="Center"
+											 IsVisible="{Binding HaveSerialNumber}"
+											 IsEnabled="{Binding !IsManufactureRunned}"/>
+
+									<TextBlock Text="{Binding Name}"
+											   TextWrapping="Wrap"
+											   FontSize="15"
+											   Margin="5"
+											   VerticalAlignment="Center"/>
+								</DockPanel>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTextColumn Header="Кол-во" Binding="{Binding Count}"/>
+				</DataGrid.Columns>
+			</DataGrid>
 
 			<StackPanel Grid.Row="4">
 				<Button Classes="custom iconed rounded pink close"
 						Content="Отмена старта"
 						Margin="5 5 5 0"
+						Command="{Binding GoBackCommand}"
 						HorizontalAlignment="Stretch"/>
 				
 				<Button Classes="custom iconed rounded green ok"
@@ -78,6 +86,7 @@
 					   Margin="5"/>
 			
 			<ListBox Grid.Row="1">
+				
 			</ListBox>
 
 			<TextBlock Grid.Row="1"
@@ -88,22 +97,28 @@
 					   IsVisible="True"/>
 
 			<Button Grid.Row="2"
-					Classes="custom iconed rounded orange edit"
-					Content="Задачи"
+					Classes="custom iconed rounded orange plus"
+					Content="Задача"
 					Margin="5"
-					HorizontalAlignment="Stretch"/>
+					HorizontalAlignment="Stretch"
+					Command="{Binding ShowOverlayAddTaskCommand}"/>
 		</Grid>
-		
-		<Grid Grid.Column="2" 
-			  RowDefinitions="auto, *, auto">
-			<TextBlock Text="Материалы"
+
+		<Grid Grid.Column="2" RowDefinitions="auto, *, auto">
+			<TextBlock Text="На выдачу"
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"
 					   FontSize="16"
 					   FontWeight="SemiBold"
 					   Margin="5"/>
+
+			<!--
+			{Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}
+			для кнопок. Если производство не начато - то команда удалять,
+			иначе команда ротации
+			-->
 			
-			<ListBox Grid.Row="1">				
+			<ListBox Grid.Row="1">
 			</ListBox>
 
 			<TextBlock Grid.Row="1"
@@ -113,19 +128,50 @@
 					   FontSize="16"
 					   IsVisible="True"/>
 
-			<StackPanel Grid.Row="2">
-				<Button Classes="custom iconed rounded orange edit"
-						Content="Материалы"
-						Margin="5"
-						HorizontalAlignment="Stretch"
-						IsVisible="True"/>
-				
-				<Button Classes="custom iconed rounded orange edit"
-						Content="Ротация материалов"
-						Margin="5"
-						HorizontalAlignment="Stretch"
-						IsVisible="True"/>
-			</StackPanel>
+			<Button Grid.Row="2"
+					Classes="custom iconed rounded orange plus"
+					Content="Материал"
+					Margin="5"
+					HorizontalAlignment="Stretch"
+					Command="{Binding ShowOverlayAddMaterialCommand}"/>
 		</Grid>
+
+		<Label Classes="OverlayControl" Tag="Добавить задачу"
+			   IsVisible="{Binding Source.IsOverlayAddTask}">
+			<Grid>
+				<Button Command="{Binding HideOverlaysCommand}"/>
+			</Grid>
+		</Label>
+		
+		<Label Classes="OverlayControl" Tag="Добавить материал"
+			   IsVisible="{Binding Source.IsOverlayAddMaterial}">
+			<Grid>
+				<Button Command="{Binding HideOverlaysCommand}"/>
+			</Grid>
+		</Label>
 	</Grid>
+	
+	
+
+	<UserControl.Styles>
+		<Style Selector="Label.OverlayControl">
+			<Setter Property="Grid.ColumnSpan" Value="3"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid>
+						<Grid Background="Black"
+							  Opacity="0.33"/>
+						<Label Classes="card rounded tag"
+							   Tag="{TemplateBinding Tag}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center">
+							<ContentPresenter Content="{TemplateBinding Content}"
+											  Background="White"
+											  Padding="10 40 10 10"/>
+						</Label>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
 </UserControl>
