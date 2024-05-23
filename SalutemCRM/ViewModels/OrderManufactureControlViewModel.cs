@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System.Reactive;
 using SalutemCRM.Control;
+using System.Collections.ObjectModel;
+using SalutemCRM.Domain.Modell;
 
 namespace SalutemCRM.ViewModels;
 
@@ -40,11 +42,26 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     [ObservableProperty]
     private bool _isMaterialTakenFromTemplate = true;
 
+    [ObservableProperty]
+    private ObservableCollection<User>? _manufactureEmployees;
+
+    [ObservableProperty]
+    private User? _selectedEmployee;
+
     public OrderManufactureControlViewModelSource() => SelectedItemChangedTrigger += _ =>
     {
         HideAllOverlays();
         SelectedProduct = null;
         OrderOnPrep = null;
+
+        ManufactureEmployees?.Clear();
+        using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+            ManufactureEmployees = new(
+                from v in db.Users
+                    .Include(x => x.UserRole)
+                where UserRole.ManufactureEmployeeRoles.Any(x => x == v.UserRole!.Name)
+                select v
+            );
 
         if (SelectedItem != null)
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
@@ -104,11 +121,17 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
         {
         }
     }
+
+    public void AddEmployeeTaskIntoProduction()
+    {
+    }
 }
 
 public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufactureControlViewModelSource>
 {
     public IObservable<bool>? IsProductSelected { get; protected set; }
+
+    public IObservable<bool>? IsEmployeeTaskSelected { get; protected set; }
 
     public ReactiveCommand<Unit, Unit>? ShowOverlayAddTaskCommand { get; protected set; }
     
@@ -122,11 +145,20 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
 
     public ReactiveCommand<Unit, Unit>? AddMaterialsIntoProductionCommand { get; protected set; }
 
+    public ReactiveCommand<Unit, Unit>? AddEmployeeTaskIntoProductionCommand { get; protected set; }
+
     public OrderManufactureControlViewModel() : base(new() { PagesCount = 1 })
     {
         IsProductSelected = this.WhenAnyValue(
             x => x.Source.SelectedProduct,
             x => x.Source.SelectedProduct,
+            (item1, item2) =>
+                item1 is not null
+        );
+
+        IsEmployeeTaskSelected = this.WhenAnyValue(
+            x => x.Source.SelectedEmployee,
+            x => x.Source.SelectedEmployee,
             (item1, item2) =>
                 item1 is not null
         );
@@ -144,5 +176,7 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
         RunMaterialRotationCommand = ReactiveCommand.Create<MaterialFlow>(Source.RunMaterialRotation);
 
         AddMaterialsIntoProductionCommand = ReactiveCommand.Create(Source.AddMaterialsIntoProduction);
+
+        AddEmployeeTaskIntoProductionCommand = ReactiveCommand.Create(Source.AddEmployeeTaskIntoProduction, IsEmployeeTaskSelected);
     }
 }

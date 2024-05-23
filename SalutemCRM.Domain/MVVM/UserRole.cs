@@ -13,5 +13,6 @@ namespace SalutemCRM.Domain.Modell;
 
 public partial class UserRole
 {
-
+    [NotMapped]
+    public static string[] ManufactureEmployeeRoles => ["Гл. производства", "Конструктор", "Производство", "Кладовщик", "Сервисное обсл."];
 }

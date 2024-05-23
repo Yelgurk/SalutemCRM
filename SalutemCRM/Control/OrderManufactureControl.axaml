@@ -152,7 +152,8 @@
 						  HorizontalScrollBarVisibility="Hidden"
 						  Width="{Binding $parent[ScrollViewer].Bounds.Width}">
 					<DataGrid.Columns>
-						<DataGridTemplateColumn Width="auto">
+						<DataGridTemplateColumn Width="auto"
+												IsVisible="{Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<Button Classes="custom iconed rounded pink close"
@@ -163,7 +164,8 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						
-						<DataGridTemplateColumn Width="auto">
+						<DataGridTemplateColumn Width="auto"
+												IsVisible="{Binding Source.OrderOnPrep.IsOrderManufactureExecuted}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<Button Classes="custom iconed rounded blue update"
@@ -174,11 +176,6 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<!--
-						тут IsReadOnly будет зависеть от {Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}
-						имеется ввиду, что кол-во можно менять на этапе подготовки, а 
-						во время производства только через контрол "ротация"
-						-->
 						<DataGridTextColumn Width="auto"
 											IsReadOnly="False"
 											Binding="{Binding CountReservedFromStock}">
@@ -234,8 +231,61 @@
 
 		<Label Classes="OverlayControl" Tag="Добавить задачу"
 			   IsVisible="{Binding Source.IsOverlayAddTask}">
-			<Grid>
-				<!--Button Command="{Binding HideOverlaysCommand}"/-->
+			<Grid ColumnDefinitions="350, 350"
+				  RowDefinitions="*, auto">
+				<Label Classes="card rounded tag"
+					   Tag="Выбор сотрудника"
+					   Grid.Column="0"
+					   Margin="5">
+					<Label Background="White"
+						   Padding="0 40 0 0">
+						<ListBox Classes="custom zebra unmarked"
+								 ItemsSource="{Binding Source.ManufactureEmployees}"
+								 SelectedItem="{Binding Source.SelectedEmployee}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<StackPanel Margin="5"
+												HorizontalAlignment="Left"
+												VerticalAlignment="Center">
+										<TextBlock Text="{Binding UserRole.Name, StringFormat='[{0}]'}"
+												   FontSize="12"
+												   FontWeight="Bold"/>
+										<TextBlock Text="{Binding FullName}"
+												   FontSize="15"/>
+									</StackPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Label>
+				</Label>
+
+				<Label Classes="card rounded tag"
+					   Tag="Выбор задачи"
+					   Grid.Column="1"
+					   Margin="5">
+
+					<Label Background="White"
+						   Padding="0 40 0 0">
+						<control:CRUSOrderDutyControl/>
+					</Label>
+				</Label>
+
+				<Grid ColumnDefinitions="*, 5, *"
+					  Grid.Row="2"
+					  Grid.ColumnSpan="2"
+					  Margin="0 10 0 0">
+					<Button Classes="custom iconed rounded pink close"
+							Content="Отмена "
+							Grid.Column="0"
+							HorizontalAlignment="Stretch"
+							Command="{Binding HideOverlaysCommand}"/>
+
+					<Button Classes="custom iconed rounded green plus"
+							Content="Применить "
+							Grid.Column="2"
+							HorizontalAlignment="Stretch"
+							Command="{Binding AddEmployeeTaskIntoProductionCommand}"/>
+				</Grid>
 			</Grid>
 		</Label>
 		
