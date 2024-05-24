@@ -8,14 +8,30 @@ namespace SalutemCRM.Domain.Model;
 public partial class OrderProcess
 {
     [NotMapped]
-    public TimeSpan? MustBeStartedTimeSpan { get; set; } = null;
+    private TimeSpan? _mustBeStartedTimeSpan = null;
 
     [NotMapped]
-    public TimeSpan? DeadlineTimeSpan { get; set; } = null;
+    public TimeSpan? MustBeStartedTimeSpan
+    {
+        get => _mustBeStartedTimeSpan is not null ? _mustBeStartedTimeSpan : (_mustBeStartedTimeSpan = MustBeStartedDT.TimeOfDay);
+        set => _mustBeStartedTimeSpan = value;
+    }
+
+    [NotMapped]
+    private TimeSpan? _deadlineTimeSpan = null;
+    
+    [NotMapped]
+    public TimeSpan? DeadlineTimeSpan
+    {
+        get => _deadlineTimeSpan is not null ? _deadlineTimeSpan : (_deadlineTimeSpan = DeadlineDT.TimeOfDay);
+        set => _deadlineTimeSpan = value;
+    }
 
     [NotMapped]
     public bool IsBuilderMode => Id < 0;
 
+    [NotMapped]
+    public bool IsTaskRunning => TaskStatus >= Task_Status.Execution;
 
     /* indexing starts from 1 in VM of control, for UI */
     [NotMapped]

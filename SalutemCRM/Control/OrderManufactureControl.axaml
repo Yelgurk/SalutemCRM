@@ -48,7 +48,7 @@
 						  IsReadOnly="True"
 						  Background="White">
 					<DataGrid.Columns>
-						<DataGridTemplateColumn Width="*" Header="Изделие">
+						<DataGridTemplateColumn Width="*" Header="#, Изделие">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<DockPanel>
@@ -140,7 +140,8 @@
 									VerticalAlignment="Stretch"
 									Margin="5"
 									Command="{Binding $parent[UserControl].DataContext.RemoveOrderTaskCommand}"
-									CommandParameter="{Binding}"/>
+									CommandParameter="{Binding}"
+									IsVisible="{Binding !IsTaskRunning}"/>
 							
 							<Button Classes="custom iconed rounded blue collapse_up"
 									Grid.Column="1"
@@ -149,7 +150,9 @@
 									Margin="5"
 									IsEnabled="{Binding !IsFirstInQueue}"
 									Command="{Binding $parent[UserControl].DataContext.MoveOrderTaksUpCommand}"
-									CommandParameter="{Binding}"/>
+									CommandParameter="{Binding}"
+									IsVisible="{Binding !IsTaskRunning}"/>
+							
 							<TextBlock Text="{Binding Queue, StringFormat='#{0}'}"
 									   FontSize="18"
 									   FontWeight="SemiBold"
@@ -158,6 +161,7 @@
 									   Grid.Column="1"
 									   Grid.Row="1"
 									   Margin="5"/>
+							
 							<Button Classes="custom iconed rounded blue collapse_down"
 									Grid.Column="1"
 									Grid.Row="2"
@@ -165,7 +169,8 @@
 									Margin="5"
 									IsEnabled="{Binding !IsLastInQueue}"
 									Command="{Binding $parent[UserControl].DataContext.MoveOrderTaksDownCommand}"
-									CommandParameter="{Binding}"/>
+									CommandParameter="{Binding}"
+									IsVisible="{Binding !IsTaskRunning}"/>
 
 							<StackPanel Grid.Column="2"
 										Grid.RowSpan="3">

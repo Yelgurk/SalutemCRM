@@ -30,6 +30,7 @@ public partial class OrderProcess : ClonableObservableObject<OrderProcess>
 
     [NotMapped]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsTaskRunning))]
     private Task_Status _taskStatus;
 
     [NotMapped]

@@ -218,11 +218,6 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                         select v)
                         .ToList();
 
-                    /*
-                    _orderUpdate.TaskStatus = Task_Status.Execution;
-                    _orderUpdate.StartedDT = DateTime.Now;
-                    */
-
                     foreach (
                         var _trace
                         in _alreadyTrackingManufacture
@@ -272,8 +267,8 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                             OrderDutyForeignKey = s.OrderDutyForeignKey,
                             Queue = s.Queue,
                             RecordDT = DateTime.Now,
-                            MustBeStartedDT = s.MustBeStartedDT.AddMinutes(s.MustBeStartedTimeSpan!.Value.TotalMinutes),
-                            DeadlineDT = s.DeadlineDT.AddMinutes(s.DeadlineTimeSpan!.Value.TotalMinutes),
+                            MustBeStartedDT = s.MustBeStartedDT.Date.AddMinutes(s.MustBeStartedTimeSpan!.Value.TotalMinutes),
+                            DeadlineDT = s.DeadlineDT.Date.AddMinutes(s.DeadlineTimeSpan!.Value.TotalMinutes),
                         }));
                     });
 
