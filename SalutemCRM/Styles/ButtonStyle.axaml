@@ -185,6 +185,10 @@
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Settings.png"/>
 	</Style>
 	
+	<Style Selector="Button.back /template/ Grid > Image">
+		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Arrow.png"/>
+	</Style>
+	
 	<Style Selector="Button.manufacture /template/ Grid > Image">
 		<Setter Property="Source" Value="avares://SalutemCRM/Assets/Icon/Manufacture.png"/>
 	</Style>

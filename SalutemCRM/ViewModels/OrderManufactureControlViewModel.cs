@@ -16,6 +16,7 @@ using System.Reactive;
 using SalutemCRM.Control;
 using System.Collections.ObjectModel;
 using SalutemCRM.Domain.Modell;
+using DynamicData;
 
 namespace SalutemCRM.ViewModels;
 
@@ -74,10 +75,18 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                 .Include(x => x.Manufactures)
                     .ThenInclude(x => x.MaterialFlows)
                         .ThenInclude(x => x.WarehouseItem)
-                .Include(x => x.Employee)
+                            .ThenInclude(x => x!.Category)
+                .Include(x => x.Manufactures)
                     .ThenInclude(x => x.OrderProcesses)
+                        .ThenInclude(x => x.Employee)
+                .Include(x => x.Manufactures)
+                    .ThenInclude(x => x.OrderProcesses)
+                        .ThenInclude(x => x.OrderDuty)
+                .Include(x => x.Employee)
                 .First();
     };
+
+    partial void OnSelectedProductChanged(Manufacture? value) => ReIndexProductionTasksQueue();
 
     public void HideAllOverlays() => false
         .Do(x => IsOverlayAddMaterial = x)
@@ -137,7 +146,10 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
         }
     }
 
-    private void ReIndexProductionTasksQueue() => 1.Do(x => SelectedProduct!.OrderProcesses.DoForEach(s =>
+    private void ReIndexProductionTasksQueue() => SelectedProduct
+        .DoIf(x => { }, x => x is not null)?
+        .Do(x => 1)
+        .Do(x => SelectedProduct!.OrderProcesses.DoForEach(s =>
     {
         s.Queue = x++;
         s.InQueueCount = SelectedProduct!.OrderProcesses.Count();
@@ -192,7 +204,83 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
             .Do(x =>
             {
                 _success = true;
-                Debug.WriteLine("YEEEEEEEES");
+
+                using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+                {
+                    var _orderUpdate = db.Orders.Single(s => s.Id == OrderOnPrep!.Id)
+                        .DoInst(s => s.TaskStatus = Task_Status.Execution)
+                        .DoInst(s => s.StartedDT = DateTime.Now);
+
+
+                    var _alreadyTrackingManufacture =
+                        (from v in db.Manufacture.AsEnumerable()
+                        where OrderOnPrep!.Manufactures.Any(s => s.Id == v.Id)
+                        select v)
+                        .ToList();
+
+                    /*
+                    _orderUpdate.TaskStatus = Task_Status.Execution;
+                    _orderUpdate.StartedDT = DateTime.Now;
+                    */
+
+                    foreach (
+                        var _trace
+                        in _alreadyTrackingManufacture
+                        .Join(OrderOnPrep!.Manufactures, v1 => v1.Id, v2 => v2.Id, (v1, v2) => (v1, v2))
+                        ) _trace.v1.Code = _trace.v2.Code;
+
+                    OrderOnPrep!.Manufactures.DoForEach(_ =>
+                    {
+                        /* This part for "Edit manufacture params", not for "Start manufacture params" step */
+                        /*
+                        var _alreadyTrackingMaterials = db.MaterialFlow
+                            .Where(s => s.ManufactureForeignKey == _.Id)
+                            .ToList();
+
+                        var _alreadyTrackingTasks = db.OrderProcesses
+                            .Where(s => s.ManufactureForeignKey == _.Id)
+                            .ToList();
+
+                        var _untrackedMaterials = _.MaterialFlows.Where(v1 => !_alreadyTrackingMaterials.Any(v2 => v2.Id == v1.Id));
+                        var _untrackedTasks = _.OrderProcesses.Where(v1 => !_alreadyTrackingTasks.Any(v2 => v2.Id == v1.Id));
+
+                        
+                        _.MaterialFlows.RemoveMany(_untrackedMaterials);
+                        _.OrderProcesses.RemoveMany(_untrackedTasks);
+
+                        foreach (var _tracableMaterial in _alreadyTrackingMaterials.Join(_.MaterialFlows, v1 => v1.Id, v2 => v2.Id, (v1, v2) => (v1, v2)))
+                            _tracableMaterial.v1.CountReservedFromStock = _tracableMaterial.v2.CountReservedFromStock;
+                        */
+
+                        _.MaterialFlows.DoForEach(s => db.MaterialFlow.Add(new()
+                        {
+                            EmployeeForeignKey = Account.Current.User.Id,
+                            ManufactureForeignKey = _.Id,
+                            WarehouseItemForeignKey = s.WarehouseItemForeignKey,
+                            CountReservedFromStock = s.CountReservedFromStock,
+                            CountProvidedFromStock = 0,
+                            CountReturnedToStock = 0,
+                            AdditionalInfo = $"Установлена выдача сотрудником - {Account.Current.User.FullNameWithLogin}",
+                            DeliveryStatus = Delivery_Status.NotDelivered,
+                            RecordDT = DateTime.Now
+                        }));
+
+                        _.OrderProcesses.DoForEach(s => db.OrderProcesses.Add(new()
+                        {
+                            EmployeeForeignKey = s.EmployeeForeignKey,
+                            ManufactureForeignKey = _.Id,
+                            OrderDutyForeignKey = s.OrderDutyForeignKey,
+                            Queue = s.Queue,
+                            RecordDT = DateTime.Now,
+                            MustBeStartedDT = s.MustBeStartedDT.AddMinutes(s.MustBeStartedTimeSpan!.Value.TotalMinutes),
+                            DeadlineDT = s.DeadlineDT.AddMinutes(s.DeadlineTimeSpan!.Value.TotalMinutes),
+                        }));
+                    });
+
+                    db.SaveChanges();
+                }
+
+                NavigationViewModelSource.SetRegisteredWindowContent<OrdersManagmentControl>();
             });
 
         TryAcceptOrderBeginningInfo = _success switch

@@ -90,6 +90,11 @@ public partial class Order
     public bool IsOrderAwaitManufacture => TaskStatus == Task_Status.AwaitStart;
 
     [NotMapped]
+    public bool IsOrderFinished => TaskStatus >= Task_Status.Finished;
+
+
+
+    [NotMapped]
     public bool IsCustomerOrder => OrderType == Order_Type.WarehouseRestocking ? false : true;
 
     [NotMapped]

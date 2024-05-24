@@ -37,7 +37,7 @@ public static partial class Extensions
         return list;
     }
 
-    public static double PercentageCalc(double total, double val) => 100.0 / total * val;
+    public static double PercentageCalc(double total, double val) => Math.Round(100.0 / total * val, 2);
 
     public static IEnumerable<T> DoForEach<T>(this IEnumerable<T> source, Action<T> action)
     {

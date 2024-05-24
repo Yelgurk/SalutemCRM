@@ -125,13 +125,22 @@
 												IsVisible="{Binding #DataGridManagmentContainer.DataContext.IsManufactureManagerUser}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<Button Classes="custom iconed rounded orange ok"
-											Content="Старт "
+									<Button Classes="custom iconed rounded"
+											HorizontalAlignment="Stretch"
 											Height="30"
 											Margin="5"
-											IsEnabled="{Binding IsOrderAwaitManufacture}"
+											IsEnabled="{Binding !IsOrderFinished}"
 											Command="{Binding $parent[UserControl].DataContext.RunOrderPreparationProcessCommand}"
-											CommandParameter="{Binding}"/>
+											CommandParameter="{Binding}"
+											Classes.orange="{Binding IsOrderAwaitManufacture}"
+											Classes.ok="{Binding IsOrderAwaitManufacture}"
+											Classes.blue="{Binding !IsOrderAwaitManufacture}"
+											Classes.edit="{Binding !IsOrderAwaitManufacture}">
+										<Grid>
+											<TextBlock Text="Старт "
+												       IsVisible="{Binding IsOrderAwaitManufacture}"/>
+										</Grid>
+									</Button>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

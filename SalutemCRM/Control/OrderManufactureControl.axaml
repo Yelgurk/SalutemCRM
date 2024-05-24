@@ -59,7 +59,7 @@
 												 Margin="5 5 0 5"
 												 VerticalAlignment="Center"
 												 IsVisible="{Binding HaveSerialNumber}"
-												 IsEnabled="{Binding !IsManufactureRunned}"/>
+												 IsEnabled="{Binding $parent[UserControl].DataContext.Source.OrderOnPrep.IsOrderAwaitManufacture}"/>
 
 										<TextBlock Text="{Binding Name}"
 												   TextWrapping="Wrap"
@@ -77,11 +77,21 @@
 			</ScrollViewer>
 
 			<StackPanel Grid.Row="4">
-				<Button Classes="custom iconed rounded pink close"
-						Content="Отмена старта"
+				<Button Classes="custom iconed rounded"
 						Margin="5 5 5 0"
 						HorizontalAlignment="Stretch"
-						Command="{Binding GoBackCommand}"/>
+						Command="{Binding GoBackCommand}"
+						Classes.pink="{Binding Source.OrderOnPrep.IsOrderAwaitManufacture}"
+						Classes.close="{Binding Source.OrderOnPrep.IsOrderAwaitManufacture}"
+						Classes.back="{Binding !Source.OrderOnPrep.IsOrderAwaitManufacture}"
+						Classes.orange="{Binding !Source.OrderOnPrep.IsOrderAwaitManufacture}">
+					<Grid>
+						<TextBlock Text="Отмена старта "
+								   IsVisible="{Binding Source.OrderOnPrep.IsOrderAwaitManufacture}"/>
+						<TextBlock Text="Назад "
+								   IsVisible="{Binding !Source.OrderOnPrep.IsOrderAwaitManufacture}"/>
+					</Grid>
+				</Button>
 				
 				<Button Classes="custom iconed rounded ok"
 						Classes.green="{Binding !Source.TryAcceptOrderBeginningInfo.Length}"
@@ -89,13 +99,21 @@
 						Content="{Binding Source.TryAcceptOrderBeginningInfo, StringFormat='Старт производства{0} '}"
 						Margin="5"
 						HorizontalAlignment="Stretch"
-						Command="{Binding AcceptOrderStartManufacturingCommand}"/>
+						Command="{Binding AcceptOrderStartManufacturingCommand}"
+						IsVisible="{Binding Source.OrderOnPrep.IsOrderAwaitManufacture}"/>
+				
+				<Button Classes="custom iconed rounded edit blue"
+						Content="Применить изменения"
+						Margin="5"
+						HorizontalAlignment="Stretch"
+						Command=""
+						IsVisible="{Binding !Source.OrderOnPrep.IsOrderAwaitManufacture}"/>
 			</StackPanel>
 		</Grid>
 
 
 		<!--
-			{Binding !Source.OrderOnPrep.IsOrderManufactureExecuted}
+			{Binding !Source.OrderOnPrep.IsOrderAwaitManufacture}
 			для кнопок. Если производство не начато - то команда удалять,
 			иначе команда ротации
 			-->
@@ -156,13 +174,13 @@
 										   FontWeight="SemiBold"/>
 								<TextBlock Text="{Binding Employee.FullName, StringFormat='сотрудник - {0}'}"/>
 								
-								<TextBlock Text="старт в, цель:"
+								<TextBlock Text="старт до:"
 										   FontSize="12"
 										   Margin="0 8 0 2"/>
 								<CalendarDatePicker SelectedDate="{Binding MustBeStartedDT}"/>
 								<TimePicker SelectedTime="{Binding MustBeStartedTimeSpan}"/>
 
-								<TextBlock Text="закончить в, цель:"
+								<TextBlock Text="закончить до:"
 										   FontSize="12"
 										   Margin="0 8 0 2"/>
 								<CalendarDatePicker SelectedDate="{Binding DeadlineDT}"/>
