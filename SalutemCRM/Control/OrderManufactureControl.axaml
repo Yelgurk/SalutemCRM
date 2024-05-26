@@ -106,7 +106,7 @@
 						Content="Применить изменения"
 						Margin="5"
 						HorizontalAlignment="Stretch"
-						Command=""
+						Command="{Binding AcceptOrderUpdateInfoCommand}"
 						IsVisible="{Binding !Source.OrderOnPrep.IsOrderAwaitManufacture}"/>
 			</StackPanel>
 		</Grid>
@@ -173,7 +173,8 @@
 									IsVisible="{Binding !IsTaskRunning}"/>
 
 							<StackPanel Grid.Column="2"
-										Grid.RowSpan="3">
+										Grid.RowSpan="3"
+										IsVisible="{Binding !IsTaskRunning}">
 								<TextBlock Text="{Binding OrderDuty.Name}"
 										   FontSize="16"
 										   FontWeight="SemiBold"/>
@@ -190,6 +191,55 @@
 										   Margin="0 8 0 2"/>
 								<CalendarDatePicker SelectedDate="{Binding DeadlineDT}"/>
 								<TimePicker SelectedTime="{Binding DeadlineTimeSpan}"/>
+							</StackPanel>
+
+							<StackPanel Grid.Column="2"
+										Grid.RowSpan="3"
+										IsVisible="{Binding IsTaskRunning}">
+								<Grid ColumnDefinitions="*, *"
+									  RowDefinitions="auto, *">
+									<StackPanel Grid.ColumnSpan="2"
+												Grid.Row="0">
+										<TextBlock Text="{Binding OrderDuty.Name}"
+												   FontSize="16"
+											       FontWeight="SemiBold"/>
+										<TextBlock Text="{Binding Employee.FullName, StringFormat='сотрудник - {0}'}"/>
+									</StackPanel>
+
+									<StackPanel Grid.Column="0"
+												Grid.Row="1"
+												Margin="5 0">
+										<TextBlock Text="Цели"
+												   HorizontalAlignment="Center"
+												   FontSize="15"
+												   FontWeight="SemiBold"/>
+										
+										<TextBlock Text="Начало:"
+												   Margin="0 5 0 0"/>
+										<TextBlock Text="{Binding MustBeStartedDT}"/>
+										
+										<TextBlock Text="Конец:"
+												   Margin="0 5 0 0"/>
+										<TextBlock Text="{Binding DeadlineDT}"/>
+									</StackPanel>
+									
+									<StackPanel Grid.Column="1"
+												Grid.Row="1"
+												Margin="5 0">
+										<TextBlock Text="Исполнение"
+												   HorizontalAlignment="Center"
+												   FontSize="15"
+												   FontWeight="SemiBold"/>
+										
+										<TextBlock Text="Начато в:"
+												   Margin="0 5 0 0"/>
+										<TextBlock Text="{Binding StartedDT}"/>
+										
+										<TextBlock Text="{Binding CompletedDT, StringFormat='Закончено в:', TargetNullValue='В процессе!'}"
+												   Margin="0 5 0 0"/>
+										<TextBlock Text="{Binding CompletedDT, TargetNullValue=''}"/>
+									</StackPanel>
+								</Grid>
 							</StackPanel>
 						</Grid>
 					</DataTemplate>
@@ -236,7 +286,8 @@
 						  HorizontalScrollBarVisibility="Visible">
 				<DataGrid ItemsSource="{Binding Source.SelectedProduct.MaterialFlows}"
 						  HorizontalScrollBarVisibility="Hidden"
-						  Width="{Binding $parent[ScrollViewer].Bounds.Width}">
+						  Width="{Binding $parent[ScrollViewer].Bounds.Width}"
+						  IsReadOnly="{Binding !$parent[UserControl].DataContext.Source.OrderOnPrep.IsOrderAwaitManufacture}">
 					<DataGrid.Columns>
 						<DataGridTemplateColumn Width="auto"
 												IsVisible="{Binding $parent[UserControl].DataContext.Source.OrderOnPrep.IsOrderAwaitManufacture}">
@@ -414,8 +465,128 @@
 		
 		<Label Classes="OverlayControl" Tag="Заменить материал"
 			   IsVisible="{Binding Source.IsOverlayMaterialRotation}">
-			<Grid>
-				<!--Button Command="{Binding HideOverlaysCommand}"/-->
+			<Grid ColumnDefinitions="2*, 1*"
+				  RowDefinitions="auto, *, auto, auto">
+				<Border Grid.RowSpan="3"
+						BorderThickness="0 0 1 0"
+						BorderBrush="{DynamicResource Primary_Gray}"/>
+				
+				<Grid Grid.Column="0"
+					  Grid.RowSpan="2"
+					  Margin="5">
+					<f_control:WarehouseGeneral/>
+				</Grid>
+				
+				<Button Classes="custom iconed rounded orange plus"
+						Grid.Row="2"
+						Margin="0 0 5 0"
+						HorizontalAlignment="Stretch"
+						Content="В замену "
+						Command="{Binding AddMaterialIntoRotationCommand}"/>
+
+				<StackPanel Grid.Column="1">
+					<TextBlock Text="Заменяемый материал"
+							   HorizontalAlignment="Center"
+							   FontSize="15"
+							   FontWeight="SemiBold"
+							   Margin="0 0 0 15"/>
+
+					<Grid ColumnDefinitions="auto, *, auto, auto"
+						  RowDefinitions="auto, auto, auto, 100"
+						  HorizontalAlignment="Stretch"
+						  Margin="10 0 0 30">
+						<TextBlock Text="{Binding Source.MaterialInRotation.WarehouseItem.Category.Name, StringFormat='[{0}]'}"
+								   FontSize="12"
+								   FontWeight="Bold"
+								   Grid.Column="0"
+								   Grid.Row="0"/>
+						<TextBlock Text="{Binding Source.MaterialInRotation.WarehouseItem.InnerName}"
+								   FontSize="15"
+								   Grid.Column="0"
+								   Grid.Row="1"/>
+
+						<TextBlock Text="{Binding Source.MaterialInRotation.CountReservedFromStock, StringFormat='Кол-во использовано: {0}'}"
+								   TextWrapping="Wrap"
+								   HorizontalAlignment="Right"
+								   VerticalAlignment="Center"
+								   Grid.Column="1"
+								   Grid.ColumnSpan="3"
+								   Grid.RowSpan="2"/>
+
+						<TextBlock Text="Будет возвращено на склад:"
+								   HorizontalAlignment="Right"
+								   VerticalAlignment="Center"
+								   Margin="0 0 5 0"
+								   Grid.ColumnSpan="3"
+								   Grid.Row="2"/>
+						<TextBox Classes="csutom"
+								 Text="{Binding Source.MaterialInRotation.CountWillBeReturnedToStock}"
+								 Grid.Column="3"
+								 Grid.Row="2"/>
+
+						<TextBox Classes="custom new_input"
+								 Grid.ColumnSpan="4"
+								 Grid.Row="3"
+								 Margin="0 10 0 0"
+								 Watermark="Пояснение к замене:"
+								 Text="{Binding Source.AdditionalInfoForMatrerialRotation}"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"/>
+					</Grid>
+
+					<TextBlock Text="На замену"
+							   HorizontalAlignment="Center"
+							   FontSize="15"
+							   FontWeight="SemiBold"
+							   Margin="0 0 0 15"/>
+				</StackPanel>
+
+				<ScrollViewer Grid.Column="1"
+							  Grid.Row="1"
+							  Grid.RowSpan="2">
+					<DataGrid ItemsSource="{Binding Source.MaterialInRotation.ExchangedMaterials}">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="auto">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Classes="custom iconed rounded pink close"
+												Command="{Binding $parent[UserControl].DataContext.RemoveMaterialFromRotationCommand}"
+												CommandParameter="{Binding}"
+												Margin="0 5"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTextColumn Width="auto"
+												IsReadOnly="False"
+												Binding="{Binding CountReservedFromStock}">
+								<DataGridTextColumn.Header>
+									<TextBlock Text="Кол-во" Margin="0 0 -20 0"/>
+								</DataGridTextColumn.Header>
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Width="*" Header="Название" Binding="{Binding WarehouseItem.InnerName}"
+												IsReadOnly="True"/>
+						</DataGrid.Columns>
+					</DataGrid>
+				</ScrollViewer>
+
+				<Grid ColumnDefinitions="*, 5, *"
+					  Grid.Row="3"
+					  Grid.ColumnSpan="2"
+					  Margin="0 10 0 0">
+					<Button Classes="custom iconed rounded pink close"
+							Content="Отмена "
+							Grid.Column="0"
+							HorizontalAlignment="Stretch"
+							Command="{Binding CancelMaterialRotationCommand}"/>
+
+					<Button Classes="custom iconed rounded green ok"
+							Content="Применить "
+							Grid.Column="2"
+							HorizontalAlignment="Stretch"
+							Command="{Binding AcceptMaterialRotationCommand}"/>
+				</Grid>
 			</Grid>
 		</Label>
 	</Grid>

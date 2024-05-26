@@ -32,6 +32,9 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     private MaterialFlow? _materialInRotation;
 
     [ObservableProperty]
+    private ObservableCollection<MaterialFlow> _substituteMaterials = new();
+
+    [ObservableProperty]
     private bool _isOverlayAddTask = false;
 
     [ObservableProperty]
@@ -51,6 +54,9 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
 
     [ObservableProperty]
     private string _tryAcceptOrderBeginningInfo = "";
+
+    [ObservableProperty]
+    private string _additionalInfoForMatrerialRotation = "";
 
     public OrderManufactureControlViewModelSource() => SelectedItemChangedTrigger += _ =>
     {
@@ -83,10 +89,12 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                     .ThenInclude(x => x.OrderProcesses)
                         .ThenInclude(x => x.OrderDuty)
                 .Include(x => x.Employee)
-                .First();
+                .First()
+                .DoInst(x => x.Manufactures.DoForEach(s => s.OrderProcesses = new(s.OrderProcesses.OrderBy(v => v.Queue))));
     };
 
-    partial void OnSelectedProductChanged(Manufacture? value) => ReIndexProductionTasksQueue();
+    partial void OnSelectedProductChanged(Manufacture? value) => this
+        .Do(x => x.ReIndexProductionTasksQueue());
 
     public void HideAllOverlays() => false
         .Do(x => IsOverlayAddMaterial = x)
@@ -179,9 +187,10 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
 
     public void MoveOrderTaksTo(OrderProcess _task, bool _up)
     {
-        if (_up)
+        if (_up && SelectedProduct!.OrderProcesses.Where(x => !x.IsTaskRunning).First() != _task)
             SelectedProduct!.OrderProcesses = new(SelectedProduct!.OrderProcesses.Move(_task, _task.Queue - 2));
         else
+        if (!_up)
             SelectedProduct!.OrderProcesses = new(SelectedProduct!.OrderProcesses.Move(_task, _task.Queue + 1));
 
         ReIndexProductionTasksQueue();
@@ -191,6 +200,11 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     {
         SelectedProduct!.OrderProcesses.Remove(_task);
         ReIndexProductionTasksQueue();
+    }
+
+    public void AcceptMaterialRotation()
+    {
+        Debug.WriteLine("Сохранить замену выбранного материала!");
     }
 
     public void AcceptOrderStartManufacturing()
@@ -284,6 +298,32 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
             _ => " [не хватает инф.]"
         };
     }
+
+    public void AcceptOrderUpdateInfo()
+    {
+        Debug.WriteLine("Применить изменения касаемо Order по части производства");
+    }
+
+    public void AddMaterialIntoRotation()
+    {
+        var SelectedItemForRotation = CRUSWarehouseItemControlViewModelSource.GlobalContainer.SelectedItem!.Clone();
+
+        if (MaterialInRotation!.ExchangedMaterials.SingleOrDefault(x => x.WarehouseItem!.Id == SelectedItemForRotation.Id) is MaterialFlow _match && _match is not null)
+            ++_match.CountReservedFromStock;
+        else
+            MaterialInRotation!.ExchangedMaterials.Add(new()
+            {
+                WarehouseItem = SelectedItemForRotation,
+                WarehouseItemForeignKey = SelectedItemForRotation.Id,
+                CountReservedFromStock = 1
+            });
+    }
+
+    public void RemoveMaterialFromRotation(MaterialFlow _removedRotation) => MaterialInRotation!.ExchangedMaterials.Remove(_removedRotation);
+
+    public void CancelMaterialRotation() => this
+        .Do(x => x.MaterialInRotation!.ExchangedMaterials.Clear())
+        .Do(x => x.HideAllOverlays());
 }
 
 public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufactureControlViewModelSource>
@@ -314,7 +354,17 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
 
     public ReactiveCommand<OrderProcess, Unit>? RemoveOrderTaskCommand { get; protected set; }
 
+    public ReactiveCommand<Unit, Unit>? AcceptMaterialRotationCommand { get; protected set; }
+
     public ReactiveCommand<Unit, Unit>? AcceptOrderStartManufacturingCommand { get; protected set; }
+
+    public ReactiveCommand<Unit, Unit>? AcceptOrderUpdateInfoCommand { get; protected set; }
+
+    public ReactiveCommand<Unit, Unit>? AddMaterialIntoRotationCommand { get; protected set; }
+
+    public ReactiveCommand<MaterialFlow, Unit>? RemoveMaterialFromRotationCommand { get; protected set; }
+
+    public ReactiveCommand<Unit, Unit>? CancelMaterialRotationCommand { get; protected set; }
 
     public OrderManufactureControlViewModel() : base(new() { PagesCount = 1 })
     {
@@ -354,6 +404,16 @@ public class OrderManufactureControlViewModel : ViewModelBase<Order, OrderManufa
 
         RemoveOrderTaskCommand = ReactiveCommand.Create<OrderProcess>(Source.RemoveOrderTask);
 
+        AcceptMaterialRotationCommand = ReactiveCommand.Create(Source.AcceptMaterialRotation);
+
         AcceptOrderStartManufacturingCommand = ReactiveCommand.Create(Source.AcceptOrderStartManufacturing);
+
+        AcceptOrderUpdateInfoCommand = ReactiveCommand.Create(Source.AcceptOrderUpdateInfo);
+
+        AddMaterialIntoRotationCommand = ReactiveCommand.Create(Source.AddMaterialIntoRotation, CRUSWarehouseItemControlViewModelSource.GlobalContainer.IsSelectedItemNotNull);
+
+        RemoveMaterialFromRotationCommand = ReactiveCommand.Create<MaterialFlow>(Source.RemoveMaterialFromRotation);
+
+        CancelMaterialRotationCommand = ReactiveCommand.Create(Source.CancelMaterialRotation);
     }
 }
