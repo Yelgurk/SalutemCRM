@@ -322,6 +322,7 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     public void RemoveMaterialFromRotation(MaterialFlow _removedRotation) => MaterialInRotation!.ExchangedMaterials.Remove(_removedRotation);
 
     public void CancelMaterialRotation() => this
+        .DoInst(x => x.AdditionalInfoForMatrerialRotation = "")
         .Do(x => x.MaterialInRotation!.ExchangedMaterials.Clear())
         .Do(x => x.HideAllOverlays());
 }
