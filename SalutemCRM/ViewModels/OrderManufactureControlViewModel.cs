@@ -205,6 +205,9 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     public void AcceptMaterialRotation()
     {
         Debug.WriteLine("Сохранить замену выбранного материала!");
+        /* добавить во все MaterialFlow значения AdditionalInfo согласно поля ввода инфы */
+
+        HideAllOverlays();
     }
 
     public void AcceptOrderStartManufacturing()
@@ -241,6 +244,7 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                     OrderOnPrep!.Manufactures.DoForEach(_ =>
                     {
                         /* This part for "Edit manufacture params", not for "Start manufacture params" step */
+
                         /*
                         var _alreadyTrackingMaterials = db.MaterialFlow
                             .Where(s => s.ManufactureForeignKey == _.Id)
@@ -302,6 +306,7 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
     public void AcceptOrderUpdateInfo()
     {
         Debug.WriteLine("Применить изменения касаемо Order по части производства");
+        /* сохранить в БД инфу по новым добавленным и/или изменённым(замененным) материалам и новым добавленным и/или измененный список задач */
     }
 
     public void AddMaterialIntoRotation()

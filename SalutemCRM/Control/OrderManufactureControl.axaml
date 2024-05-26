@@ -333,6 +333,29 @@
 												   FontWeight="Bold"/>
 										<TextBlock Text="{Binding WarehouseItem.InnerName}"
 												   TextWrapping="Wrap"/>
+										
+										<TextBlock Text="Будет заменено на:"
+												   Margin="0 5 0 0"
+												   FontSize="12"
+												   FontWeight="Bold"
+												   IsVisible="{Binding ExchangedMaterials.Count}"/>
+										<ListBox Classes="custom zebra"
+												 ItemsSource="{Binding ExchangedMaterials}">
+											<ListBox.ItemTemplate>
+												<DataTemplate>
+													<Grid ColumnDefinitions="auto, *, auto"
+														  Margin="5"
+														  VerticalAlignment="Center">
+														<TextBlock Text="{Binding WarehouseItem.InnerName, StringFormat='- {0}'}"
+																   FontSize="12"/>
+														
+														<TextBlock Text="{Binding CountReservedFromStock, StringFormat='Кол-во: {0}'}"
+																   FontSize="12"
+																   Grid.Column="2"/>
+													</Grid>
+												</DataTemplate>
+											</ListBox.ItemTemplate>
+										</ListBox>
 									</StackPanel>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
