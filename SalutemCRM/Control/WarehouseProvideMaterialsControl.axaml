@@ -3,6 +3,159 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:SalutemCRM.ViewModels"
+			 x:DataType="vm:WarehouseProvideMaterialsControlViewModel"
              x:Class="SalutemCRM.Control.WarehouseProvideMaterialsControl">
-  Welcome to Avalonia!
+	<Grid ColumnDefinitions="2*, 1, 3*"
+			RowDefinitions="auto, auto, auto, *, auto">
+		<TextBlock Text="{Binding Source.SelectedItem.CardAimHeader}"
+				   FontSize="15"
+				   FontWeight="SemiBold"
+				   Margin="5"
+				   HorizontalAlignment="Center"
+				   VerticalAlignment="Center"
+				   Grid.ColumnSpan="3"
+				   Grid.Row="0"/>
+
+		<TextBlock Text="{Binding Source.SelectedItem.CardOrderHeader}"
+				   FontSize="17"
+				   Margin="5 0 5 10"
+				   HorizontalAlignment="Center"
+				   VerticalAlignment="Center"
+				   Grid.ColumnSpan="3"
+				   Grid.Row="1"/>
+
+		<Border Grid.Column="1"
+				Grid.Row="2"
+				Grid.RowSpan="2"
+				BorderThickness="1 0"
+				BorderBrush="{DynamicResource Primary_Gray}"/>
+
+		<TextBlock Text="Список на приём"
+				   FontSize="16"
+				   Grid.Column="0"
+				   Grid.Row="2"
+				   Margin="5"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Center"/>
+
+		<TextBlock Text="Отсканировано"
+				   FontSize="16"
+				   Grid.Column="2"
+				   Grid.Row="2"
+				   Margin="5"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Center"/>
+
+		<ListBox Classes="custom zebra unmarked"
+				 ClipToBounds="True"
+				 Grid.Column="0"
+				 Grid.Row="3"
+				 ItemsSource="{Binding Source.SelectedItem.MaterialsIn}"
+				 SelectedItem="{Binding Source.SelectedSupply}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid ColumnDefinitions="auto, *, 20, auto">
+						<TextBlock Text="{Binding VendorName}"
+								   TextWrapping="Wrap"
+								   Margin="3"
+								   VerticalAlignment="Center"
+								   Grid.Column="0"/>
+
+						<TextBlock Text="{Binding OrderCount, StringFormat='Кол-во: {0}'}"
+								   Margin="3 3 15 3"
+								   VerticalAlignment="Center"
+								   Grid.Column="3"/>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<ScrollViewer Grid.Column="2"
+				      Grid.Row="3"
+					  ClipToBounds="True"
+					  VerticalScrollBarVisibility="Visible">
+			<DataGrid Classes="zebra"
+				      VerticalScrollBarVisibility="Hidden"
+					  ItemsSource="{Binding Source.ScannedCollection}">
+				<DataGrid.Columns>
+					<DataGridTemplateColumn Width="auto" Header="">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button Classes="custom iconed pink rounded sys close"
+										Height="32" Width="{Binding $self.Bounds.Height}"
+										CornerRadius="5" Margin="0 5 5 5"
+										Command=""
+										CommandParameter="{Binding}"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTextColumn Width="auto"
+										IsReadOnly="False"
+										Binding="{Binding ScannedCount}">
+						<DataGridTextColumn.Header>
+							<TextBlock Text="Кол-во" Margin="0 0 -20 0"/>
+						</DataGridTextColumn.Header>
+					</DataGridTextColumn>
+
+					<DataGridTextColumn Width="auto"
+										IsReadOnly="True"
+										Binding="{Binding OrderCount}">
+						<DataGridTextColumn.Header>
+							<TextBlock Text="По счету" Margin="0 0 -20 0"/>
+						</DataGridTextColumn.Header>
+					</DataGridTextColumn>
+
+					<DataGridTextColumn Width="*"
+										IsReadOnly="True"
+										Header="Название"
+										Binding="{Binding VendorName}"/>
+
+					<DataGridTemplateColumn Width="auto" Header="Коды">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ItemsControl ItemsSource="{Binding ScannedQrCodes}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding}"
+													   FontSize="13"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</ScrollViewer>
+
+		<Button Classes="custom iconed rounded pink back"
+				Content="Отменить приём "
+				HorizontalAlignment="Stretch"
+				Margin="5"
+				Grid.Column="0"
+				Grid.Row="4"
+				Command="{Binding GoBackCommand}"/>
+
+		<Button Classes="custom iconed rounded green ok"
+				Content="Подтвердить получение "
+				HorizontalAlignment="Stretch"
+				Margin="5"
+				Grid.Column="2"
+				Grid.Row="4"
+				Command="{Binding AcceptSuccessfullyDeliveryToStockCommand}"/>
+	</Grid>
+
+	<UserControl.Styles>
+		<Style Selector="DataGrid.zebra DataGridRow:nth-child(2n+1)">
+			<Setter Property="Background" Value="WhiteSmoke"/>
+		</Style>
+	</UserControl.Styles>
 </UserControl>

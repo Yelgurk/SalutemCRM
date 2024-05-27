@@ -1,6 +1,9 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
+using SalutemCRM.Control;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
@@ -9,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -130,13 +134,43 @@ public partial class WarehouseKeeperOrdersViewModelSource : ReactiveControlSourc
                 }));
         }
     }
+
+    public void GoToProvidingMaterials(WarehouseKeeperOrder _selected)
+    {
+        NavigationViewModelSource.SetNonRegWindowContent<WarehouseProvideMaterialsControl>();
+        App.Host!.Services.GetService<WarehouseProvideMaterialsControlViewModel>()!.Source.SelectedItem = _selected;
+    }
+
+    public void GoToReceivingMaterials(WarehouseKeeperOrder _selected)
+    {
+        NavigationViewModelSource.SetNonRegWindowContent<WarehouseReceiveMaterialsControl>();
+        App.Host!.Services.GetService<WarehouseReceiveMaterialsControlViewModel>()!.Source.SelectedItem = _selected;
+    }
+
+    public void AcceptMaterialsAvailability(WarehouseKeeperOrder _accept)
+    {
+
+        this.Update();
+    }
 }
 
 public class WarehouseKeeperOrdersViewModel : ViewModelBase<WarehouseKeeperOrder, WarehouseKeeperOrdersViewModelSource>
 {
+    public ReactiveCommand<WarehouseKeeperOrder, Unit>? GoToProvidingMaterialsCommand { get; protected set; }
+
+    public ReactiveCommand<WarehouseKeeperOrder, Unit>? GoToReceivingMaterialsCommand { get; protected set; }
+
+    public ReactiveCommand<WarehouseKeeperOrder, Unit>? AcceptMaterialsAvailabilityCommand { get; protected set; }
+
     public WarehouseKeeperOrdersViewModel() : base(new() { PagesCount = 1 })
     {
         if (!Design.IsDesignMode)
             Source.Update();
+
+        GoToProvidingMaterialsCommand = ReactiveCommand.Create<WarehouseKeeperOrder>(Source.GoToProvidingMaterials);
+
+        GoToReceivingMaterialsCommand = ReactiveCommand.Create<WarehouseKeeperOrder>(Source.GoToReceivingMaterials);
+
+        AcceptMaterialsAvailabilityCommand = ReactiveCommand.Create<WarehouseKeeperOrder>(Source.AcceptMaterialsAvailability);
     }
 }

@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SalutemCRM.ViewModels;
 
 namespace SalutemCRM.Control
 {
@@ -7,6 +9,7 @@ namespace SalutemCRM.Control
         public WarehouseReceiveMaterialsControl()
         {
             InitializeComponent();
+            this.DataContext = App.Host!.Services.GetService<WarehouseReceiveMaterialsControlViewModel>()!;
         }
     }
 }

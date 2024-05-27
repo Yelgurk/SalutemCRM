@@ -48,6 +48,14 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
 {
     private static NavigationViewModelSource _currentNavigation { get; set; }
 
+    public static bool IsCurrentScreen<T>() where T : class
+    {
+        try { return _currentNavigation?.SelectedItem?.ContentType == typeof(T); }
+        catch { }
+
+        return false;
+    }
+
     public static void SetNonRegWindowContent<T>() where T : class
     {
         _currentNavigation?.Do(x => x.SelectedItem = null);
@@ -114,7 +122,7 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
                     NavigationCollection.Add(new() { IconUri = "Photo gallery.png", Title = "База клиентов", GetContent = Get<CRUSClientControl> });
                     NavigationCollection.Add(new() { IconUri = "Photo gallery.png", Title = "База поставщиков", GetContent = Get<CRUSVendorControl> });
                     NavigationCollection.Add(new() { IconUri = "Warehouse.png", Title = "Склад", GetContent = Get<WarehouseGeneral> });
-                    NavigationCollection.Add(new() { IconUri = "Manufacture.png", Title = "Конструктор изделий", GetContent = Get<ProductTemplateBuilder> });
+                    NavigationCollection.Add(new() { IconUri = "Manufacture.png", Title = "Производимое оборудование", GetContent = Get<ProductTemplateBuilder> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "База регионов", GetContent = Get<TemplateRegionsEditor> });
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Назначенные регионы", GetContent = Get<TemplateRegionsManagment> });
                     NavigationCollection.Add(new() { IconUri = "Edit.png", Title = "Иные параметры", GetContent = Get<TemplateMasterSettingsPanel> });
@@ -146,10 +154,13 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
             case User_Permission.ManufactureManager:
                 {
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Заявки на производство", GetContent = Get<OrdersManagmentControl> });
+                    NavigationCollection.Add(new() { IconUri = "Warehouse.png", Title = "Весь склад", GetContent = Get<WarehouseGeneral> });
+                    NavigationCollection.Add(new() { IconUri = "Manufacture.png", Title = "Производимое оборудование", GetContent = Get<ProductTemplateBuilder> });
                 } break;
 
             case User_Permission.ConstrEngineer:
                 {
+                    NavigationCollection.Add(new() { IconUri = "Manufacture.png", Title = "Производимое оборудование", GetContent = Get<ProductTemplateBuilder> });
                 } break;
 
             case User_Permission.ManufactureEmployee:

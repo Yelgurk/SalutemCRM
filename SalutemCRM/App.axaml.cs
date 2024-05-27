@@ -42,7 +42,6 @@ public partial class App : Application
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<ViewModelSourceNotifyService>();
                 services.AddSingleton<QRCodeGeneratorService>();
-                services.AddSingleton<QRCodeBleScanService>();
                 services.AddSingleton<FilesContainerService>();
                 services.AddSingleton<TCPChannel>();
 
@@ -56,14 +55,24 @@ public partial class App : Application
                 services.AddSingleton<WarehouseGeneral>();
                 services.AddSingleton<ProductTemplateBuilder>();
                 services.AddSingleton<TemplateMasterSettingsPanel>();
-                services.AddSingleton<WarehouseKeeperOrders>();
+
 
                 services.AddSingleton<OrderManufactureControl>();
                 services.AddSingleton<OrderManufactureControlViewModel>();
+
+                services.AddSingleton<WarehouseKeeperOrders>();
+                services.AddSingleton<WarehouseKeeperOrdersViewModel>();
+
+                services.AddSingleton<WarehouseProvideMaterialsControl>();
+                services.AddSingleton<WarehouseProvideMaterialsControlViewModel>();
+
+                services.AddSingleton<WarehouseReceiveMaterialsControl>();  
+                services.AddSingleton<WarehouseReceiveMaterialsControlViewModel>();  
             })
             .Build();
 
         Host!.Services.GetService<FilesContainerService>();
+        QRCodeScanService.Init();
 
         //if (false)
         if (!Design.IsDesignMode)

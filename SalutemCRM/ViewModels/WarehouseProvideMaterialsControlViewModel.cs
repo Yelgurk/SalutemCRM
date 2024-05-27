@@ -1,5 +1,8 @@
-﻿using SalutemCRM.Domain.Model;
+﻿using ReactiveUI;
+using SalutemCRM.Control;
+using SalutemCRM.Domain.Model;
 using SalutemCRM.Reactive;
+using SalutemCRM.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SalutemCRM.ViewModels;
-
-public class WarehouseProvideMaterialsControlViewModelSource : ReactiveControlSource<MaterialFlow>
-{
-}
 
 /*
  
@@ -43,9 +42,47 @@ else if (x.OrderType == Order_Type.ManagerSale)
  
 */
 
-public class WarehouseProvideMaterialsControlViewModel : ViewModelBase<MaterialFlow, WarehouseProvideMaterialsControlViewModelSource>
+public class WarehouseProvideMaterialsControlViewModelSource : ReactiveControlSource<WarehouseKeeperOrder>
+{
+    public void SaveScannedMaterial(string qrCode)
+    {
+        if (SelectedSupply is not null && ScannedCollection.SingleOrDefault(x => x.VendorName == SelectedSupply.VendorName) is WarehouseSupply _match && _match != null)
+        {
+            _match.ScannedCount += 1;
+            _match.ScannedQrCodes.Add(qrCode);
+        }
+        else if (SelectedSupply is not null)
+            ScannedCollection.Add(
+                SelectedSupply
+                .Clone()
+                .Do(x => x.ScannedQrCodes.Add(qrCode))
+                .DoInst(x => x.ScannedCount = 1)
+            );
+        IsAllItemsScanned =
+            ScannedCollection.Count == SelectedItem!.MaterialsIn.Count &&
+            ScannedCollection
+            .GroupBy(x => x.VendorName)
+            .Select(x => new { VendorName = x.Key, ScannedCount = x.Sum(x => x.ScannedCount) })
+            .Join(SelectedItem!.MaterialsIn, x => x.VendorName, y => y.VendorName, (x, y) => x.ScannedCount == y.OrderCount)
+            .All(result => result);
+    }
+}
+
+public class WarehouseProvideMaterialsControlViewModel : ViewModelBase<WarehouseKeeperOrder, WarehouseProvideMaterialsControlViewModelSource>
 {
     public WarehouseProvideMaterialsControlViewModel() : base(new() { PagesCount = 1 })
     {
+        QRCodeScanService.Init();
+        QRCodeScanService.QRCodeScannedEvent += qrCode =>
+        {
+            if (NavigationViewModelSource.IsCurrentScreen<WarehouseProvideMaterialsControl>())
+                Source.SaveScannedMaterial(qrCode);
+        };
+
+        IfNewFilled = this.WhenAnyValue(
+            x => x.Source.IsAllItemsScanned,
+            x => x.Source.IsAllItemsScanned,
+            (b1, b2) => b1
+        );
     }
 }

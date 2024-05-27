@@ -1,5 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Microsoft.Extensions.DependencyInjection;
+using SalutemCRM.ViewModels;
 using System;
 using System.Linq;
 
@@ -10,6 +12,7 @@ namespace SalutemCRM.Control
         public WarehouseKeeperOrders()
         {
             InitializeComponent();
+            this.DataContext = App.Host!.Services.GetService<WarehouseKeeperOrdersViewModel>()!;
         }
 
         private void UniformGrid_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)

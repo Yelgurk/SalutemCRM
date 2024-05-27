@@ -6,9 +6,6 @@
 			 xmlns:vm="using:SalutemCRM.ViewModels"
 			 x:DataType="vm:WarehouseKeeperOrdersViewModel"
              x:Class="SalutemCRM.Control.WarehouseKeeperOrders">
-	<UserControl.DataContext>
-		<vm:WarehouseKeeperOrdersViewModel/>
-	</UserControl.DataContext>
 	
 	<ScrollViewer>
 		<ItemsControl ItemsSource="{Binding Source.WarehouseKeeperOrders}">
@@ -97,7 +94,8 @@
 									IsVisible="{Binding IsReceiveNewMaterials}"
 									Margin="5"
 									HorizontalAlignment="Stretch"
-									Command=""/>
+									Command="{Binding $parent[UserControl].DataContext.GoToReceivingMaterialsCommand}"
+									CommandParameter="{Binding}"/>
 							
 							<Button Grid.Row="2"
 								    Classes="custom iconed rounded orange back"
@@ -105,7 +103,8 @@
 									IsVisible="{Binding IsProvideMaterials}"
 									Margin="5"
 									HorizontalAlignment="Stretch"
-									Command=""/>
+									Command="{Binding $parent[UserControl].DataContext.GoToProvidingMaterialsCommand}"
+									CommandParameter="{Binding}"/>
 							
 							<Button Grid.Row="2"
 								    Classes="custom iconed rounded green ok"
@@ -113,7 +112,8 @@
 									IsVisible="{Binding IsAvailabilityCheck}"
 									Margin="5"
 									HorizontalAlignment="Stretch"
-									Command=""/>
+									Command="{Binding $parent[UserControl].DataContext.AcceptMaterialsAvailabilityCommand}"
+									CommandParameter="{Binding}"/>
 						</Grid>
 					</Label>
 				</DataTemplate>

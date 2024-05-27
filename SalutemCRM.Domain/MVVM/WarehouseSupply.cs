@@ -65,4 +65,21 @@ public partial class WarehouseSupply
             .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotal)))
             .Do(x => OnPropertyChanged(nameof(OrderBuilder_PriceTotalBYN)));
     }
+
+    [NotMapped]
+    public ObservableCollection<string> ScannedQrCodes { get; } = new();
+
+    [NotMapped]
+    private double _scannedCount = 0;
+
+    [NotMapped]
+    public double ScannedCount
+    {
+        get => _scannedCount;
+        set
+        {
+            _scannedCount = value;
+            OnPropertyChanged(nameof(ScannedCount));
+        }
+    }
 }
