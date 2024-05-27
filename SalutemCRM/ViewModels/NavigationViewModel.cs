@@ -158,6 +158,8 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
 
             case User_Permission.Storekeeper:
                 {
+                    NavigationCollection.Add(new() { IconUri = "Manufacture.png", Title = "Заявки на склад", GetContent = Get<WarehouseKeeperOrders> });
+                    NavigationCollection.Add(new() { IconUri = "Warehouse.png", Title = "Весь склад", GetContent = Get<WarehouseGeneral> });
                 } break;
         };
 

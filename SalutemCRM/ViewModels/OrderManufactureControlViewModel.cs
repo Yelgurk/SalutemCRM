@@ -278,9 +278,12 @@ public partial class OrderManufactureControlViewModelSource : ReactiveControlSou
                             RecordDT = DateTime.Now
                         }));
 
+                        bool _firstProccess = true;
+
                         _.OrderProcesses.DoForEach(s => db.OrderProcesses.Add(new()
                         {
                             EmployeeForeignKey = s.EmployeeForeignKey,
+                            TaskStatus = _firstProccess ? (!(_firstProccess = false) ? Task_Status.AwaitStart : Task_Status.AwaitStart) : Task_Status.NotAvailable,
                             ManufactureForeignKey = _.Id,
                             OrderDutyForeignKey = s.OrderDutyForeignKey,
                             Queue = s.Queue,

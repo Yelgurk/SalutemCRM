@@ -30,7 +30,7 @@ public partial class Order
     {
         Task_Status.NotAvailable => "Ожидает проверки",
         Task_Status.AwaitPayment => "Ожидает оплаты",
-        Task_Status.AwaitStart => "Ожидает старта",
+        Task_Status.AwaitStart => OrderType == Order_Type.WarehouseRestocking ? "Ожидает поставки" : "Ожидает старта",
         Task_Status.Execution => "Выполняется",
         Task_Status.Finished => "Закончено",
         Task_Status.Cancelled => "Отменено",

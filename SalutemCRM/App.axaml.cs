@@ -56,6 +56,7 @@ public partial class App : Application
                 services.AddSingleton<WarehouseGeneral>();
                 services.AddSingleton<ProductTemplateBuilder>();
                 services.AddSingleton<TemplateMasterSettingsPanel>();
+                services.AddSingleton<WarehouseKeeperOrders>();
 
                 services.AddSingleton<OrderManufactureControl>();
                 services.AddSingleton<OrderManufactureControlViewModel>();
@@ -63,7 +64,6 @@ public partial class App : Application
             .Build();
 
         Host!.Services.GetService<FilesContainerService>();
-        Host!.Services.GetService<OrderManufactureControlViewModel>();
 
         //if (false)
         if (!Design.IsDesignMode)
@@ -115,8 +115,13 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
 
         /* DEBUG LOGIN BEGIN */
+
         if (!Design.IsDesignMode)
-            Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log51", PasswordMD5 = "pass51" }), MBEnums.USER_JSON);
+            //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log51", PasswordMD5 = "pass51" }), MBEnums.USER_JSON); //manufacture boss acc
+            //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log21", PasswordMD5 = "pass21" }), MBEnums.USER_JSON); //bookkeeper acc
+            //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log11", PasswordMD5 = "pass11" }), MBEnums.USER_JSON); //boss acc
+            Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log81", PasswordMD5 = "pass81" }), MBEnums.USER_JSON); //warehouse keeper
+        
         /* DEBUG LOGIN END */
     }
 

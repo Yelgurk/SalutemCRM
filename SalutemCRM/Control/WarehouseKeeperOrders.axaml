@@ -1,0 +1,123 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:SalutemCRM.ViewModels"
+			 x:DataType="vm:WarehouseKeeperOrdersViewModel"
+             x:Class="SalutemCRM.Control.WarehouseKeeperOrders">
+	<UserControl.DataContext>
+		<vm:WarehouseKeeperOrdersViewModel/>
+	</UserControl.DataContext>
+	
+	<ScrollViewer>
+		<ItemsControl ItemsSource="{Binding Source.WarehouseKeeperOrders}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<UniformGrid SizeChanged="UniformGrid_SizeChanged"
+								 VerticalAlignment="Top"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Label Classes="card"
+						   Margin="5">
+						<Grid Background="White"
+							  RowDefinitions="auto, *, auto">
+							<StackPanel Grid.Row="0"
+										Margin="5">
+								<TextBlock Text="{Binding CardAimHeader}"
+										   FontSize="14"
+										   FontWeight="SemiBold"
+										   HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding CardOrderHeader}"
+										   HorizontalAlignment="Center"
+										   FontSize="16"
+										   Margin="0 5"/>
+							</StackPanel>
+
+							<ListBox Grid.Row="1"
+									 MaxHeight="300"
+									 Classes="custom zebra unmarked"
+									 ItemsSource="{Binding MaterialsIn}"
+									 IsVisible="{Binding !!MaterialsIn.Count}"
+									 ClipToBounds="True">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid ColumnDefinitions="auto, *, auto">
+											<TextBlock Text="{Binding VendorName}"
+													   FontSize="15"
+													   Margin="2"/>
+
+											<TextBlock Text="{Binding OrderCount, StringFormat='Кол-во: {0}'}"
+													   Margin="2 2 15 2"
+													   Grid.Column="2"
+													   HorizontalAlignment="Center"
+													   VerticalAlignment="Center"/>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+
+							<ListBox Grid.Row="1"
+									 MaxHeight="300"
+									 Classes="custom zebra unmarked"
+									 ItemsSource="{Binding MaterialsOut}"
+									 IsVisible="{Binding !!MaterialsOut.Count}"
+									 ClipToBounds="True">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid ColumnDefinitions="auto, *, auto"
+											  RowDefinitions="auto, auto">
+											<TextBlock Text="{Binding WarehouseItem.Category.Name, StringFormat='[{0}]'}"
+													   FontSize="12"
+													   FontWeight="Bold"
+													   Margin="2 2 2 0"/>
+											
+											<TextBlock Text="{Binding WarehouseItem.InnerName}"
+													   FontSize="15"
+													   Margin="2"
+													   Grid.Row="1"/>
+											
+											<TextBlock Text="{Binding CountReservedFromStock, StringFormat='Кол-во: {0}'}"
+													   Margin="2 2 15 2"
+													   Grid.Column="2"
+													   Grid.RowSpan="2"
+													   HorizontalAlignment="Center"
+													   VerticalAlignment="Center"/>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+							
+							<Button Grid.Row="2"
+								    Classes="custom iconed rounded blue back"
+									Content="Перейти к приёму "
+									IsVisible="{Binding IsReceiveNewMaterials}"
+									Margin="5"
+									HorizontalAlignment="Stretch"
+									Command=""/>
+							
+							<Button Grid.Row="2"
+								    Classes="custom iconed rounded orange back"
+									Content="Перейти к выдаче "
+									IsVisible="{Binding IsProvideMaterials}"
+									Margin="5"
+									HorizontalAlignment="Stretch"
+									Command=""/>
+							
+							<Button Grid.Row="2"
+								    Classes="custom iconed rounded green ok"
+									Content="Есть на складе "
+									IsVisible="{Binding IsAvailabilityCheck}"
+									Margin="5"
+									HorizontalAlignment="Stretch"
+									Command=""/>
+						</Grid>
+					</Label>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</ScrollViewer>
+</UserControl>

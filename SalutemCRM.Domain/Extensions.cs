@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace SalutemCRM;
 
@@ -42,6 +43,16 @@ public static partial class Extensions
         foreach (var item in source)
             action(item);
         return source;
+    }
+
+    public static T? GetPrevious<T>(this ObservableCollection<T> list, T item)
+    {
+        int index = list.IndexOf(item);
+        if (index > 0)
+        {
+            return list[index - 1];
+        }
+        return default(T);
     }
 
     public static double PercentageCalc(double total, double val) => Math.Round(100.0 / total * val, 2);

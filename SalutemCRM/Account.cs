@@ -63,7 +63,7 @@ public partial class Account : ObservableObject
 
     public bool IsMoneyStateInfoVisible => IsRootOrBossUser;
 
-    public bool IsStockCountInfoVisible => IsRootOrBossUser || IsManufactureManagerUser;
+    public bool IsStockCountInfoVisible => IsRootOrBossUser || IsManufactureManagerUser || IsStorekeeperUser;
 
     public bool IsOrderSalesPermission => IsRootOrBossUser || IsSalesManagerUser || IsSeniorSalesManagerUser;
 

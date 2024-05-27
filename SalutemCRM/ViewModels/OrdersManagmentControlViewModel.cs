@@ -115,7 +115,7 @@ public partial class OrdersManagmentControlViewModelSource : ReactiveControlSour
                        (
                             ShowAll ||
                             item.EmployeeForeignkey == Account.Current.User.Id ||
-                            (Account.Current.IsManufactureManagerUser && item.TaskStatus >= Task_Status.AwaitStart)
+                            (Account.Current.IsManufactureManagerUser && item.TaskStatus >= Task_Status.AwaitStart && item.OrderType == Order_Type.ManagerSale)
                        )
                 select item
             );
