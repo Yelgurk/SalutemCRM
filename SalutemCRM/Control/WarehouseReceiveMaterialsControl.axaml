@@ -252,14 +252,23 @@
 				Grid.Row="4"
 				Command="{Binding GoBackCommand}"/>
 
-		<Button Classes="custom iconed rounded green ok"
-				Content="Подтвердить получение "
-				HorizontalAlignment="Stretch"
-				Margin="5"
-				Grid.Column="2"
-				Grid.Row="4"
-				IsEnabled="{Binding Source.IsAllInfoFullFilled}"
-				Command="{Binding AcceptSuccessfullyDeliveryToStockCommand}"/>
+		<StackPanel Margin="5"
+					Grid.Column="2"
+					Grid.Row="4">
+			<ToggleButton Classes="custom"
+						  Background="LightGray"
+						  Margin="0 0 0 5"
+						  Height="36"
+						  HorizontalAlignment="Stretch"
+						  IsChecked="{Binding Source.IsPartialReceivingAvailable}"
+						  Content="{Binding Source.PartialReceivingAvailablDescription}"/>
+			
+			<Button Classes="custom iconed rounded green ok"
+					Content="Подтвердить получение "
+					HorizontalAlignment="Stretch"
+					IsEnabled="{Binding Source.IsAllInfoFullFilled}"
+					Command="{Binding AcceptSuccessfullyDeliveryToStockCommand}"/>
+		</StackPanel>
 
 		<Label Classes="OverlayControl" Tag="Привязать к материалу в БД "
 			   IsVisible="{Binding Source.IsOverlayBindToWarehouseItem}">

@@ -109,7 +109,12 @@ public partial class WarehouseSupply
     public bool IsAllScanned =>
         OrderCount == WillBeReceived &&
         ScannedCount > 0 &&
-        WarehouseItem is not null;
+        IsWarehouseItemNotNull;
+
+    [NotMapped]
+    public bool IsWarehouseItemNotNull =>
+        WarehouseItem is not null &&
+        WillBeReceived <= OrderCount;
 
     [NotMapped]
     public List<(string code, double totalCount)> GetScanResult =>

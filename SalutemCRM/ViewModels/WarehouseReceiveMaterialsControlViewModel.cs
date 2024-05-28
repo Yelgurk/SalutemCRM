@@ -31,9 +31,15 @@ public partial class WarehouseReceiveMaterialsControlViewModelSource : ReactiveC
 
     public string ScannerModeDescription => $"Сканнер | Режим удаления по коду: {(IsScannerModeRemove ? "ВКЛ" : "ВЫКЛ")}";
 
+    public string PartialReceivingAvailablDescription => $"Приёмка | Доставлено не всё из списка: {(IsPartialReceivingAvailable ? "НЕТ" : "ДА")}";
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ScannerModeDescription))]
     private bool _isScannerModeRemove = false;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PartialReceivingAvailablDescription))]
+    private bool _isPartialReceivingAvailable = false;
 
     [ObservableProperty]
     private bool _isAllInfoFullFilled = false;
@@ -60,7 +66,10 @@ public partial class WarehouseReceiveMaterialsControlViewModelSource : ReactiveC
     public void HideAllOverlays() => false
         .Do(x => IsOverlayBindToWarehouseItem = x);
 
-    public bool CheckIsAllInfoFullFilled() => IsAllInfoFullFilled = ScannedCollection.All(x => x.IsAllScanned);
+    public bool CheckIsAllInfoFullFilled() => IsAllInfoFullFilled =
+        ScannedCollection
+        .All(x => x.IsAllScanned) ||
+        (ScannedCollection.All(x => x.IsWarehouseItemNotNull) && IsPartialReceivingAvailable);
 
     public void SaveScannedMaterial(string qrCode)
     {
@@ -120,9 +129,11 @@ public partial class WarehouseReceiveMaterialsControlViewModelSource : ReactiveC
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
             {
                 var _edited = db.Orders.Single(x => x.Id == SelectedItem!.Order!.Id)
-                    .DoInst(x => x.TaskStatus = Task_Status.Finished);
+                    .DoInst(x => x.TaskStatus = ScannedCollection.Select(s => s.OrderCount - s.ScannedCount).Sum() == 0 ? Task_Status.Finished : Task_Status.Execution);
 
-                ScannedCollection.DoForEach(x => x.GetScanResult.DoForEach(s => db.WarehouseSupplying.Add(new()
+                ScannedCollection
+                .Where(x => x.ScannedCount > 0)
+                .DoForEach(x => x.GetScanResult.DoForEach(s => db.WarehouseSupplying.Add(new()
                 {
                     WarehouseItemForeignKey = x.WarehouseItem.Id,
                     OrderForeignKey = x.OrderForeignKey,
@@ -136,6 +147,22 @@ public partial class WarehouseReceiveMaterialsControlViewModelSource : ReactiveC
                     InStockCount = s.totalCount,
                     RecordDT = x.RecordDT
                 })));
+
+                if (IsPartialReceivingAvailable)
+                    ScannedCollection
+                    .Where(x => x.OrderCount - x.ScannedCount > 0)
+                    .DoForEach(x => db.WarehouseSupplying.Add(new()
+                    {
+                        OrderForeignKey = x.OrderForeignKey,
+                        DeliveryStatus = Delivery_Status.NotDelivered,
+                        VendorName = x.VendorName,
+                        Currency = x.Currency,
+                        UnitToBYNConversion = x.UnitToBYNConversion,
+                        PriceTotal = x.PriceTotal / x.OrderCount * (x.OrderCount - x.ScannedCount),
+                        OrderCount = x.OrderCount - x.ScannedCount,
+                        InStockCount = 0,
+                        RecordDT = x.RecordDT
+                    }));
 
                 (from v1 in db.WarehouseSupplying.AsEnumerable()
                  join v2 in ScannedCollection on v1.Id equals v2.Id

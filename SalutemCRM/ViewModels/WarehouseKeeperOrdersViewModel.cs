@@ -83,12 +83,12 @@ public partial class WarehouseKeeperOrdersViewModelSource : ReactiveControlSourc
                 .Include(x => x.WarehouseSupplies)
                 .Where(x =>
                     x.OrderType == Order_Type.WarehouseRestocking &&
-                    x.TaskStatus == Task_Status.AwaitStart)
+                    (x.TaskStatus == Task_Status.AwaitStart || x.TaskStatus == Task_Status.Execution))
                 .DoForEach(x => WarehouseKeeperOrders.Add(new()
                 {
                     OrderType = Order_Type.WarehouseRestocking,
                     Order = x,
-                    MaterialsIn = x.WarehouseSupplies
+                    MaterialsIn = new(x.WarehouseSupplies.Where(s => s.DeliveryStatus == Delivery_Status.NotDelivered))
                 }));
 
             /* service center material flow */

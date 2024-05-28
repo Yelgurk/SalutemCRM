@@ -10,7 +10,6 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.IO.Ports;
 using System.Timers;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Avalonia;
 using Avalonia.Threading;
 using Microsoft.Extensions.Configuration;
