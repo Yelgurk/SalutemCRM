@@ -46,6 +46,7 @@ public class WarehouseProvideMaterialsControlViewModelSource : ReactiveControlSo
 {
     public void SaveScannedMaterial(string qrCode)
     {
+        /*
         if (SelectedSupply is not null && ScannedCollection.SingleOrDefault(x => x.VendorName == SelectedSupply.VendorName) is WarehouseSupply _match && _match != null)
         {
             _match.ScannedCount += 1;
@@ -65,6 +66,7 @@ public class WarehouseProvideMaterialsControlViewModelSource : ReactiveControlSo
             .Select(x => new { VendorName = x.Key, ScannedCount = x.Sum(x => x.ScannedCount) })
             .Join(SelectedItem!.MaterialsIn, x => x.VendorName, y => y.VendorName, (x, y) => x.ScannedCount == y.OrderCount)
             .All(result => result);
+        */
     }
 }
 
@@ -79,10 +81,12 @@ public class WarehouseProvideMaterialsControlViewModel : ViewModelBase<Warehouse
                 Source.SaveScannedMaterial(qrCode);
         };
 
+        /*
         IfNewFilled = this.WhenAnyValue(
             x => x.Source.IsAllItemsScanned,
             x => x.Source.IsAllItemsScanned,
             (b1, b2) => b1
         );
+        */
     }
 }

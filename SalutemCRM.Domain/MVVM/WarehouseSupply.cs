@@ -71,7 +71,6 @@ public partial class WarehouseSupply
 
     [NotMapped]
     private double _scannedCount = 0;
-
     [NotMapped]
     public double ScannedCount
     {
@@ -80,6 +79,34 @@ public partial class WarehouseSupply
         {
             _scannedCount = value;
             OnPropertyChanged(nameof(ScannedCount));
+            OnPropertyChanged(nameof(WillBeReceived));
+            OnPropertyChanged(nameof(OneScanIsCount));
+            OnPropertyChanged(nameof(IsAllScanned));
         }
     }
+
+    [NotMapped]
+    private double _oneScanIsCount = 1.00;
+    [NotMapped]
+    public double OneScanIsCount
+    {
+        get => _oneScanIsCount;
+        set
+        {
+            _oneScanIsCount = value;
+            OnPropertyChanged(nameof(OneScanIsCount));
+            OnPropertyChanged(nameof(WillBeReceived));
+            OnPropertyChanged(nameof(ScannedCount));
+            OnPropertyChanged(nameof(IsAllScanned));
+        }
+    }
+
+    [NotMapped]
+    public double WillBeReceived => Math.Round(ScannedCount * OneScanIsCount, 3);
+
+    [NotMapped]
+    public bool IsAllScanned =>
+        OrderCount == WillBeReceived &&
+        ScannedCount > 0 &&
+        WarehouseItem is not null;
 }

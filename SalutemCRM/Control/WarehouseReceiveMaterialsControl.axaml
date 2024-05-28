@@ -4,115 +4,223 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:vm="using:SalutemCRM.ViewModels"
+			 xmlns:f_control="using:SalutemCRM.FunctionalControl"
 			 x:DataType="vm:WarehouseReceiveMaterialsControlViewModel"
              x:Class="SalutemCRM.Control.WarehouseReceiveMaterialsControl">
-	<Grid ColumnDefinitions="2*, 1, 3*"
+	<Grid ColumnDefinitions="2*, 2*"
 		  RowDefinitions="auto, auto, auto, *, auto">
-		<TextBlock Text="{Binding Source.SelectedItem.CardAimHeader}"
-				   FontSize="15"
-				   FontWeight="SemiBold"
-				   Margin="5"
-				   HorizontalAlignment="Center"
-				   VerticalAlignment="Center"
-				   Grid.ColumnSpan="3"
-				   Grid.Row="0"/>
-		
-		<TextBlock Text="{Binding Source.SelectedItem.CardOrderHeader}"
-				   FontSize="17"
-				   Margin="5 0 5 10"
-				   HorizontalAlignment="Center"
-				   VerticalAlignment="Center"
-				   Grid.ColumnSpan="3"
-				   Grid.Row="1"/>
-		
-		<Border Grid.Column="1"
-				Grid.Row="2"
-				Grid.RowSpan="2"
-				BorderThickness="1 0"
-				BorderBrush="{DynamicResource Primary_Gray}"/>
-		
-		<TextBlock Text="Список на приём"
-				   FontSize="16"
-				   Grid.Column="0"
-				   Grid.Row="2"
-				   Margin="5"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"/>
-		
-		<TextBlock Text="Отсканировано"
-				   FontSize="16"
-				   Grid.Column="2"
-				   Grid.Row="2"
-				   Margin="5"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"/>
+		<StackPanel Grid.Column="0"
+					Grid.Row="0"
+				    Grid.RowSpan="2"
+					VerticalAlignment="Center">
+			<TextBlock Text="{Binding Source.SelectedItem.CardAimHeader}"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+				       Margin="5"
+					   HorizontalAlignment="Center"/>
 
-		<ListBox Classes="custom zebra unmarked"
-				 ClipToBounds="True"
-				 Grid.Column="0"
-				 Grid.Row="3"
-				 ItemsSource="{Binding Source.SelectedItem.MaterialsIn}"
-				 SelectedItem="{Binding Source.SelectedSupply}">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<Grid ColumnDefinitions="auto, *, 20, auto">
-						<TextBlock Text="{Binding VendorName}"
-								   TextWrapping="Wrap"
-								   Margin="3"
-								   VerticalAlignment="Center"
-								   Grid.Column="0"/>
-						
-						<TextBlock Text="{Binding OrderCount, StringFormat='Кол-во: {0}'}"
-								   Margin="3 3 15 3"
-								   VerticalAlignment="Center"
-								   Grid.Column="3"/>
-					</Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
+			<TextBlock Text="{Binding Source.SelectedItem.CardOrderHeader}"
+					   FontSize="20"
+					   Margin="5"
+					   HorizontalAlignment="Center"/>
+		</StackPanel>
+		
 
-		<ScrollViewer Grid.Column="2"
+		<Grid Grid.Column="1"
+			  Grid.Row="0"
+			  ColumnDefinitions="auto, *, auto, auto">
+			<Image Source="{Binding Source.QRBitmap}"
+				   Width="100"
+				   Height="100"/>
+			<TextBox Classes="custom"
+					 Watermark="Введите код руками"
+					 VerticalAlignment="Center"
+					 Text="{Binding Source.KbInputCode}"
+					 Margin="5"
+					 Grid.Column="1"/>
+			<Button Grid.Column="2"
+					Classes="custom iconed rounded orange plus"
+					VerticalAlignment="Center"
+					Margin="0 5 5 5"
+					Command="{Binding AddQrCodeByInputStrCommand}"/>
+			<Button Grid.Column="3"
+					Classes="custom iconed rounded pink close"
+					VerticalAlignment="Center"
+					Margin="0 5 5 5"
+					Command="{Binding RemoveQrCodeByInputStrCommand}"/>
+		</Grid>
+
+		<ToggleButton Classes="custom"
+					  Background="LightGray"
+					  Margin="10 5 5 5"
+					  Grid.Column="1"
+					  Grid.Row="1"
+					  Height="36"
+					  HorizontalAlignment="Stretch"
+					  IsChecked="{Binding Source.IsScannerModeRemove}"
+					  Content="{Binding Source.ScannerModeDescription}"/>
+
+		<ScrollViewer Grid.ColumnSpan="2"
 				      Grid.Row="3"
 					  ClipToBounds="True"
 					  VerticalScrollBarVisibility="Visible">
 			<DataGrid Classes="zebra"
 				      VerticalScrollBarVisibility="Hidden"
-					  ItemsSource="{Binding Source.ScannedCollection}">
+					  ItemsSource="{Binding Source.ScannedCollection}"
+					  SelectedItem="{Binding Source.SelectedSupply}">
 				<DataGrid.Columns>
-					<DataGridTemplateColumn Width="auto" Header="">
+					<DataGridTemplateColumn Width="auto"
+											IsReadOnly="True">
+						<DataGridTemplateColumn.Header>
+							<StackPanel Margin="-2 2 -22 2">
+								<TextBlock Text="Кол-во"
+										   HorizontalAlignment="Center"
+										   FontSize="11"/>
+								<TextBlock Text="По счету"
+										   HorizontalAlignment="Center"
+										   FontWeight="SemiBold"/>
+							</StackPanel>
+						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<Button Classes="custom iconed pink rounded sys close"
-										Height="32" Width="{Binding $self.Bounds.Height}"
-										CornerRadius="5" Margin="0 5 5 5"
-										Command=""
-										CommandParameter="{Binding}"/>
+								<DockPanel VerticalAlignment="Center"
+										   HorizontalAlignment="Left"
+										   Margin="10 0 0 0">
+									<TextBlock Text="{Binding OrderCount}"
+											   HorizontalAlignment="Left"/>
+									<TextBlock HorizontalAlignment="Left"
+										       Text="{Binding WarehouseItem.MesurementUnit,
+													  TargetNullValue=' (?)',
+													  FallbackValue=' (?)',
+													  StringFormat=' {0}'}"/>
+								</DockPanel>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTextColumn Width="auto"
+										IsReadOnly="True"
+										Binding="{Binding ScannedCount}">
+						<DataGridTextColumn.Header>
+							<StackPanel Margin="-2 2 -22 2">
+								<TextBlock Text="Кол-во"
+										   HorizontalAlignment="Center"
+										   FontSize="11"/>
+								<TextBlock Text="Отсканено"
+										   HorizontalAlignment="Center"
+										   FontWeight="SemiBold"/>
+							</StackPanel>
+						</DataGridTextColumn.Header>
+					</DataGridTextColumn>
+
+					<DataGridTemplateColumn Width="auto"
+											IsVisible="False"
+										    IsReadOnly="True">
+						<DataGridTemplateColumn.Header>
+							<StackPanel Margin="-2 2 -22 2">
+								<TextBlock Text="Ед. изм"
+										   HorizontalAlignment="Center"
+										   FontWeight="SemiBold"/>
+							</StackPanel>
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding WarehouseItem.MesurementUnit, TargetNullValue='[не выбр.]', FallbackValue='[не выбр.]'}"
+										   VerticalAlignment="Center"
+										   Margin="5 0"/>
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
 
 					<DataGridTextColumn Width="auto"
 										IsReadOnly="False"
-										Binding="{Binding ScannedCount}">
+										Binding="{Binding OneScanIsCount}">
 						<DataGridTextColumn.Header>
-							<TextBlock Text="Кол-во" Margin="0 0 -20 0"/>
-						</DataGridTextColumn.Header>
-					</DataGridTextColumn>
-
-					<DataGridTextColumn Width="auto"
-										IsReadOnly="True"
-										Binding="{Binding OrderCount}">
-						<DataGridTextColumn.Header>
-							<TextBlock Text="По счету" Margin="0 0 -20 0"/>
+							<StackPanel Margin="-2 2 -22 2">
+								<TextBlock Text="1 скан ="
+										   HorizontalAlignment="Center"
+										   FontSize="11"/>
+								<TextBlock Text="кол-во"
+										   HorizontalAlignment="Center"
+										   FontWeight="SemiBold"/>
+							</StackPanel>
 						</DataGridTextColumn.Header>
 					</DataGridTextColumn>
 					
-					<DataGridTextColumn Width="*"
+					<DataGridTemplateColumn Width="auto"
+										    IsReadOnly="False">
+						<DataGridTemplateColumn.Header>
+							<StackPanel Margin="-2 2 -22 2">
+								<TextBlock Text="Будет"
+										   HorizontalAlignment="Center"
+										   FontSize="11"/>
+								<TextBlock Text="принято"
+										   HorizontalAlignment="Center"/>
+								<TextBlock Text="на склад"
+										   HorizontalAlignment="Center"
+										   FontWeight="Bold"/>
+							</StackPanel>
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<DockPanel VerticalAlignment="Center"
+										   HorizontalAlignment="Left"
+										   Margin="10 0">
+									<TextBlock Text="{Binding WillBeReceived}"
+											   HorizontalAlignment="Left"/>
+									<TextBlock HorizontalAlignment="Left"
+											   Text="{Binding WarehouseItem.MesurementUnit,
+													  TargetNullValue=' (?)',
+													  FallbackValue=' (?)',
+													  StringFormat=' {0}'}"/>
+								</DockPanel>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+					
+					<DataGridTextColumn Width="2*"
 										IsReadOnly="True"
 										Header="Название"
 										Binding="{Binding VendorName}"/>
 
-					<DataGridTemplateColumn Width="auto" Header="Коды">
+					<DataGridTemplateColumn Width="3*" Header="К материалу">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Grid ColumnDefinitions="auto, *, auto">
+									<StackPanel VerticalAlignment="Center"
+												Grid.Column="0"
+												Margin="5 2 0 2">
+										<TextBlock Text="{Binding WarehouseItem.InnerCode,
+															  TargetNullValue='[код недоступен]',
+															  FallbackValue='[код недоступен]',
+															  StringFormat='[{0}]'}"
+												   FontSize="12"
+												   FontWeight="Bold"/>
+
+										<DockPanel>
+											<TextBlock Text="{Binding WarehouseItem.InnerName, TargetNullValue='[предмет не выбран]', FallbackValue='[предмет не выбран]'}"
+													   FontSize="16"/>
+											<TextBlock Text="{Binding WarehouseItem.Category.Name,
+														TargetNullValue='',
+														FallbackValue='',
+														StringFormat=', {0}'}"
+													   FontSize="14"/>
+										</DockPanel>
+									</StackPanel>
+
+									<Button Classes="custom iconed rounded sys orange eye"
+											VerticalAlignment="Stretch"
+											Grid.Column="2"
+											Margin="2"
+											Command="{Binding $parent[UserControl].DataContext.ShowOverlayBindToWarehouseItemCommand}"
+											CommandParameter="{Binding}"/>
+								</Grid>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTemplateColumn Width="auto" Header="Коды"
+											IsReadOnly="True">
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
 								<ItemsControl ItemsSource="{Binding ScannedQrCodes}">
@@ -121,11 +229,11 @@
 											<StackPanel/>
 										</ItemsPanelTemplate>
 									</ItemsControl.ItemsPanel>
-
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
 											<TextBlock Text="{Binding}"
-													   FontSize="13"/>
+													   FontSize="13"
+													   Margin="2 0 5 0"/>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>
@@ -150,12 +258,59 @@
 				Margin="5"
 				Grid.Column="2"
 				Grid.Row="4"
+				IsEnabled="{Binding Source.IsAllInfoFullFilled}"
 				Command="{Binding AcceptSuccessfullyDeliveryToStockCommand}"/>
+
+		<Label Classes="OverlayControl" Tag="Привязать к материалу в БД "
+			   IsVisible="{Binding Source.IsOverlayBindToWarehouseItem}">
+			<Grid RowDefinitions="*, auto"
+				  MinWidth="600">
+				<f_control:WarehouseGeneral/>
+
+				<Grid ColumnDefinitions="*, 5, *"
+					  Grid.Row="1"
+					  Margin="0 10 0 0">
+					<Button Classes="custom iconed rounded pink close"
+							Content="Отмена "
+							Grid.Column="0"
+							HorizontalAlignment="Stretch"
+							Command="{Binding HideOverlaysCommand}"/>
+
+					<Button Classes="custom iconed rounded green plus"
+							Content="Применить "
+							Grid.Column="2"
+							HorizontalAlignment="Stretch"
+							Command="{Binding AcceptBindToWarehouseItemCommand}"/>
+				</Grid>
+			</Grid>
+		</Label>
 	</Grid>
 
 	<UserControl.Styles>
 		<Style Selector="DataGrid.zebra DataGridRow:nth-child(2n+1)">
 			<Setter Property="Background" Value="WhiteSmoke"/>
+		</Style>
+		
+		<Style Selector="Label.OverlayControl">
+			<Setter Property="Grid.ColumnSpan" Value="2"/>
+			<Setter Property="Grid.RowSpan" Value="5"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid>
+						<Grid Background="Black"
+							  Opacity="0.33"/>
+						<Label Classes="card rounded tag"
+							   Tag="{TemplateBinding Tag}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"
+							   Margin="50">
+							<ContentPresenter Content="{TemplateBinding Content}"
+											  Background="White"
+											  Padding="10 40 10 10"/>
+						</Label>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
 		</Style>
 	</UserControl.Styles>
 </UserControl>
