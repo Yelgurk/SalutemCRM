@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 
 namespace SalutemCRM.Domain.Model;
 
@@ -109,4 +110,17 @@ public partial class WarehouseSupply
         OrderCount == WillBeReceived &&
         ScannedCount > 0 &&
         WarehouseItem is not null;
+
+    [NotMapped]
+    public List<(string code, double totalCount)> GetScanResult =>
+        ScannedQrCodes.Do(x =>
+        {
+            List<(string code, double totalCount)> result = new();
+
+            x.Distinct()
+             .DoForEach(f => result.Add((f, Convert.ToDouble(ScannedQrCodes.Where(s => s == f).Count()) * OneScanIsCount)));
+
+            return result;
+        });
+        
 }

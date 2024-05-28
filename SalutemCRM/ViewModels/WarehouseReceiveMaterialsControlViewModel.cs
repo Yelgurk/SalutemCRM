@@ -116,43 +116,37 @@ public partial class WarehouseReceiveMaterialsControlViewModelSource : ReactiveC
     public void AcceptSuccessfullyDeliveryToStock()
     {
         if (CheckIsAllInfoFullFilled())
+        {
             using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
             {
-                ScannedCollection.DoForEach(x => db.WarehouseSupplying.Add(new()
-                {
+                var _edited = db.Orders.Single(x => x.Id == SelectedItem!.Order!.Id)
+                    .DoInst(x => x.TaskStatus = Task_Status.Finished);
 
-                }));
+                ScannedCollection.DoForEach(x => x.GetScanResult.DoForEach(s => db.WarehouseSupplying.Add(new()
+                {
+                    WarehouseItemForeignKey = x.WarehouseItem.Id,
+                    OrderForeignKey = x.OrderForeignKey,
+                    DeliveryStatus = Delivery_Status.FullyDelivered,
+                    VendorName = x.VendorName,
+                    VendorCode = s.code,
+                    Currency = x.Currency,
+                    UnitToBYNConversion = x.UnitToBYNConversion,
+                    PriceTotal = x.PriceTotal / x.OrderCount * s.totalCount,
+                    OrderCount = s.totalCount,
+                    InStockCount = s.totalCount,
+                    RecordDT = x.RecordDT
+                })));
+
+                (from v1 in db.WarehouseSupplying.AsEnumerable()
+                 join v2 in ScannedCollection on v1.Id equals v2.Id
+                 select v1)
+                .DoForEach(x => db.WarehouseSupplying.Remove(x));
+
+                db.SaveChanges();
             }
 
-
-
-
-
-
-        /*
- * 
-if (x.OrderType == Order_Type.WarehouseRestocking)
-                    {
-                        foreach (var item in OrderWarehouseSupplies)
-                            db.WarehouseSupplying.Add(new()
-                            {
-                                WarehouseItemForeignKey = null,
-                                OrderForeignKey = OrderID,
-                                DeliveryStatus = Delivery_Status.NotDelivered,
-                                VendorName = item.VendorName,
-                                VendorCode = null,
-                                Currency = item.Currency,
-                                UnitToBYNConversion = item.OrderBuilder_ToBYNConv,
-                                PriceTotal = item.OrderBuilder_PriceTotal,
-                                OrderCount = item.OrderBuilder_Count,
-                                InStockCount = 0,
-                                RecordDT = RecordDT
-                            });
-                    }
-материалы на закупку установлены при оформлении заявки
-показать заявку, когда будет оплата
-
-*/
+            GoBack();
+        }
     }
 
     public void GoBack()
@@ -160,6 +154,7 @@ if (x.OrderType == Order_Type.WarehouseRestocking)
         HideAllOverlays();
         ScannedCollection.Clear();
         NavigationViewModelSource.SetRegisteredWindowContent<WarehouseKeeperOrders>();
+        App.Host!.Services.GetService<WarehouseKeeperOrdersViewModel>()!.Source.Update();
     }
 }
 
