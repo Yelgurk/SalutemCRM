@@ -125,11 +125,11 @@ public partial class App : Application
 
         /* DEBUG LOGIN BEGIN */
 
-        if (!Design.IsDesignMode)
+        //if (!Design.IsDesignMode)
             //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log51", PasswordMD5 = "pass51" }), MBEnums.USER_JSON); //manufacture boss acc
             //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log21", PasswordMD5 = "pass21" }), MBEnums.USER_JSON); //bookkeeper acc
             //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log11", PasswordMD5 = "pass11" }), MBEnums.USER_JSON); //boss acc
-            Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log81", PasswordMD5 = "pass81" }), MBEnums.USER_JSON); //warehouse keeper
+            //Host!.Services.GetService<TCPChannel>()!.Send(JsonSerializer.Serialize(new User() { Login = "log81", PasswordMD5 = "pass81" }), MBEnums.USER_JSON); //warehouse keeper
         
         /* DEBUG LOGIN END */
     }

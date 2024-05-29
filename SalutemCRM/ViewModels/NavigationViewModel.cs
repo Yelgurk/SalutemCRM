@@ -151,6 +151,18 @@ public partial class NavigationViewModelSource : ReactiveControlSource<Navigatio
                     NavigationCollection.Add(new() { IconUri = "Settings.png", Title = "Мои регионы", GetContent = Get<TemplateRegionsManagment> });
                 } break;
 
+            case User_Permission.PurchasingDepartment:
+                {
+                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новая заявка", GetContent = Get<OrderEditorControl> });
+                    NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                } break;
+
+            case User_Permission.ServiceDepartment:
+                {
+                    NavigationCollection.Add(new() { IconUri = "File Invoice.png", Title = "Новая заявка", GetContent = Get<OrderEditorControl> });
+                    NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Контроль заявок", GetContent = Get<OrdersManagmentControl> });
+                } break;
+
             case User_Permission.ManufactureManager:
                 {
                     NavigationCollection.Add(new() { IconUri = "Books.png", Title = "Заявки на производство", GetContent = Get<OrdersManagmentControl> });

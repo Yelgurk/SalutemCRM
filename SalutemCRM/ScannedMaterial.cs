@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using SalutemCRM.Database;
 using SalutemCRM.Domain.Model;
 using System;
@@ -20,26 +21,10 @@ public partial class ScannedMaterial : ObservableObject
     private bool _isNewMaterial;
 
     [ObservableProperty]
-    private WarehouseItem? _refWarehouseItem;
-
-    [ObservableProperty]
-    private WarehouseSupply? _refWarehouseSupply;
-
-    [ObservableProperty]
     private WarehouseItem? _warehouseItem;
 
     [ObservableProperty]
     private WarehouseSupply? warehouseSupply;
-
-    public ScannedMaterial(string ScannedCode, WarehouseItem? RefItem) : this(ScannedCode, RefItem, null) { }
-
-    public ScannedMaterial(string ScannedCode, WarehouseSupply? RefSupply) : this(ScannedCode, null, RefSupply) { }
-
-    public ScannedMaterial(string ScannedCode, WarehouseItem? RefItem, WarehouseSupply? RefSupply) : this(ScannedCode)
-    {
-        _refWarehouseItem = RefItem;
-        _refWarehouseSupply = RefSupply;
-    }
 
     public ScannedMaterial(string ScannedCode)
     {
@@ -47,8 +32,15 @@ public partial class ScannedMaterial : ObservableObject
 
         using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
         {
-            WarehouseItem = db.WarehouseItems.SingleOrDefault(x => x.InnerCode == _scannedCode);
-            WarehouseSupply = db.WarehouseSupplying.SingleOrDefault(x => x.VendorCode == _scannedCode);
+            WarehouseItem = db.WarehouseItems
+                .Include(x => x.WarehouseSupplying)
+                .Where(x => x.WarehouseSupplying.Any(s => s.InStockCount > 0))
+                .SingleOrDefault(x => x.InnerCode == _scannedCode);
+
+            WarehouseSupply = db.WarehouseSupplying
+                .Include(x => x.WarehouseItem)
+                .Where(x => x.InStockCount > 0)
+                .SingleOrDefault(x => x.VendorCode == _scannedCode);
         }
 
         IsNewMaterial = WarehouseItem is null && WarehouseSupply is null;

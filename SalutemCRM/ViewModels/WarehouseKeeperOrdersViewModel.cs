@@ -149,6 +149,12 @@ public partial class WarehouseKeeperOrdersViewModelSource : ReactiveControlSourc
 
     public void AcceptMaterialsAvailability(WarehouseKeeperOrder _accept)
     {
+        using (DatabaseContext db = new(DatabaseContext.ConnectionInit()))
+            db.Orders
+                .DoIf(x => { }, x => _accept.OrderType == Order_Type.CustomerService)?
+                .SingleOrDefault(s => s.Id == _accept.Order!.Id)?
+                .Do(x => x.TaskStatus = Task_Status.AwaitPayment)
+                .Do(x => db.SaveChanges());
 
         this.Update();
     }

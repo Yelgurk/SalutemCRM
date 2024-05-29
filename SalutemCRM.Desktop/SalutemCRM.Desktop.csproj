@@ -7,7 +7,14 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+	<ApplicationIcon>salutem_logo_mini.ico</ApplicationIcon>	  	
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="salutem_logo_mini.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="salutem_logo_mini.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />

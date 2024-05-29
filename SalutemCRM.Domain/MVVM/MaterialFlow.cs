@@ -16,4 +16,7 @@ public partial class MaterialFlow
         get => _countWillBeReturnedToStock <= 0 ? (_countWillBeReturnedToStock = CountReservedFromStock) : _countWillBeReturnedToStock;
         set => _countWillBeReturnedToStock = value;
     }
+
+    [NotMapped]
+    public ObservableCollection<WarehouseSupply> ScannedMaterialsFromWarehouse { get; } = new();
 }

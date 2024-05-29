@@ -10,7 +10,7 @@
 		xmlns:t_control="clr-namespace:SalutemCRM.ControlTemplated"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
         x:Class="SalutemCRM.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="avares://SalutemCRM/Assets/salutem_logo_mini.ico"
         Title="SalutemCRM">
 	<Grid DataContext="{x:Static main:Account.Current}">
 
